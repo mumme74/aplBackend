@@ -17,21 +17,51 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.LowLevelHttpRequest;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.testing.json.MockJsonFactory;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Daniel Nilsson
  */
 @Path("apl")
 public class APLService {
+
+    private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
+    private final String CLIENT_SECRET = "KNALME2xnAZINjhr2F_pyJVb";
+    private final String APPLICATION_NAME = "APL Test";
+    HttpTransport httpTransport;
+    JsonFactory jsonFactory;
+    GoogleIdTokenVerifier verifier;
+
     @EJB
     APLManager manager;
-    
+
+    public APLService() throws GeneralSecurityException, IOException {
+        this.jsonFactory = JacksonFactory.getDefaultInstance();
+        this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        this.verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory)
+                .setAudience(Arrays.asList(CLIENT_ID))
+                .build();
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser() {
@@ -44,26 +74,48 @@ public class APLService {
         }
 
     }
-    
+
     @POST
     @Path("/user")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerUser(String body){
-                
+    public Response registerUser(String body) {
+
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject jsonObject = jsonReader.readObject();
         jsonReader.close();
-        int sub = jsonObject.getInt("sub");
+        
+        String idTokenString = jsonObject.getString("id");
+        GoogleIdToken idToken;
+        try {
+            idToken = verifier.verify(idTokenString);
+        } catch (Exception ex) {
+            return Response.serverError().build();
+        }
+        
+        String googleID;
+        String email;
+        if (idToken != null) {
+            Payload payload = idToken.getPayload();
+            //if (payload.getHostedDomain().equals(APPS_DOMAIN_NAME)) {
+            googleID = payload.getSubject();
+            email = payload.getEmail();
+            /*
+            } else {
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }*/
+        } else {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        
         String namn = jsonObject.getString("namn");
         String klass = jsonObject.getString("klass");
         String larare = jsonObject.getString("larare");
-        int tfnr = jsonObject.getInt("tfnr");
-        String email = jsonObject.getString("email");
+        String tfnr = jsonObject.getString("tfnr");
         int handledare = jsonObject.getInt("handledare");
-        
-        if(manager.registerUser(sub, namn, klass, larare, tfnr, email, handledare)){
+
+        if (manager.registerUser(googleID, namn, klass, larare, tfnr, email, handledare)) {
             return Response.status(Response.Status.CREATED).build();
-        }else{
+        } else {
             return Response.serverError().build();
         }
     }
