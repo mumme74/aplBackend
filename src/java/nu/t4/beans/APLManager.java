@@ -23,8 +23,7 @@ import javax.ws.rs.core.HttpHeaders;
  */
 @Stateless
 public class APLManager {
-    
-    
+
     public JsonArray getUser() {
 
         try {
@@ -46,7 +45,7 @@ public class APLManager {
                         .add("larare", data.getObject("larare").toString())
                         .add("tfnr", data.getObject("tfnr").toString())
                         .add("email", data.getObject("email").toString())
-                        .add("handledare", data.getObject("handledare").toString())                        
+                        .add("handledare", data.getObject("handledare").toString())
                         .build()
                 );
             }
@@ -59,14 +58,18 @@ public class APLManager {
         //om det misslyckas skickas inget tillbaka
         return null;
     }
-    
-    public boolean registerUser(int sub, String namn, String klass, String larare, int tfnr, String email, int handledare) {
+
+    public boolean registerUser(String googleID, String namn, int klass, int tfnr, String email) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = (Connection) DriverManager
                     .getConnection("jdbc:mysql://localhost/aplapp", "root", "");
             Statement stmt = conn.createStatement();
-            String sql = String.format("INSERT INTO user VALUES(%d,'%s','%s','%s',%d,'%s',%d)", sub, namn, klass, larare, tfnr, email, handledare);
+            String sql = String.format(
+                    "INSERT INTO skolans_användare VALUES"
+                            + "('%s',null,'%s',%d,'%s',%d,0,0,0)",
+                    googleID, namn, tfnr, email, klass
+            );
             stmt.executeUpdate(sql);
 
             conn.close();
@@ -76,7 +79,5 @@ public class APLManager {
             return false; //Matchen kunde ej läggas till
         }
     }
-     
+
 }
-
-

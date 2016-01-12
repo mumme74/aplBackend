@@ -44,9 +44,12 @@ import java.util.logging.Logger;
 @Path("apl")
 public class APLService {
 
+    //ID för vår app
     private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
-    private final String CLIENT_SECRET = "KNALME2xnAZINjhr2F_pyJVb";
+    //Namnet på appen, knytet till ID:t
     private final String APPLICATION_NAME = "APL Test";
+    
+    //Varibler för verifiering
     HttpTransport httpTransport;
     JsonFactory jsonFactory;
     GoogleIdTokenVerifier verifier;
@@ -79,22 +82,26 @@ public class APLService {
     @Path("/user")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerUser(String body) {
-
+        
+        //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject jsonObject = jsonReader.readObject();
         jsonReader.close();
         
+        //Ta ut id token för verifiering
         String idTokenString = jsonObject.getString("id");
         GoogleIdToken idToken;
         try {
             idToken = verifier.verify(idTokenString);
         } catch (Exception ex) {
-            return Response.serverError().build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
         
         String googleID;
         String email;
+        //idToken blir null ifall den är felaktig
         if (idToken != null) {
+            //Ta ut datan vi behöver från det verifierade idTokenet
             Payload payload = idToken.getPayload();
             //if (payload.getHostedDomain().equals(APPS_DOMAIN_NAME)) {
             googleID = payload.getSubject();
@@ -108,12 +115,10 @@ public class APLService {
         }
         
         String namn = jsonObject.getString("namn");
-        String klass = jsonObject.getString("klass");
-        String larare = jsonObject.getString("larare");
-        String tfnr = jsonObject.getString("tfnr");
-        int handledare = jsonObject.getInt("handledare");
+        int klass = jsonObject.getInt("klass");
+        int tfnr = jsonObject.getInt("tfnr");
 
-        if (manager.registerUser(googleID, namn, klass, larare, tfnr, email, handledare)) {
+        if (manager.registerUser(googleID, namn, klass, tfnr, email)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
