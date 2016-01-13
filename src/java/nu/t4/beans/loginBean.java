@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -21,7 +21,7 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author Daniel Nilsson
  */
 @ManagedBean
-@SessionScoped
+@ApplicationScoped
 public class loginBean implements Serializable {
 
     private String username;

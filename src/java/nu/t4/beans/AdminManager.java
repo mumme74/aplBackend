@@ -11,7 +11,7 @@ import com.mysql.jdbc.Connection;
 import java.io.Serializable;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 /**
@@ -19,7 +19,7 @@ import javax.faces.bean.ManagedBean;
  * @author Daniel Nilsson
  */
 @ManagedBean
-@SessionScoped
+@ApplicationScoped
 public class AdminManager  implements Serializable{
     private String klassnamn;
 
