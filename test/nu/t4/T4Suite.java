@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author carlkonig
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({nu.t4.filters.FiltersSuite.class, nu.t4.beans.BeansSuite.class, nu.t4.services.ServicesSuite.class})
+@Suite.SuiteClasses({nu.t4.beans.BeansSuite.class, nu.t4.services.ServicesSuite.class})
 public class T4Suite {
 
     @BeforeClass
