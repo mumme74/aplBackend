@@ -31,6 +31,7 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(nu.t4.filters.CORSFilter.class);
         resources.add(nu.t4.services.APLService.class);
+        resources.add(nu.t4.services.ElevService.class);
     }
     
 }
