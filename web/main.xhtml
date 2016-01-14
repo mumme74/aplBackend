@@ -38,7 +38,15 @@
                         <h:panelGroup>
                             <h:commandButton action="#{adminManager.addClass()}"
                                              value="Lägg till" />
-                        </h:panelGroup>
+                        </h:panelGroup >
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Klicka på krysset för att radera"/>
+                            <br/>
+                            <c:forEach items="#{adminManager.classes}" var="classesList">
+                                <h:outputText value="${classesList}"/>
+                                <h:commandLink id="info" action="#{adminManager.removeClass(classesList)}" value="x"/>
+                            </c:forEach>
+                        </h:panelGrid>
                     </h:form>
 
                 </p:layoutUnit>

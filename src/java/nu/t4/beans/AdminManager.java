@@ -5,12 +5,13 @@ package nu.t4.beans;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import com.mysql.jdbc.Connection;
 import java.io.Serializable;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
@@ -20,7 +21,8 @@ import javax.faces.bean.ManagedBean;
  */
 @ManagedBean
 @ApplicationScoped
-public class AdminManager  implements Serializable{
+public class AdminManager implements Serializable {
+
     private String klassnamn;
 
     public String getKlassnamn() {
@@ -36,15 +38,49 @@ public class AdminManager  implements Serializable{
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
             Statement stmt = conn.createStatement();
-            String sql = String.format("INSERT INTO klasser VALUES(NULL, '%s')", klassnamn);
-            stmt.executeUpdate(sql);
+            if (!klassnamn.equals("")) {
+                String sql = String.format("INSERT INTO klasser VALUES(NULL, '%s')", klassnamn);
+                stmt.executeUpdate(sql);
+                System.out.println(sql);
+            }
             klassnamn = "";
             conn.close();
-            System.out.println(sql);
             return "main";
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return "main";
+        }
+    }
+
+    public List getClasses() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT namn FROM klasser";
+            ResultSet data = stmt.executeQuery(sql);
+            List classes = new ArrayList();
+            while (data.next()) {
+                classes.add(data.getString("namn"));
+            }
+            conn.close();
+            return classes;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public void removeClass(String namn) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Statement stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM klasser WHERE namn ='%s'", namn);
+            stmt.executeUpdate(sql);
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }
