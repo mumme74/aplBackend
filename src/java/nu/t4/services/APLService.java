@@ -76,14 +76,19 @@ public class APLService {
             }
         }
         if (idTokenString != null) {
-            if (manager.googleAuth(idTokenString) != null) {
-                return Response.ok().build();
+            Payload payload = manager.googleAuth(idTokenString);
+            if (payload != null) {
+                if(manager.getGoogleUser(payload.getSubject()) != null){
+                    return Response.ok().build();
+                } else {
+                    return Response.status(Response.Status.NO_CONTENT).build();
+                }
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
         } else if (användarnamn != null) {
             String lösenord = jsonObject.getString("lösenord");
-            if (manager.handledarAuth(användarnamn, lösenord) != null) {
+            if (manager.handledarAuth(användarnamn, lösenord)) {
                 return Response.ok().build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).build();

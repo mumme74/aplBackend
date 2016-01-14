@@ -22,8 +22,11 @@ import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -128,8 +131,56 @@ public class APLManager {
         }
     }
 
-    public Object handledarAuth(String användarnamn, String lösenord) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean handledarAuth(String användarnamn, String lösenord) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = (Connection) DriverManager
+                    .getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Statement stmt = conn.createStatement();
+            String sql = String.format(
+                    "SELECT * FROM handledare WHERE användarnamn = '%s')",
+                    användarnamn);
+            ResultSet result = stmt.executeQuery(sql);
+            result.next();
+            if (BCrypt.checkpw(result.getString("lösenord"), lösenord)) {
+                conn.close();
+                return true;
+            } else {
+                conn.close();
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false; //Matchen kunde ej läggas till
+        }
+    }
+
+    public JsonObject getGoogleUser(String google_id) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = (Connection) DriverManager
+                    .getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Statement stmt = conn.createStatement();
+            String sql = String.format(
+                    "SELECT * FROM skolans_användare WHERE google_id = '%s')",
+                    google_id);
+            ResultSet result = stmt.executeQuery(sql);
+            result.next();
+            JsonObjectBuilder obuilder = Json.createObjectBuilder();
+            obuilder.add("id", result.getInt("id"))
+                    .add("namn", result.getString("namn"))
+                    .add("tfnr", result.getString("Telefonnummer"))
+                    .add("email", result.getString("email"))
+                    .add("klass", result.getInt("klass"))
+                    .add("handledare_ID", result.getInt("handledare_ID"))
+                    .add("senast_inloggad", result.getInt("senast_inloggad"))
+                    .add("behörighet", result.getInt("behörighet"));
+            conn.close();
+            return obuilder.build();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
 }
