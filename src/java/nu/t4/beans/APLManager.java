@@ -5,10 +5,17 @@
  */
 package nu.t4.beans;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -16,6 +23,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -24,6 +32,11 @@ import javax.ws.rs.core.HttpHeaders;
 @Stateless
 public class APLManager {
 
+    //ID för vår app
+    private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
+    //Namnet på appen, bundet till ID:t
+    private final String APPLICATION_NAME = "APL Test";
+    
     public JsonArray getUser() {
 
         try {
@@ -78,6 +91,45 @@ public class APLManager {
             System.out.println(e.getMessage());
             return false; //Matchen kunde ej läggas till
         }
+    }
+
+    public GoogleIdToken.Payload googleAuth(String idTokenString) {
+        //Varibler för verifiering
+        HttpTransport httpTransport;
+        JsonFactory jsonFactory;
+        GoogleIdTokenVerifier verifier;
+        try {
+            jsonFactory = JacksonFactory.getDefaultInstance();
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory)
+                    .setAudience(Arrays.asList(CLIENT_ID))
+                    .build();
+        } catch (Exception e) {
+            return null;
+        }
+        GoogleIdToken idToken;
+        try {
+            idToken = verifier.verify(idTokenString);
+        } catch (Exception ex) {
+            return null;
+        }
+
+        //idToken blir null ifall den är felaktig
+        if (idToken != null) {
+            //Ta ut datan vi behöver från det verifierade idTokenet
+            return idToken.getPayload();
+            //if (payload.getHostedDomain().equals(APPS_DOMAIN_NAME)) {
+            /*
+            } else {
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }*/
+        } else {
+            return null;
+        }
+    }
+
+    public Object handledarAuth(String användarnamn, String lösenord) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

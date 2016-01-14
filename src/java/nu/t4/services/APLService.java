@@ -22,15 +22,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.testing.json.MockJsonFactory;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -44,26 +38,8 @@ import java.util.logging.Logger;
 @Path("apl")
 public class APLService {
 
-    //ID för vår app
-    private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
-    //Namnet på appen, knytet till ID:t
-    private final String APPLICATION_NAME = "APL Test";
-    
-    //Varibler för verifiering
-    HttpTransport httpTransport;
-    JsonFactory jsonFactory;
-    GoogleIdTokenVerifier verifier;
-
     @EJB
     APLManager manager;
-
-    public APLService() throws GeneralSecurityException, IOException {
-        this.jsonFactory = JacksonFactory.getDefaultInstance();
-        this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        this.verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory)
-                .setAudience(Arrays.asList(CLIENT_ID))
-                .build();
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,41 +55,61 @@ public class APLService {
     }
 
     @POST
-    @Path("/user")
+    @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerUser(String body) {
-        
+    public Response checkAuth(String body) {
+
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject jsonObject = jsonReader.readObject();
         jsonReader.close();
-        
+
+        String idTokenString = null;
+        String användarnamn = null;
+        try {
+            idTokenString = jsonObject.getString("id");
+        } catch (Exception e) {
+            try {
+                användarnamn = jsonObject.getString("användarnamn");
+            } catch (Exception ee) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+        }
+        if (idTokenString != null) {
+            if (manager.googleAuth(idTokenString) != null) {
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+        } else if (användarnamn != null) {
+            String lösenord = jsonObject.getString("lösenord");
+            if (manager.handledarAuth(användarnamn, lösenord) != null) {
+                return Response.ok().build();
+            } else {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @POST
+    @Path("/user")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerUser(String body) {
+
+        //Skapa ett json objekt av indatan
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject jsonObject = jsonReader.readObject();
+        jsonReader.close();
+
         //Ta ut id token för verifiering
         String idTokenString = jsonObject.getString("id");
-        GoogleIdToken idToken;
-        try {
-            idToken = verifier.verify(idTokenString);
-        } catch (Exception ex) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-        
-        String googleID;
-        String email;
-        //idToken blir null ifall den är felaktig
-        if (idToken != null) {
-            //Ta ut datan vi behöver från det verifierade idTokenet
-            Payload payload = idToken.getPayload();
-            //if (payload.getHostedDomain().equals(APPS_DOMAIN_NAME)) {
-            googleID = payload.getSubject();
-            email = payload.getEmail();
-            /*
-            } else {
-                return Response.status(Response.Status.FORBIDDEN).build();
-            }*/
-        } else {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-        
+
+        Payload payload = manager.googleAuth(idTokenString);
+
+        String googleID = payload.getSubject();
+        String email = payload.getEmail();
         String namn = jsonObject.getString("namn");
         int klass = jsonObject.getInt("klass");
         int tfnr = jsonObject.getInt("tfnr");
