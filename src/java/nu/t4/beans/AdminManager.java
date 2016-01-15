@@ -36,10 +36,10 @@ public class AdminManager implements Serializable {
     public String addClass() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
             Statement stmt = conn.createStatement();
             if (!klassnamn.equals("")) {
-                String sql = String.format("INSERT INTO klasser VALUES(NULL, '%s')", klassnamn);
+                String sql = String.format("INSERT INTO klass VALUES(NULL, '%s')", klassnamn);
                 stmt.executeUpdate(sql);
                 System.out.println(sql);
             }
@@ -55,9 +55,9 @@ public class AdminManager implements Serializable {
     public List getClasses() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
             Statement stmt = conn.createStatement();
-            String sql = "SELECT namn FROM klasser";
+            String sql = "SELECT namn FROM klass";
             ResultSet data = stmt.executeQuery(sql);
             List classes = new ArrayList();
             while (data.next()) {
@@ -74,7 +74,7 @@ public class AdminManager implements Serializable {
     public void removeClass(String namn) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
             Statement stmt = conn.createStatement();
             String sql = String.format("DELETE FROM klasser WHERE namn ='%s'", namn);
             stmt.executeUpdate(sql);

@@ -58,13 +58,13 @@ public class loginBean implements Serializable {
         
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT * FROM adminuser WHERE username = '%s'", username);
+            String sql = String.format("SELECT * FROM admin WHERE användarnamn = '%s'", username);
             ResultSet data = stmt.executeQuery(sql);
             
             data.next();//ta ut första raden
-            String hashedpwd = data.getString("password");
+            String hashedpwd = data.getString("lösenord");
             if (BCrypt.checkpw(password, hashedpwd)) {
                 conn.close();
                 loggedIn = true;
