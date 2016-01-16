@@ -7,7 +7,6 @@ package nu.t4.beans;
  */
 import com.mysql.jdbc.Connection;
 import java.io.Serializable;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -35,8 +34,7 @@ public class AdminManager implements Serializable {
 
     public String addClass() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
+            Connection conn = loginBean.getConnection();
             Statement stmt = conn.createStatement();
             if (!klassnamn.equals("")) {
                 String sql = String.format("INSERT INTO klass VALUES(NULL, '%s')", klassnamn);
@@ -54,8 +52,7 @@ public class AdminManager implements Serializable {
 
     public List getClasses() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
+            Connection conn = loginBean.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT namn FROM klass";
             ResultSet data = stmt.executeQuery(sql);
@@ -73,10 +70,9 @@ public class AdminManager implements Serializable {
 
     public void removeClass(String namn) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
+            Connection conn = loginBean.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("DELETE FROM klasser WHERE namn ='%s'", namn);
+            String sql = String.format("DELETE FROM klass WHERE namn ='%s'", namn);
             stmt.executeUpdate(sql);
             conn.close();
         } catch (Exception e) {

@@ -11,6 +11,7 @@ import com.mysql.jdbc.Connection;
 import java.io.Serializable;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -29,6 +30,14 @@ public class loginBean implements Serializable {
     private String password;
     
     private boolean loggedIn;
+    
+    public static Connection getConnection() throws SQLException{
+        String url = "jdbc:mysql://10.97.72.5/aplapp"; //när jag testar lokalt: "jdbc:mysql://localhost/aplapp";
+        String user = "aplapp"; //när jag testar lokalt: "root";
+        String password = "Teknikum123";//när jag testar lokalt: "";
+        Connection conn = (Connection) DriverManager.getConnection(url, user, password);
+        return conn;
+    }
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -57,8 +66,7 @@ public class loginBean implements Serializable {
     public String login() {
         
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
+            Connection conn = getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM admin WHERE användarnamn = '%s'", username);
             ResultSet data = stmt.executeQuery(sql);
@@ -79,5 +87,11 @@ public class loginBean implements Serializable {
             loggedIn = false;
             return "index";
         }
+    }
+    
+    public String logout() {
+        loggedIn = false;
+        System.out.println("test 1337");
+        return "index";
     }
 }

@@ -15,7 +15,7 @@
 
                 <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
                     <h:panelGroup>
-                        <p:button href="index.xhtml" value="Logga ut"/>
+                        <h:commandButton value="Logga ut" action="#{loginBean.logout()}" />
                     </h:panelGroup>
                 </p:layoutUnit>
 
