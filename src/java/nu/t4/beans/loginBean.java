@@ -32,9 +32,9 @@ public class loginBean implements Serializable {
     private boolean loggedIn;
     
     public static Connection getConnection() throws SQLException{
-        String url = "jdbc:mysql://10.97.72.5/aplapp"; //när jag testar lokalt: "jdbc:mysql://localhost/aplapp";
-        String user = "aplapp"; //när jag testar lokalt: "root";
-        String password = "Teknikum123";//när jag testar lokalt: "";
+        String url = "jdbc:mysql://10.97.72.5/aplapp"; 
+        String user = "aplapp";
+        String password = "Teknikum123";
         Connection conn = (Connection) DriverManager.getConnection(url, user, password);
         return conn;
     }
@@ -76,10 +76,10 @@ public class loginBean implements Serializable {
             if (BCrypt.checkpw(password, hashedpwd)) {
                 conn.close();
                 loggedIn = true;
-                return "main";
+                return "main"; //Om inloggningen stämmer skickas man till startsidan
             } else {
                 conn.close();
-                loggedIn = false;
+                loggedIn = false; //Om inloggningen misslyckas stannar man kvar på index
                 return "index";
             }
         } catch (Exception e) {

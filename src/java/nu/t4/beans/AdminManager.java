@@ -32,6 +32,7 @@ public class AdminManager implements Serializable {
         this.klassnamn = klassnamn;
     }
 
+    //Lägger till klassen i databasen
     public String addClass() {
         try {
             Connection conn = loginBean.getConnection();
@@ -50,6 +51,7 @@ public class AdminManager implements Serializable {
         }
     }
 
+    //Hämtar alla klasser
     public List getClasses() {
         try {
             Connection conn = loginBean.getConnection();
@@ -68,6 +70,7 @@ public class AdminManager implements Serializable {
         }
     }
 
+    //Tar bort klassen från listan med alla klasser
     public void removeClass(String namn) {
         try {
             Connection conn = loginBean.getConnection();
@@ -79,4 +82,75 @@ public class AdminManager implements Serializable {
             System.out.println(e.getMessage());
         }
     }
+    
+    //Hämtar alla användare som inte har lärarbehörighet
+    public List getUsers(){
+        try {
+            Connection conn = loginBean.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT namn, email, behörighet FROM skolans_användare WHERE behörighet = 0";
+            ResultSet data = stmt.executeQuery(sql);
+            //List<Users> users = new ArrayList();
+            //Users user = new Users();
+            List users = new ArrayList();
+            while (data.next()) {
+                users.add(data.getObject("email"));
+//                user.setNamn(data.getString("namn"));
+//                user.setEmail(data.getString("email"));
+//                user.setBehörighet("behörighet");
+//                users.add(user);
+            }
+            conn.close();
+            return users;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    //Sätter behörigheten som lärare mha deras email
+    public void setBehörighet(String email){
+        try {
+            Connection conn = loginBean.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("UPDATE skolans_användare SET behörighet = 1 WHERE email ='%s'", email);
+            stmt.executeUpdate(sql);
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    //Hämtar alla som har lärarbehörighet
+    public List getLärare(){
+        try {
+            Connection conn = loginBean.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT namn, email FROM skolans_användare WHERE behörighet = 1";
+            ResultSet data = stmt.executeQuery(sql);
+            List lärare = new ArrayList();
+            while (data.next()) {
+                lärare.add(data.getObject("email"));
+            }
+            conn.close();
+            return lärare;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    //Tar bort behörigheten som lärare mha deras email
+    public void removeBehörighet(String email){
+        try {
+            Connection conn = loginBean.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("UPDATE skolans_användare SET behörighet = 0 WHERE email ='%s'", email);
+            stmt.executeUpdate(sql);
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
 }

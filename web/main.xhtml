@@ -13,9 +13,9 @@
 
             <p:layout fullPage="true">
 
-                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                <p:layoutUnit position="north" size="100">
                     <h:panelGroup>
-                        <h:commandButton value="Logga ut" action="#{loginBean.logout()}" />
+                        <h:commandButton value="Logga ut" action="#{loginBean.logout()}"/>
                     </h:panelGroup>
                 </p:layoutUnit>
 
@@ -28,7 +28,7 @@
                     <ui:include src="template/menu.xhtml"/>
                 </p:layoutUnit>
 
-                <p:layoutUnit position="center">
+                <p:layoutUnit position="center" size="50%">
                     <h:form>
                         <h:panelGrid columns="2">
                             <h:outputLabel value="Klassens namn" for="klassnamn"/>
@@ -49,6 +49,35 @@
                         </h:panelGrid>
                     </h:form>
 
+                </p:layoutUnit>
+
+                <p:layoutUnit position="east" size="50%">
+
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="Klicka på # för att sätta lärarebehörighet på användaren och X för att ta bort"/>
+                        <br/>
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Användare utan behörighet"/>
+                                <br/>
+                                <c:forEach items="#{adminManager.users}" var="usersList">
+                                    <h:outputText value="${usersList}"/>
+                                    <h:commandLink id="info" action="#{adminManager.setBehörighet(usersList)}" value="#"/>
+                                </c:forEach>
+                            </h:panelGrid>
+                        </h:form>
+
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Användare med behörighet"/>
+                                <br/>
+                                <c:forEach items="#{adminManager.lärare}" var="lärareList">
+                                    <h:outputText value="${lärareList}"/>
+                                    <h:commandLink id="info" action="#{adminManager.removeBehörighet(lärareList)}" value="X"/>
+                                </c:forEach>
+                            </h:panelGrid>
+                        </h:form>
+                    </h:panelGrid>
                 </p:layoutUnit>
 
             </p:layout>
