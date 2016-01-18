@@ -39,50 +39,10 @@ public class APLManager {
     private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
     //Namnet på appen, bundet till ID:t
     private final String APPLICATION_NAME = "APL Test";
-    //Databas inloggning
-    private final String DATABASE_USER = "aplapp";
-    private final String DATABASE_PASS = "Teknikum123";
     
-    public JsonArray getUser() {
-
-        try {
-            //koppla upp mot databas
-            Class.forName("com.mysql.jdbc.Driver");
-            com.mysql.jdbc.Connection conn = (com.mysql.jdbc.Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
-            Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM user";
-            ResultSet data = stmt.executeQuery(sql);
-
-            //skapa jsonArray
-            JsonArrayBuilder aplApp = Json.createArrayBuilder();
-
-            while (data.next()) {
-                aplApp.add(Json.createObjectBuilder()
-                        .add("sub", data.getObject("sub").toString())
-                        .add("namn", data.getObject("namn").toString())
-                        .add("klass", data.getObject("klass").toString())
-                        .add("larare", data.getObject("larare").toString())
-                        .add("tfnr", data.getObject("tfnr").toString())
-                        .add("email", data.getObject("email").toString())
-                        .add("handledare", data.getObject("handledare").toString())
-                        .build()
-                );
-            }
-            //skicka tillbaka den
-            conn.close();//Stänger kopplingen till databasen
-            return aplApp.build();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        //om det misslyckas skickas inget tillbaka
-        return null;
-    }
-
     public boolean registerUser(String googleID, String namn, int klass, String tfnr, String email) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager
-                    .getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "INSERT INTO skolans_användare VALUES"
@@ -136,9 +96,7 @@ public class APLManager {
 
     public boolean handledarAuth(String användarnamn, String lösenord) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager
-                    .getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "SELECT * FROM handledare WHERE användarnamn = '%s'",
@@ -160,9 +118,7 @@ public class APLManager {
 
     public JsonObject getGoogleUser(String google_id) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager
-                    .getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
+            Connection conn = ConnectionFactory.getConnection("local");
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "SELECT * FROM skolans_användare WHERE google_id = '%s'",

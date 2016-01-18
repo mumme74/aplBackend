@@ -41,19 +41,6 @@ public class APLService {
     @EJB
     APLManager manager;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser() {
-        JsonArray table = manager.getUser();
-        if (table == null) {
-            //FEL
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } else {
-            return Response.ok(table).build();
-        }
-
-    }
-
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
