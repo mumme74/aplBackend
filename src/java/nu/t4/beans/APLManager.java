@@ -118,7 +118,7 @@ public class APLManager {
 
     public JsonObject getGoogleUser(String google_id) {
         try {
-            Connection conn = ConnectionFactory.getConnection("local");
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "SELECT * FROM skolans_användare WHERE google_id = '%s'",

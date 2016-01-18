@@ -35,7 +35,7 @@ public class AdminManager implements Serializable {
     //Lägger till klassen i databasen
     public String addClass() {
         try {
-            Connection conn = loginBean.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             if (!klassnamn.equals("")) {
                 String sql = String.format("INSERT INTO klass VALUES(NULL, '%s')", klassnamn);
@@ -54,7 +54,7 @@ public class AdminManager implements Serializable {
     //Hämtar alla klasser
     public List getClasses() {
         try {
-            Connection conn = loginBean.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT namn FROM klass";
             ResultSet data = stmt.executeQuery(sql);
@@ -73,7 +73,7 @@ public class AdminManager implements Serializable {
     //Tar bort klassen från listan med alla klasser
     public void removeClass(String namn) {
         try {
-            Connection conn = loginBean.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("DELETE FROM klass WHERE namn ='%s'", namn);
             stmt.executeUpdate(sql);
@@ -86,7 +86,7 @@ public class AdminManager implements Serializable {
     //Hämtar alla användare som inte har lärarbehörighet
     public List getUsers(){
         try {
-            Connection conn = loginBean.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT namn, email, behörighet FROM skolans_användare WHERE behörighet = 0";
             ResultSet data = stmt.executeQuery(sql);
@@ -111,7 +111,7 @@ public class AdminManager implements Serializable {
     //Sätter behörigheten som lärare mha deras email
     public void setBehörighet(String email){
         try {
-            Connection conn = loginBean.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("UPDATE skolans_användare SET behörighet = 1 WHERE email ='%s'", email);
             stmt.executeUpdate(sql);
@@ -124,7 +124,7 @@ public class AdminManager implements Serializable {
     //Hämtar alla som har lärarbehörighet
     public List getLärare(){
         try {
-            Connection conn = loginBean.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT namn, email FROM skolans_användare WHERE behörighet = 1";
             ResultSet data = stmt.executeQuery(sql);
@@ -143,7 +143,7 @@ public class AdminManager implements Serializable {
     //Tar bort behörigheten som lärare mha deras email
     public void removeBehörighet(String email){
         try {
-            Connection conn = loginBean.getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("UPDATE skolans_användare SET behörighet = 0 WHERE email ='%s'", email);
             stmt.executeUpdate(sql);

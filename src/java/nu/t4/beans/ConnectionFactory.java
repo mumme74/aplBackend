@@ -5,7 +5,7 @@
  */
 package nu.t4.beans;
 
-import java.sql.Connection;
+import com.mysql.jdbc.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
