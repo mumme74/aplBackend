@@ -20,16 +20,15 @@ import javax.ws.rs.core.Response;
  *
  * @author maikwagner
  */
-@Named("elev")
+@Path("elev")
 public class ElevService {
   
     @EJB
     ElevHandledare elevHandledare;
     
     @GET
-    @Path("/elev/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getElev(@PathParam("id") int id){
+    public Response getElev(){
         JsonArray elever = elevHandledare.getElev();
         if(elever != null){
             return Response.ok(elever).build();

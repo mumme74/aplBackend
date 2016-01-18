@@ -25,7 +25,7 @@ public class ElevHandledare {
         try {
             Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
             Statement stmt = (Statement) conn.createStatement();
-            String sql = "SELECT * FROM skolans_användare WITH behörighet=0";
+            String sql = "SELECT * FROM skolans_användare WHERE behörighet=0";
             ResultSet data = stmt.executeQuery(sql);
 
             JsonArrayBuilder elever = Json.createArrayBuilder();

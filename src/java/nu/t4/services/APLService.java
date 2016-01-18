@@ -78,10 +78,10 @@ public class APLService {
         if (idTokenString != null) {
             Payload payload = manager.googleAuth(idTokenString);
             if (payload != null) {
-                if(manager.getGoogleUser(payload.getSubject()) != null){
+                if (manager.getGoogleUser(payload.getSubject()) != null) {
                     return Response.ok().build();
                 } else {
-                    return Response.status(Response.Status.NO_CONTENT).build();
+                    return Response.status(Response.Status.PRECONDITION_FAILED).build();
                 }
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -112,14 +112,16 @@ public class APLService {
         String idTokenString = jsonObject.getString("id");
 
         Payload payload = manager.googleAuth(idTokenString);
-
-        String googleID = payload.getSubject();
+        String google_id = payload.getSubject();
+        if (manager.getGoogleUser(google_id) != null) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
         String email = payload.getEmail();
         String namn = jsonObject.getString("namn");
         int klass = jsonObject.getInt("klass");
-        int tfnr = jsonObject.getInt("tfnr");
+        String tfnr = jsonObject.getString("tfnr");
 
-        if (manager.registerUser(googleID, namn, klass, tfnr, email)) {
+        if (manager.registerUser(google_id, namn, klass, tfnr, email)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();

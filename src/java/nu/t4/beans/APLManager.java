@@ -39,13 +39,16 @@ public class APLManager {
     private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
     //Namnet på appen, bundet till ID:t
     private final String APPLICATION_NAME = "APL Test";
+    //Databas inloggning
+    private final String DATABASE_USER = "aplapp";
+    private final String DATABASE_PASS = "Teknikum123";
     
     public JsonArray getUser() {
 
         try {
             //koppla upp mot databas
             Class.forName("com.mysql.jdbc.Driver");
-            com.mysql.jdbc.Connection conn = (com.mysql.jdbc.Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+            com.mysql.jdbc.Connection conn = (com.mysql.jdbc.Connection) DriverManager.getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
             Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM user";
             ResultSet data = stmt.executeQuery(sql);
@@ -75,21 +78,21 @@ public class APLManager {
         return null;
     }
 
-    public boolean registerUser(String googleID, String namn, int klass, int tfnr, String email) {
+    public boolean registerUser(String googleID, String namn, int klass, String tfnr, String email) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = (Connection) DriverManager
-                    .getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+                    .getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "INSERT INTO skolans_användare VALUES"
-                            + "('%s',null,'%s',%d,'%s',%d,0,0,0)",
+                            + "('%s',null,'%s','%s','%s',%d,1,1,0)",
                     googleID, namn, tfnr, email, klass
             );
             stmt.executeUpdate(sql);
 
             conn.close();
-            return true; //Matchen är tillagd
+            return true; //Matchen är tillagd*/
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false; //Matchen kunde ej läggas till
@@ -135,14 +138,14 @@ public class APLManager {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = (Connection) DriverManager
-                    .getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+                    .getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
             Statement stmt = conn.createStatement();
             String sql = String.format(
-                    "SELECT * FROM handledare WHERE användarnamn = '%s')",
+                    "SELECT * FROM handledare WHERE användarnamn = '%s'",
                     användarnamn);
             ResultSet result = stmt.executeQuery(sql);
             result.next();
-            if (BCrypt.checkpw(result.getString("lösenord"), lösenord)) {
+            if (BCrypt.checkpw(lösenord, result.getString("lösenord"))) {
                 conn.close();
                 return true;
             } else {
@@ -159,10 +162,10 @@ public class APLManager {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = (Connection) DriverManager
-                    .getConnection("jdbc:mysql://localhost/aplapp", "root", "");
+                    .getConnection("jdbc:mysql://localhost/aplapp", DATABASE_USER, DATABASE_PASS);
             Statement stmt = conn.createStatement();
             String sql = String.format(
-                    "SELECT * FROM skolans_användare WHERE google_id = '%s')",
+                    "SELECT * FROM skolans_användare WHERE google_id = '%s'",
                     google_id);
             ResultSet result = stmt.executeQuery(sql);
             result.next();
