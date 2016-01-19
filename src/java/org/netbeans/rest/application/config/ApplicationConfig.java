@@ -32,6 +32,7 @@ public class ApplicationConfig extends Application {
         resources.add(nu.t4.filters.CORSFilter.class);
         resources.add(nu.t4.services.APLService.class);
         resources.add(nu.t4.services.ElevService.class);
+        resources.add(nu.t4.services.HandledareService.class);
     }
     
 }

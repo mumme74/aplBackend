@@ -53,5 +53,33 @@ public class ElevHandledare {
         }
 
     }
+    public JsonArray getHandledare() {
+        try {
+            Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://10.97.72.5/aplapp", "aplapp", "Teknikum123");
+            Statement stmt = (Statement) conn.createStatement();
+            String sql = "SELECT * FROM handledare";
+            ResultSet data = stmt.executeQuery(sql);
 
+            JsonArrayBuilder handledare = Json.createArrayBuilder();
+
+            while (data.next()) {
+                handledare.add(Json.createObjectBuilder()
+                        .add("ID", data.getInt("ID"))
+                        .add("namn", data.getString("namn"))
+                        .add("telefonnummer", data.getString("telefonnummer"))
+                        .add("email", data.getString("email"))
+                        .add("användarnamn", data.getString("användarnamn"))
+                        .build());
+            }
+    
+            conn.close();
+            return handledare.build();
+          
+        } catch (Exception e) {
+            System.out.println("elevhandledare - getHandledare()");
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+    }
 }
