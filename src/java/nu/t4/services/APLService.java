@@ -57,7 +57,7 @@ public class APLService {
             idTokenString = jsonObject.getString("id");
         } catch (Exception e) {
             try {
-                användarnamn = jsonObject.getString("användarnamn");
+                användarnamn = jsonObject.getString("anvandarnamn");
             } catch (Exception ee) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
@@ -74,7 +74,7 @@ public class APLService {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
         } else if (användarnamn != null) {
-            String lösenord = jsonObject.getString("lösenord");
+            String lösenord = jsonObject.getString("losenord");
             if (manager.handledarAuth(användarnamn, lösenord)) {
                 return Response.ok().build();
             } else {
@@ -88,7 +88,7 @@ public class APLService {
     @POST
     @Path("/user")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerUser(String body) {
+    public Response registerGoogleUser(String body) {
 
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
@@ -99,8 +99,14 @@ public class APLService {
         String idTokenString = jsonObject.getString("id");
 
         Payload payload = manager.googleAuth(idTokenString);
+        if(payload == null)
+        {
+            //ID Token är fel.
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         String google_id = payload.getSubject();
         if (manager.getGoogleUser(google_id) != null) {
+            //Finns redan i databasen.
             return Response.status(Response.Status.CONFLICT).build();
         }
         String email = payload.getEmail();
@@ -108,7 +114,43 @@ public class APLService {
         int klass = jsonObject.getInt("klass");
         String tfnr = jsonObject.getString("tfnr");
 
-        if (manager.registerUser(google_id, namn, klass, tfnr, email)) {
+        if (manager.registerGoogleUser(google_id, namn, klass, tfnr, email)) {
+            return Response.status(Response.Status.CREATED).build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+    
+    @POST
+    @Path("/handledare")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerHandledare(String body) {
+
+        //Skapa ett json objekt av indatan
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject jsonObject = jsonReader.readObject();
+        jsonReader.close();
+
+        //Ta ut id token för verifiering
+        /* 
+         * TODO: KOLLA OM LÄRAREN ÄR LEGIT
+         *
+        String idTokenString = jsonObject.getString("id");
+
+        Payload payload = manager.googleAuth(idTokenString);
+        if(payload == null)
+        {
+            //ID Token är fel.
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        */
+        String användarnamn = jsonObject.getString("användarnamn");
+        String lösenord = jsonObject.getString("lösenord");
+        String email = jsonObject.getString("email");
+        String namn = jsonObject.getString("namn");
+        String tfnr = jsonObject.getString("tfnr");
+
+        if (manager.registerHandledare(användarnamn, namn, lösenord, tfnr, email)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();

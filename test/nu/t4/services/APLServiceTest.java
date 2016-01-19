@@ -37,31 +37,17 @@ public class APLServiceTest {
     @After
     public void tearDown() {
     }
-
-    /**
-     * Test of getUser method, of class APLService.
-     */
-    @Test
-    public void testGetUser() {
-        System.out.println("getUser");
-        APLService instance = new APLService();
-        Response expResult = null;
-        Response result = instance.getUser();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
+    
     /**
      * Test of registerUser method, of class APLService.
      */
     @Test
-    public void testRegisterUser() {
+    public void testRegisterGoogleUser() {
         System.out.println("registerUser");
-        String body = "";
+        String body = "{}";
         APLService instance = new APLService();
         Response expResult = null;
-        Response result = instance.registerUser(body);
+        Response result = instance.registerGoogleUser(body);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

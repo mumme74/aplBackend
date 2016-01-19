@@ -39,23 +39,23 @@ public class APLManager {
     private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
     //Namnet på appen, bundet till ID:t
     private final String APPLICATION_NAME = "APL Test";
-    
-    public boolean registerUser(String googleID, String namn, int klass, String tfnr, String email) {
+
+    public boolean registerGoogleUser(String googleID, String namn, int klass, String tfnr, String email) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "INSERT INTO skolans_användare VALUES"
-                            + "('%s',null,'%s','%s','%s',%d,1,1,0)",
+                    + "('%s',null,'%s','%s','%s',%d,1,1,0)",
                     googleID, namn, tfnr, email, klass
             );
             stmt.executeUpdate(sql);
 
             conn.close();
-            return true; //Matchen är tillagd*/
+            return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return false; //Matchen kunde ej läggas till
+            return false;
         }
     }
 
@@ -112,7 +112,7 @@ public class APLManager {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return false; //Matchen kunde ej läggas till
+            return false; 
         }
     }
 
@@ -139,6 +139,40 @@ public class APLManager {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
+        }
+    }
+
+    void deleteUser(String google_id) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format(
+                    "DELETE * FROM skolans_användare WHERE google_id = '%s'",
+                    google_id);
+            stmt.executeUpdate(sql);
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public boolean registerHandledare(String användarnamn, String namn, String lösenord, String tfnr, String email) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
+            String sql = String.format(
+                    "INSERT INTO handledare VALUES"
+                    + "(null, '%s','%s','%s','%s','%s')",
+                    namn, användarnamn, email, encrypted_lösenord, tfnr
+            );
+            stmt.executeUpdate(sql);
+
+            conn.close();
+            return true; 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 
