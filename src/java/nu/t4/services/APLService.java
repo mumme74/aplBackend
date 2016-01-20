@@ -134,8 +134,8 @@ public class APLService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
          */
-        String användarnamn = jsonObject.getString("användarnamn");
-        String lösenord = jsonObject.getString("lösenord");
+        String användarnamn = jsonObject.getString("anvandarnamn");
+        String lösenord = jsonObject.getString("losenord");
         String email = jsonObject.getString("email");
         String namn = jsonObject.getString("namn");
         String tfnr = jsonObject.getString("tfnr");
