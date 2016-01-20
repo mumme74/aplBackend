@@ -1,5 +1,6 @@
 package nu.t4.services;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import java.io.StringReader;
 import javax.ejb.EJB;
 import javax.json.Json;
@@ -11,20 +12,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import java.util.Arrays;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -99,8 +90,7 @@ public class APLService {
         String idTokenString = jsonObject.getString("id");
 
         Payload payload = manager.googleAuth(idTokenString);
-        if(payload == null)
-        {
+        if (payload == null) {
             //ID Token är fel.
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -120,7 +110,7 @@ public class APLService {
             return Response.serverError().build();
         }
     }
-    
+
     @POST
     @Path("/handledare")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -143,7 +133,7 @@ public class APLService {
             //ID Token är fel.
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        */
+         */
         String användarnamn = jsonObject.getString("användarnamn");
         String lösenord = jsonObject.getString("lösenord");
         String email = jsonObject.getString("email");
@@ -152,6 +142,18 @@ public class APLService {
 
         if (manager.registerHandledare(användarnamn, namn, lösenord, tfnr, email)) {
             return Response.status(Response.Status.CREATED).build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+
+    @GET
+    @Path("klass")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response registerHandledare() {
+        JsonArray data = manager.getKlasser();
+        if (data != null) {
+            return Response.ok(data).build();
         } else {
             return Response.serverError().build();
         }
