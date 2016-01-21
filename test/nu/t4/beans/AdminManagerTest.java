@@ -112,6 +112,58 @@ public class AdminManagerTest {
         assertEquals(expResult, result);
     }
     
+     /**
+     * Test of addClass method, of class AdminManager.
+     */
+    @Test
+    public void testSetBehörighet() {
+        System.out.println("setBehörighet");
+        int result = 0;
+        
+        int expResult = 9;
+        try {
+            String url = "jdbc:mysql://10.97.72.5/aplapp";
+            String user = "aplapp";
+            String password = "Teknikum123";
+            Connection conn = (Connection) DriverManager.getConnection(url, user, password);
+            Statement stmt = conn.createStatement();
+
+            String sql = "UPDATE skolans_användare SET behörighet = 9 WHERE ID = 1001";
+            stmt.executeUpdate(sql);
+        } catch (Exception e) {
+        }
+        
+        try {
+            String url = "jdbc:mysql://10.97.72.5/aplapp";
+            String user = "aplapp";
+            String password = "Teknikum123";
+            Connection conn = (Connection) DriverManager.getConnection(url, user, password);
+            Statement stmt = conn.createStatement();
+
+            String sql = "SELECT behörighet FROM skolans_användare WHERE ID = 1001";
+            ResultSet data = stmt.executeQuery(sql);
+            data.next();
+            result = data.getInt("behörighet");
+        } catch (Exception e) {
+        }
+        
+        try {
+            String url = "jdbc:mysql://10.97.72.5/aplapp";
+            String user = "aplapp";
+            String password = "Teknikum123";
+            Connection conn = (Connection) DriverManager.getConnection(url, user, password);
+            Statement stmt = conn.createStatement();
+
+            String sql = "UPDATE skolans_användare SET behörighet = 0 WHERE ID = 1001";
+            stmt.executeUpdate(sql);
+        } catch (Exception e) {
+        }
+        
+        assertEquals(expResult, result);
+    }
+    
+    
+    
     
     
     

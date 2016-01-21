@@ -30,14 +30,6 @@ public class loginBean implements Serializable {
     private String password;
     
     private boolean loggedIn;
-    
-    public static Connection getConnection() throws SQLException{
-        String url = "jdbc:mysql://10.97.72.5/aplapp"; 
-        String user = "aplapp";
-        String password = "Teknikum123";
-        Connection conn = (Connection) DriverManager.getConnection(url, user, password);
-        return conn;
-    }
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -66,7 +58,7 @@ public class loginBean implements Serializable {
     public String login() {
         
         try {
-            Connection conn = getConnection();
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM admin WHERE användarnamn = '%s'", username);
             ResultSet data = stmt.executeQuery(sql);
