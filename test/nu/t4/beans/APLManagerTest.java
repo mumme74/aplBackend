@@ -40,19 +40,16 @@ public class APLManagerTest {
     }
 
     /**
-     * Test of registerUser method, of class APLManager.
+     * Test att registrera google användare
      */
     @Test
-    public void testRegisterUser() throws Exception {
+    public void testRegisteraGoogle() throws Exception {
         System.out.println("registerUser");
         String google_id = "thisisatest";
-        String användarnamn = "thisisatest";
-        String lösenord = "testertesttest";
         String namn = "Tester";
         int klass = 1;
         String tfnr = "0768104001";
         String email = "thisisa@test.te";
-        int program_id = 1;
         EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
         APLManager instance = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
         //Skapa en ny elev
@@ -66,9 +63,27 @@ public class APLManagerTest {
         //Ta bort den nya eleven
         result = instance.deleteUser(google_id, true);
         assertEquals(expResult, result);
-        
+
+        container.close();
+    }
+
+    /**
+     * Test att registrera handledare
+     */
+    @Test
+    public void testRegisteraHandledare() throws Exception {
+        System.out.println("registeraHandledare");
+        String användarnamn = "thisisatest";
+        String lösenord = "testertesttest";
+        String namn = "Tester";
+        String tfnr = "0768104001";
+        String email = "thisisa@test.te";
+        int program_id = 1;
+        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
+        APLManager instance = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
+        boolean expResult = true;
         //Testa handledare registrering
-        result = instance.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id);
+        boolean result = instance.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id);
         assertEquals(expResult, result);
         //Logga in som den nya handledaren
         result = instance.handledarAuth(användarnamn, lösenord);
@@ -79,5 +94,4 @@ public class APLManagerTest {
 
         container.close();
     }
-
 }
