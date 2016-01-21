@@ -55,24 +55,25 @@ public class APLManagerTest {
         int program_id = 1;
         EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
         APLManager instance = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
+        //Skapa en ny elev
         boolean expResult = true;
         boolean result = instance.registerGoogleUser(google_id, namn, klass, tfnr, email);
         assertEquals(expResult, result);
-        
-        expResult = true;
+        //Hämta den nya google användaren, kolla om behörigheten är elev
+        int expResult2 = 0;
+        int result2 = instance.getGoogleUser(google_id).getInt("behörighet");
+        assertEquals(expResult2, result2);
+        //Ta bort den nya eleven
         result = instance.deleteUser(google_id, true);
         assertEquals(expResult, result);
         
         //Testa handledare registrering
-        expResult = true;
         result = instance.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id);
         assertEquals(expResult, result);
         //Logga in som den nya handledaren
-        expResult = true;
         result = instance.handledarAuth(användarnamn, lösenord);
         assertEquals(expResult, result);
         //Ta bort den nya handledaren
-        expResult = true;
         result = instance.deleteUser(användarnamn, false);
         assertEquals(expResult, result);
 
