@@ -142,29 +142,38 @@ public class APLManager {
         }
     }
 
-    void deleteUser(String google_id) {
+    boolean deleteUser(String key, boolean googleUser) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format(
-                    "DELETE * FROM skolans_användare WHERE google_id = '%s'",
-                    google_id);
+            String sql;
+            if (googleUser) {
+                sql = String.format(
+                        "DELETE FROM skolans_användare WHERE google_id = '%s'",
+                        key);
+            } else {
+                sql = String.format(
+                        "DELETE FROM handledare WHERE användarnamn = '%s'",
+                        key);
+            }
             stmt.executeUpdate(sql);
             conn.close();
+            return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return false;
         }
     }
 
-    public boolean registerHandledare(String användarnamn, String namn, String lösenord, String tfnr, String email) {
+    public boolean registerHandledare(String användarnamn, String namn, String lösenord, String tfnr, String email, int program_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
             String sql = String.format(
                     "INSERT INTO handledare VALUES"
-                    + "(null, '%s','%s','%s','%s','%s')",
-                    namn, användarnamn, email, encrypted_lösenord, tfnr
+                    + "(null, '%s','%s','%s','%s','%s', %d)",
+                    namn, användarnamn, email, encrypted_lösenord, tfnr, program_id
             );
             stmt.executeUpdate(sql);
 

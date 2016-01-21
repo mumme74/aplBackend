@@ -19,26 +19,26 @@ import static org.junit.Assert.*;
  * @author carlkonig
  */
 public class APLManagerTest {
-    
+
     public APLManagerTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
-    
+
     /**
      * Test of registerUser method, of class APLManager.
      */
@@ -46,17 +46,37 @@ public class APLManagerTest {
     public void testRegisterUser() throws Exception {
         System.out.println("registerUser");
         String google_id = "thisisatest";
+        String användarnamn = "thisisatest";
+        String lösenord = "testertesttest";
         String namn = "Tester";
-        int klass = 0;
+        int klass = 1;
         String tfnr = "0768104001";
         String email = "thisisa@test.te";
+        int program_id = 1;
         EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        APLManager instance = (APLManager)container.getContext().lookup("java:global/classes/APLManager");
+        APLManager instance = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
         boolean expResult = true;
         boolean result = instance.registerGoogleUser(google_id, namn, klass, tfnr, email);
         assertEquals(expResult, result);
-        instance.deleteUser(google_id);
+        
+        expResult = true;
+        result = instance.deleteUser(google_id, true);
+        assertEquals(expResult, result);
+        
+        //Testa handledare registrering
+        expResult = true;
+        result = instance.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id);
+        assertEquals(expResult, result);
+        //Logga in som den nya handledaren
+        expResult = true;
+        result = instance.handledarAuth(användarnamn, lösenord);
+        assertEquals(expResult, result);
+        //Ta bort den nya handledaren
+        expResult = true;
+        result = instance.deleteUser(användarnamn, false);
+        assertEquals(expResult, result);
+
         container.close();
     }
-    
+
 }

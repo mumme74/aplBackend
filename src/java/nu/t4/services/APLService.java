@@ -139,8 +139,9 @@ public class APLService {
         String email = jsonObject.getString("email");
         String namn = jsonObject.getString("namn");
         String tfnr = jsonObject.getString("tfnr");
+        int program_id = jsonObject.getInt("program_id");
 
-        if (manager.registerHandledare(användarnamn, namn, lösenord, tfnr, email)) {
+        if (manager.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
@@ -150,7 +151,7 @@ public class APLService {
     @GET
     @Path("klass")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerHandledare() {
+    public Response getKlasser() {
         JsonArray data = manager.getKlasser();
         if (data != null) {
             return Response.ok(data).build();
