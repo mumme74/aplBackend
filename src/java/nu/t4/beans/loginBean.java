@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -22,6 +23,7 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author Daniel Nilsson
  */
 @ManagedBean
+@Named
 @ApplicationScoped
 public class loginBean implements Serializable {
 
@@ -83,7 +85,6 @@ public class loginBean implements Serializable {
     
     public String logout() {
         loggedIn = false;
-        System.out.println("test 1337");
         return "index";
     }
 }

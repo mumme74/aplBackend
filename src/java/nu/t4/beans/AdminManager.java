@@ -7,6 +7,7 @@ package nu.t4.beans;
  */
 import com.mysql.jdbc.Connection;
 import java.io.Serializable;
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -81,11 +82,12 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT namn FROM klass";
+            String sql = "SELECT * FROM klass_program";
             ResultSet data = stmt.executeQuery(sql);
             List classes = new ArrayList();
             while (data.next()) {
-                classes.add(data.getString("namn"));
+                String temp = data.getString("programnamn") + ", " + data.getString("klassnamn");
+                classes.add(temp);
             }
             conn.close();
             return classes;
@@ -98,9 +100,15 @@ public class AdminManager implements Serializable {
     //Tar bort klassen från listan med alla klasser
     public void removeClass(String namn) {
         try {
+            String tempArray[];
+            tempArray = namn.split(", ");
+            
+            
+            
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("DELETE FROM klass WHERE namn ='%s'", namn);
+            String sql = String.format("DELETE FROM klass WHERE namn ='%s'", tempArray[1]);
+            System.out.println(sql);
             stmt.executeUpdate(sql);
             conn.close();
         } catch (Exception e) {
@@ -182,6 +190,8 @@ public class AdminManager implements Serializable {
     public void addProgram() {
         try {
             if (!programnamn.equals("")) {
+                System.out.println(programnamn);
+                programnamn = programnamn.trim();
                 Connection conn = ConnectionFactory.getConnection();
                 Statement stmt = conn.createStatement();
                 String sql = String.format("INSERT INTO program VALUES(NULL, '%s')", programnamn);

@@ -14,9 +14,11 @@
             <p:layout fullPage="true">
 
                 <p:layoutUnit position="north" size="100">
-                    <h:panelGroup>
-                        <h:commandButton value="Logga ut" action="#{loginBean.logout()}"/>
-                    </h:panelGroup>
+                    <h:form>
+                        <h:panelGroup>
+                            <h:commandButton value="Logga ut" action="#{loginBean.logout()}"/>
+                        </h:panelGroup>
+                    </h:form>
                     <br/>
                     <br/>
                     <h:outputLabel value="Klicka på # för att sätta lärarebehörighet på användaren och X för att ta bort behörigheten"/>
