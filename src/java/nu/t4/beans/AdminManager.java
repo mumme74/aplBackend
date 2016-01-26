@@ -8,9 +8,12 @@ package nu.t4.beans;
 import com.mysql.jdbc.Connection;
 import java.io.Serializable;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
@@ -24,6 +27,26 @@ public class AdminManager implements Serializable {
 
     private String klassnamn;
 
+    private String programnamn;
+    
+    private String programIdNamn;
+
+    public String getProgramIdNamn() {
+        return programIdNamn;
+    }
+
+    public void setProgramIdNamn(String programIdNamn) {
+        this.programIdNamn = programIdNamn;
+    }
+
+    public String getProgramnamn() {
+        return programnamn;
+    }
+
+    public void setProgramnamn(String programnamn) {
+        this.programnamn = programnamn;
+    }
+
     public String getKlassnamn() {
         return klassnamn;
     }
@@ -33,21 +56,23 @@ public class AdminManager implements Serializable {
     }
 
     //Lägger till klassen i databasen
-    public String addClass() {
+    public void addClass() {
         try {
-            Connection conn = ConnectionFactory.getConnection();
-            Statement stmt = conn.createStatement();
-            if (!klassnamn.equals("")) {
-                String sql = String.format("INSERT INTO klass VALUES(NULL, '%s')", klassnamn);
+            System.out.println(programIdNamn);
+            int programId = 0;
+            programId = getProgramId(programIdNamn);
+            if (!klassnamn.equals("") && programId != 0) {
+                Connection conn = ConnectionFactory.getConnection();
+                Statement stmt = conn.createStatement();
+                String sql = String.format("INSERT INTO klass VALUES(NULL, '%s', %d)", klassnamn, programId);
                 stmt.executeUpdate(sql);
-                System.out.println(sql);
+                conn.close();
             }
             klassnamn = "";
-            conn.close();
-            return "main";
+            programIdNamn = "Välj klass";
+            
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return "main";
         }
     }
 
@@ -82,9 +107,9 @@ public class AdminManager implements Serializable {
             System.out.println(e.getMessage());
         }
     }
-    
+
     //Hämtar alla användare som inte har lärarbehörighet
-    public List getUsers(){
+    public List getUsers() {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
@@ -107,9 +132,9 @@ public class AdminManager implements Serializable {
             return null;
         }
     }
-    
+
     //Sätter behörigheten som lärare mha deras email
-    public void setBehörighet(String email){
+    public void setBehörighet(String email) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
@@ -120,9 +145,9 @@ public class AdminManager implements Serializable {
             System.out.println(e.getMessage());
         }
     }
-    
+
     //Hämtar alla som har lärarbehörighet
-    public List getLärare(){
+    public List getLärare() {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
@@ -139,9 +164,9 @@ public class AdminManager implements Serializable {
             return null;
         }
     }
-    
+
     //Tar bort behörigheten som lärare mha deras email
-    public void removeBehörighet(String email){
+    public void removeBehörighet(String email) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
@@ -152,5 +177,72 @@ public class AdminManager implements Serializable {
             System.out.println(e.getMessage());
         }
     }
+
+    //Lägger till ett nytt program
+    public void addProgram() {
+        try {
+            if (!programnamn.equals("")) {
+                Connection conn = ConnectionFactory.getConnection();
+                Statement stmt = conn.createStatement();
+                String sql = String.format("INSERT INTO program VALUES(NULL, '%s')", programnamn);
+                stmt.executeUpdate(sql);
+                conn.close();
+            }
+            programnamn = "";
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
     
+    //Hämtar alla program
+    public List getPrograms() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM program";
+            ResultSet data = stmt.executeQuery(sql);
+            List programs = new ArrayList();
+            while (data.next()) {
+                programs.add(data.getString("namn"));
+            }
+            conn.close();
+            return programs;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    //Tar bort programmet
+    public void removeProgram(String namn) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM program WHERE namn ='%s'", namn);
+            stmt.executeUpdate(sql);
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    //Hämtar id på inmatat program
+    public int getProgramId(String namn) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("SELECT id FROM program WHERE namn = '%s'",namn);
+            System.out.println(sql);
+            ResultSet data = stmt.executeQuery(sql);
+            data.next();
+            int programId = data.getInt("id");
+            System.out.println(programId);
+            conn.close();
+            return programId;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
+
 }

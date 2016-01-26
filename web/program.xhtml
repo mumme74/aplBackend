@@ -24,16 +24,36 @@
                 </p:layoutUnit>
 
 
-                <p:layoutUnit position="west" size="242">
+                <p:layoutUnit position="west" size="243">
                     <ui:include src="template/menu.xhtml"/>
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center" size="50%">
-                    
+                    <h:form>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Programmets namn:" for="programnamn"/>
+                            <br/>
+                            <h:inputText value="#{adminManager.programnamn}" 
+                                         id="programnamn" size="35"/>
+                        </h:panelGrid>
+                        <h:panelGroup>
+                            <h:commandButton action="#{adminManager.addProgram()}"
+                                             value="Lägg till" />
+                        </h:panelGroup >
+                    </h:form>
                 </p:layoutUnit>
 
                 <p:layoutUnit position="east" size="50%">
-                    
+                    <h:form>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Klicka på krysset för att radera"/>
+                            <br/>
+                            <c:forEach items="#{adminManager.programs}" var="programsList">
+                                <h:outputText value="${programsList}"/>
+                                <h:commandLink id="info" action="#{adminManager.removeProgram(programsList)}" value="x"/>
+                            </c:forEach>
+                        </h:panelGrid>
+                    </h:form>
                 </p:layoutUnit>
 
             </p:layout>

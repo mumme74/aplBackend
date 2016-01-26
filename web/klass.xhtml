@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
@@ -24,22 +25,31 @@
                 </p:layoutUnit>
 
 
-                <p:layoutUnit position="west" size="242">
+                <p:layoutUnit position="west" size="243">
                     <ui:include src="template/menu.xhtml"/>
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center" size="50%">
                     <h:form>
                         <h:panelGrid columns="2">
-                            <h:outputLabel value="Klassens namn" for="klassnamn"/>
+                            <h:outputLabel value="Klassens namn:" for="klassnamn"/>
+                            <br/>
                             <h:inputText value="#{adminManager.klassnamn}" 
                                          id="klassnamn"/>
+                            <br/>
+                            <h:outputLabel value="Klassens program:" for="programIdNamn"/>
+                            <br/>
+                            <p:selectOneMenu id="programIdNamn" value="#{adminManager.programIdNamn}">
+                                <f:selectItem itemLabel="Välj klass" itemValue="0"/>
+                                <c:forEach items="#{adminManager.programs}" var="programsList">
+                                    <f:selectItem itemLabel="${programsList}" itemValue="${programsList}"/>
+                                </c:forEach>
+                            </p:selectOneMenu>
                         </h:panelGrid>
                         <h:panelGroup>
                             <h:commandButton action="#{adminManager.addClass()}"
                                              value="Lägg till" />
                         </h:panelGroup >
-                        
                     </h:form>
 
                 </p:layoutUnit>
