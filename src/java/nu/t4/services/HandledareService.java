@@ -38,4 +38,19 @@ public class HandledareService {
     }
     
     
+    
+    @EJB
+    @Path("/program")
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProgram(){
+        JsonArray program = elevHandledare.getProgram();
+        if(program != null){
+            return Response.ok(program).build();
+        }else{
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+    }
+    
 }

@@ -9,10 +9,12 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.Iterator;
 import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 
 /**
  *
@@ -42,10 +44,10 @@ public class ElevHandledare {
                         .add("behörighet", false)
                         .build());
             }
-    
+
             conn.close();
             return elever.build();
-          
+
         } catch (Exception e) {
             System.out.println("elevhandledare - getElev()");
             System.out.println(e.getMessage());
@@ -53,6 +55,7 @@ public class ElevHandledare {
         }
 
     }
+
     public JsonArray getHandledare() {
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -69,17 +72,74 @@ public class ElevHandledare {
                         .add("telefonnummer", data.getString("telefonnummer"))
                         .add("email", data.getString("email"))
                         .add("användarnamn", data.getString("användarnamn"))
+                        .add("program_id", data.getInt("program_id"))
+                        .add("företag", data.getString("företag"))
                         .build());
             }
-    
+
             conn.close();
             return handledare.build();
-          
+
         } catch (Exception e) {
             System.out.println("elevhandledare - getHandledare()");
             System.out.println(e.getMessage());
             return null;
         }
-
     }
+
+    public JsonArray getProgram() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = (Statement) conn.createStatement();
+            String sql = "SELECT * FROM handledareprogram";
+            ResultSet data = stmt.executeQuery(sql);
+
+            JsonArrayBuilder program = Json.createArrayBuilder();
+
+            while (data.next()) {
+                program.add(Json.createObjectBuilder()
+                        .add("ID", data.getInt("ID"))
+                        .add("handledare", data.getString("handledare"))
+                        .add("telefonnummer", data.getString("telefonnummer"))
+                        .add("email", data.getString("email"))
+                        .add("namn", data.getString("namn"))//programnamn
+                        .add("foretag", data.getString("företag"))
+                        .build());
+            }
+
+            conn.close();
+            return program.build();
+
+        } catch (Exception e) {
+            System.out.println("elevhandledare - getHandledare()");
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean setElevHandledare(JsonArray array) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = (Statement) conn.createStatement();
+            String sqlbase = "UPDATE skolans_användare SET handledare_ID = %d WHERE ID = %d;";
+            String sql = "";
+            Iterator iterator = array.iterator();
+            while (iterator.hasNext()) {
+                JsonObject item = (JsonObject) iterator.next();
+                int e_id = item.getInt("elev_id");
+                int h_id = item.getInt("handledare_id");
+                sql = String.format(sqlbase, h_id, e_id);
+                stmt.addBatch(sql);
+            }
+            stmt.executeBatch();
+            conn.close();
+            return true;
+
+        } catch (Exception e) {
+            System.out.println("elevhandledare - setElevHandledare()");
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
 }
