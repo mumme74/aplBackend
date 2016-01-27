@@ -22,10 +22,10 @@ import javax.json.JsonValue;
 @Stateless
 public class ProgramManager {
 
-    public JsonArray getPrograms() {
+    public JsonArray getProgram() {
         try {
             Connection conn = ConnectionFactory.getConnection();
-            String sql = "";
+            String sql = String.format("SELECT * FROM program");
             Statement stmt = conn.createStatement();
             ResultSet data = stmt.executeQuery(sql);
 
@@ -35,17 +35,16 @@ public class ProgramManager {
 
                 arrayBuilder.add(
                         Json.createObjectBuilder()
-                        .add("namn","byt ut")
-                        .add("id",1)
+                        .add("id", data.getInt("id"))
+                        .add("namn", data.getString("namn"))
                         .build()
             ) ;
             }
             conn.close();
             return arrayBuilder.build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return null;
         }
-
     }
-
 }
