@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package nu.t4.services;
-
 
 import javax.ejb.EJB;
 import javax.json.JsonArray;
@@ -23,20 +21,19 @@ import org.primefaces.json.JSONArray;
  */
 @Path("program")
 public class ProgramService {
-    
+
     @EJB
     ProgramManager programManager;
-            
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProgram(){
+    public Response getProgram() {
         JsonArray data = programManager.getProgram();
-        if (data != null){
-        return Response.ok(data).build();
-        }else{
-        return Response.status(Response.Status.BAD_REQUEST).build();
-   
+        if (data != null) {
+            return Response.ok(data).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
         }
     }
 }
-
