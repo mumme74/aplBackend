@@ -165,15 +165,15 @@ public class APLManager {
         }
     }
 
-    public boolean registerHandledare(String användarnamn, String namn, String lösenord, String tfnr, String email, int program_id) {
+    public boolean registerHandledare(String användarnamn, String namn, String lösenord, String tfnr, String email, int program_id, String foretag) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
             String sql = String.format(
                     "INSERT INTO handledare VALUES"
-                    + "(null, '%s','%s','%s','%s','%s', %d)",
-                    namn, användarnamn, email, encrypted_lösenord, tfnr, program_id
+                    + "(null, '%s','%s','%s','%s','%s', %d, '%s')",
+                    namn, användarnamn, email, encrypted_lösenord, tfnr, program_id, foretag
             );
             stmt.executeUpdate(sql);
 
@@ -208,17 +208,32 @@ public class APLManager {
         }
     }
 
-    
     public boolean postLogg(int id, String innehall, String datum, int ljus) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
             String sql = String.format("INSERT INTO loggbok VALUES "
-                    + "(null,%d,'%s',%d,'%s',null)",id,innehall,ljus,datum);
+                    + "(null,%d,'%s',%d,'%s',null)", id, innehall, ljus, datum);
             stmt.executeUpdate(sql);
             conn.close();
             return true;
 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    boolean deleteLogg(int id, String datum) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql;
+            sql = String.format("DELETE FROM loggbok WHERE "
+                    + "elev_id = %d AND datum = '%s'", id, datum);
+            stmt.executeUpdate(sql);
+            conn.close();
+            return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;

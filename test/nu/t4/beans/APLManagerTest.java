@@ -79,17 +79,51 @@ public class APLManagerTest {
         String tfnr = "0768104001";
         String email = "thisisa@test.te";
         int program_id = 1;
+        String foretag = "Företag Test";
         EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
         APLManager instance = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
         boolean expResult = true;
         //Testa handledare registrering
-        boolean result = instance.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id);
+        boolean result = instance.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id, foretag);
         assertEquals(expResult, result);
         //Logga in som den nya handledaren
         result = instance.handledarAuth(användarnamn, lösenord);
         assertEquals(expResult, result);
         //Ta bort den nya handledaren
         result = instance.deleteUser(användarnamn, false);
+        assertEquals(expResult, result);
+
+        container.close();
+    }
+    
+    /**
+     * Test att lägga till en loggbok
+     */
+    @Test
+    public void testLoggbok() throws Exception {
+        System.out.println("postLogg");
+        //Indata
+        int id = 1;
+        int ljus = 0;
+        String datum = "2016-01-01";
+        String innehall = "En loggbok skapad av APLManagerTest.java; den borde inte finnas i databasen.";
+
+        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
+        APLManager instance = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
+
+        //Testa att lägga in en ny loggbok
+        boolean expResult = true;
+        boolean result = instance.postLogg(id, innehall, datum, ljus);
+        assertEquals(expResult, result);
+
+        //Testa att lägga in en identisk
+        expResult = false;
+        result = instance.postLogg(id, innehall, datum, ljus);
+        assertEquals(expResult, result);
+
+        //Ta bort den nya loggboken.
+        expResult = true;
+        result = instance.deleteLogg(id, datum);
         assertEquals(expResult, result);
 
         container.close();
