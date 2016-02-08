@@ -104,7 +104,7 @@ public class APLManager {
 
             String anvandarnamn = userPass.substring(0, userPass.indexOf(":"));
             String losenord = userPass.substring(userPass.indexOf(":") + 1, userPass.length());
-            
+
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
@@ -247,6 +247,85 @@ public class APLManager {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;
+        }
+    }
+
+    public int getHandledarId(String basic_auth) {
+        try {
+
+            basic_auth = basic_auth.substring(basic_auth.indexOf(" ") + 1, basic_auth.length());
+
+            byte[] decoded = Base64.getDecoder().decode(basic_auth);
+            String userPass = new String(decoded);
+
+            String anvandarnamn = userPass.substring(0, userPass.indexOf(":"));
+
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format(
+                    "SELECT id FROM handledare WHERE användarnamn = '%s'",
+                    anvandarnamn);
+            ResultSet result = stmt.executeQuery(sql);
+            result.next();
+            int id = result.getInt("id");
+            conn.close();
+            return id;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
+    }
+
+    public JsonArray getAktiviteter(int hid) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("SELECT * FROM aktiviteter "
+                    + "WHERE användar_id = (SELECT id FROM skolans_användare "
+                    + "WHERE handledare_id = %d)", hid);
+            ResultSet data = stmt.executeQuery(sql);
+            JsonArrayBuilder jBuilder = Json.createArrayBuilder();
+
+            while (data.next()) {
+                JsonObjectBuilder obuilder = Json.createObjectBuilder();
+                int typ = data.getInt("typ");
+                obuilder.add("typ", typ);
+                int id = data.getInt("id");
+                obuilder.add("id", id);
+                int elev_id = data.getInt("användar_id");
+                obuilder.add("elev_id", elev_id);
+                String innehall = data.getString("innehåll");
+                if (data.wasNull()) {
+                    obuilder.add("innehall", JsonObject.NULL);
+                } else {
+                    obuilder.add("innehall", innehall);
+                }
+                int trafikljus = data.getInt("trafikljus");
+                if (data.wasNull()) {
+                    obuilder.add("trafikljus", JsonObject.NULL);
+                } else {
+                    obuilder.add("trafikljus", trafikljus);
+                }
+                String datum = data.getString("datum");
+                if (data.wasNull()) {
+                    obuilder.add("datum", JsonObject.NULL);
+                } else {
+                    obuilder.add("datum", datum);
+                }
+                int bild_id = data.getInt("bild_id");
+                if (data.wasNull()) {
+                    obuilder.add("bild_id", JsonObject.NULL);
+                } else {
+                    obuilder.add("bild_id", bild_id);
+                }
+                jBuilder.add(obuilder.build());
+            }
+
+            conn.close();
+            return jBuilder.build();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 
