@@ -223,7 +223,7 @@ public class APLManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
             String sql = String.format("INSERT INTO loggbok VALUES "
-                    + "(null,%d,'%s',%d,'%s',null)", id, innehall, ljus, datum);
+                    + "(null,%d,'%s',%d,'%s',null,0)", id, innehall, ljus, datum);
             stmt.executeUpdate(sql);
             conn.close();
             return true;
