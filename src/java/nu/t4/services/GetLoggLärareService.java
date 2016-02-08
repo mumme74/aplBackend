@@ -35,6 +35,7 @@ public class GetLoggLärareService {
     @Path("/allaLoggar")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLoggar(String body){
+        
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject jsonObject = jsonReader.readObject();

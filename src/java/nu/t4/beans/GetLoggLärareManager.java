@@ -23,12 +23,28 @@ public class GetLoggLärareManager {
             
              Connection conn = ConnectionFactory.getConnection("local");
             Statement stmt = conn.createStatement();
-                     String sql = String.format("SELECT * FROM loggbok WHERE elev_id = %d", elev_id);
+                     String sql = String.format("SELECT loggbok.*, skolans_användare.namn"
+                    + " FROM loggbok, skolans_användare WHERE loggbok.elev_id = "
+                    + "skolans_användare.id AND loggbok.elev_id = %d ORDER BY loggbok.datum DESC", elev_id);
             ResultSet data = stmt.executeQuery(sql);
-            data.next();
+            
+            
+            
             
             JsonArrayBuilder jsonArray = Json.createArrayBuilder();
             while(data.next()){
+                
+                 String stringIntryck ="";
+                int intryck = data.getInt("intryck");
+                if(intryck == 0){
+                    stringIntryck = "dålig";
+                }else if(intryck == 1){
+                    stringIntryck = "sådär";
+                }else if(intryck == 2){
+                    stringIntryck = "bra";
+                }else{
+                    stringIntryck = "FEL";
+                }
                 
                 jsonArray.add(Json.createObjectBuilder()
                         .add("ID", data.getInt("ID"))
