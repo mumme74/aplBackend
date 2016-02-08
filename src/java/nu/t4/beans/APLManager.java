@@ -94,16 +94,26 @@ public class APLManager {
         }
     }
 
-    public boolean handledarAuth(String användarnamn, String lösenord) {
+    public boolean handledarAuth(String basic_auth) {
         try {
+
+            basic_auth = basic_auth.substring(basic_auth.indexOf(" ") + 1, basic_auth.length());
+
+            byte[] decoded = Base64.getDecoder().decode(basic_auth);
+            String userPass = new String(decoded);
+
+            String anvandarnamn = userPass.substring(0, userPass.indexOf(":"));
+            String losenord = userPass.substring(userPass.indexOf(":") + 1, userPass.length());
+            
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "SELECT * FROM handledare WHERE användarnamn = '%s'",
-                    användarnamn);
+                    anvandarnamn);
+            System.out.println(sql);
             ResultSet result = stmt.executeQuery(sql);
             result.next();
-            if (BCrypt.checkpw(lösenord, result.getString("lösenord"))) {
+            if (BCrypt.checkpw(losenord, result.getString("lösenord"))) {
                 conn.close();
                 return true;
             } else {

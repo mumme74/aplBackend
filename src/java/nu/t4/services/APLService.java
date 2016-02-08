@@ -1,5 +1,6 @@
 package nu.t4.services;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -13,6 +14,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
@@ -33,104 +36,40 @@ public class APLService {
     @EJB
     APLManager manager;
 
-    @POST
+    @GET
     @Path("/google/login")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response googleAuth(String body) {
+    public Response googleAuth(@Context HttpHeaders headers) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
 
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject jsonObject = jsonReader.readObject();
-        jsonReader.close();
-
-        String idTokenString = null;
-        try {
-            idTokenString = jsonObject.getString("id");
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        Payload payload = manager.googleAuth(idTokenString);
-        if (payload != null) {
-            JsonObject användare = manager.getGoogleUser(payload.getSubject());
-            int behörighet = -1;
-            if (användare != null) {
-                behörighet = användare.getInt("behörighet");
-            }
-            JsonObject data = Json.createObjectBuilder().add("behorighet", behörighet).build();
-            return Response.ok(data).build();
-        } else {
+        if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        int behörighet = -1;
+        if (user != null) {
+            behörighet = user.getInt("behörighet");
+        }
+        JsonObject data = Json.createObjectBuilder().add("behorighet", behörighet).build();
+        return Response.ok(data).build();
     }
 
-    @POST
+    @GET
     @Path("handledare/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response handledarAuth(String body) {
+    public Response handledarAuth(@Context HttpHeaders headers) {
+        //Kollar att inloggningen är ok
+        String basic_auth = headers.getHeaderString("Authorization");
 
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject jsonObject = jsonReader.readObject();
-        jsonReader.close();
-
-        String användarnamn = null;
-        try {
-            användarnamn = jsonObject.getString("anvandarnamn");
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        String lösenord = jsonObject.getString("losenord");
-        if (manager.handledarAuth(användarnamn, lösenord)) {
+        if (manager.handledarAuth(basic_auth)) {
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-    }
-
-    @POST
-    @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response checkAuth(String body) {
-
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject jsonObject = jsonReader.readObject();
-        jsonReader.close();
-
-        String idTokenString = null;
-        String användarnamn = null;
-        try {
-            idTokenString = jsonObject.getString("id");
-        } catch (Exception e) {
-            try {
-                användarnamn = jsonObject.getString("anvandarnamn");
-            } catch (Exception ee) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
-            }
-        }
-        if (idTokenString != null) {
-            Payload payload = manager.googleAuth(idTokenString);
-            if (payload != null) {
-                JsonObject användare = manager.getGoogleUser(payload.getSubject());
-                if (användare != null) {
-                    return Response.ok(användare.getInt("behörighet")).build();
-                } else {
-                    return Response.status(Response.Status.PRECONDITION_FAILED).build();
-                }
-            } else {
-                return Response.status(Response.Status.UNAUTHORIZED).build();
-            }
-        } else if (användarnamn != null) {
-            String lösenord = jsonObject.getString("losenord");
-            if (manager.handledarAuth(användarnamn, lösenord)) {
-                return Response.ok().build();
-            } else {
-                return Response.status(Response.Status.UNAUTHORIZED).build();
-            }
-        } else {
-            return Response.serverError().build();
         }
     }
 
@@ -172,26 +111,26 @@ public class APLService {
     @POST
     @Path("/handledare")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerHandledare(String body) {
+    public Response registerHandledare(@Context HttpHeaders headers, String body) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
 
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        if (user.getInt("behörighet") != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject jsonObject = jsonReader.readObject();
         jsonReader.close();
 
-        //Ta ut id token för verifiering
-        /* 
-         * TODO: KOLLA OM LÄRAREN ÄR LEGIT
-         *
-        String idTokenString = jsonObject.getString("id");
-
-        Payload payload = manager.googleAuth(idTokenString);
-        if(payload == null)
-        {
-            //ID Token är fel.
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-         */
         String användarnamn = jsonObject.getString("anvandarnamn");
         String lösenord = jsonObject.getString("losenord");
         String email = jsonObject.getString("email");
