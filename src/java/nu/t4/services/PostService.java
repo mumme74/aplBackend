@@ -85,7 +85,7 @@ public class PostService {
         String innehall = logg.getString("innehall");
 
         if (manager.postLogg(id, innehall, datum, ljus)) {
-            return Response.ok().build();
+            return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
         }
