@@ -17,6 +17,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
+import nu.t4.beans.AktivitetManager;
 
 /**
  *
@@ -29,6 +30,8 @@ public class GetService {
     ElevHandledare elevHandledare;
     @EJB
     APLManager manager;
+    @EJB
+    AktivitetManager aktivitetManager;
 
     @GET
     @Path("/elever")
@@ -54,7 +57,6 @@ public class GetService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getHandledare(@Context HttpHeaders headers) {
         //Kollar att inloggningen är ok
-        //TODO: Kolla at det är en lärare
         String idTokenString = headers.getHeaderString("Authorization");
         if (manager.googleAuth(idTokenString) == null) {
 
@@ -81,7 +83,7 @@ public class GetService {
         
         int id = manager.getHandledarId(basic_auth);
 
-        JsonArray aktiviteter = manager.getAktiviteter(id);
+        JsonArray aktiviteter = aktivitetManager.getAktiviteter(id);
         if (aktiviteter != null) {
             return Response.ok(aktiviteter).build();
         } else {
