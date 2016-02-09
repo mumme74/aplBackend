@@ -65,8 +65,27 @@ public class GetService {
         if (handledare != null) {
             return Response.ok(handledare).build();
         } else {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+    @GET
+    @Path("aktiviteter")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAktiviteter(@Context HttpHeaders headers) {
+        String basic_auth = headers.getHeaderString("Authorization");
+
+        if (!manager.handledarAuth(basic_auth)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int id = manager.getHandledarId(basic_auth);
+
+        JsonArray aktiviteter = manager.getAktiviteter(id);
+        if (aktiviteter != null) {
+            return Response.ok(aktiviteter).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
