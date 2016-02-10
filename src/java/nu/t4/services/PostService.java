@@ -13,6 +13,8 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -83,8 +85,14 @@ public class PostService {
         int ljus = logg.getInt("ljus");
         String datum = logg.getString("datum");
         String innehall = logg.getString("innehall");
+        JsonValue bildValue = logg.get("imgUrl");
+        String bild = null;
+        if(bildValue != JsonValue.NULL)
+        {
+            bild = bildValue.toString();
+        }
 
-        if (manager.postLogg(id, innehall, datum, ljus)) {
+        if (manager.postLogg(id, innehall, datum, ljus, bild)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();

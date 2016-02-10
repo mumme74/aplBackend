@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -214,12 +215,18 @@ public class APLManager {
         }
     }
 
-    public boolean postLogg(int id, String innehall, String datum, int ljus) {
+    public boolean postLogg(int id, String innehall, String datum, int ljus, String bild) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
-            String sql = String.format("INSERT INTO loggbok VALUES "
-                    + "(null,%d,'%s',%d,'%s',null,0)", id, innehall, ljus, datum);
+            String sql = "";
+            if (bild != null) {
+                sql = String.format("INSERT INTO loggbok VALUES "
+                        + "(null,%d,'%s',%d,'%s','%s',0)", id, innehall, ljus, datum, bild);
+            } else {
+                sql = String.format("INSERT INTO loggbok VALUES "
+                        + "(null,%d,'%s',%d,'%s',null,0)", id, innehall, ljus, datum);
+            }
             stmt.executeUpdate(sql);
             conn.close();
             return true;
