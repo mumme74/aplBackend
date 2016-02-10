@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -20,9 +22,10 @@ import javax.json.JsonArrayBuilder;
  */
 @Stateless
 public class GetLoggElevManager {
-    public JsonArray getLoggar(int elev_id){
+
+    public JsonArray getLoggar(int elev_id) {
         try {
-            
+
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT loggbok.*, skolans_användare.namn"
@@ -30,31 +33,37 @@ public class GetLoggElevManager {
                     + "skolans_användare.id AND loggbok.elev_id = %d ORDER BY loggbok.datum DESC", elev_id);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jsonArray = Json.createArrayBuilder();
-            while(data.next()){
-                String stringIntryck ="";
+            while (data.next()) {
+                String stringIntryck = "";
                 int intryck = data.getInt("intryck");
-                if(intryck == 0){
+                if (intryck == 0) {
                     stringIntryck = "dålig";
-                }else if(intryck == 1){
+                } else if (intryck == 1) {
                     stringIntryck = "sådär";
-                }else if(intryck == 2){
+                } else if (intryck == 2) {
                     stringIntryck = "bra";
-                }else{
+                } else {
                     stringIntryck = "FEL";
                 }
-                jsonArray.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("ID"))
+                JsonObjectBuilder obuilder = Json.createObjectBuilder();
+                obuilder.add("ID", data.getInt("ID"))
                         .add("elev_id", data.getInt("elev_id"))
                         .add("innehall", data.getString("innehåll"))
                         .add("intryck", stringIntryck)
                         .add("datum", data.getString("datum"))
-                        .add("bild_id", data.getInt("bild_id"))
-                        .add("namn", data.getString("namn"))
-                        .build());
+                        .add("namn", data.getString("namn"));
+                //Hanterar om "bild" är null i databasen
+                String bild = data.getString("bild");
+                if (data.wasNull()) {
+                    obuilder.add("bild", JsonObject.NULL);
+                } else {
+                    obuilder.add("bild", bild);
+                }
+                jsonArray.add(obuilder.build());
             }
             conn.close();
             return jsonArray.build();
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;

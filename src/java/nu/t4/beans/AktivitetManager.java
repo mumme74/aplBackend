@@ -35,6 +35,10 @@ import org.mindrot.jbcrypt.BCrypt;
 @Stateless
 public class AktivitetManager {
 
+    public final int NARVARO = 0;
+    public final int LOGGBOK = 1;
+    public final int MOMENT = 2;
+    
     public JsonArray getAktiviteter(int handledare_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -96,20 +100,17 @@ public class AktivitetManager {
             Statement stmt = conn.createStatement();
             String sql = "";
             switch (typ) {
-                case 0:
-                    //Närvaro
+                case NARVARO:
                     sql = String.format("UPDATE närvaro SET godkänt = %d "
                             + "WHERE närvaro_id = %d AND användar_id = (SELECT id FROM skolans_användare "
                             + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
                     break;
-                case 1:
-                    //Loggbok
+                case LOGGBOK:
                     sql = String.format("UPDATE loggbok SET godkänt = %d "
                             + "WHERE ID = %d AND elev_id = (SELECT id FROM skolans_användare "
                             + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
                     break;
-                case 2:
-                    //Moment
+                case MOMENT:
                     sql = String.format("UPDATE tilldela_moment SET godkänd = %d "
                             + "WHERE moment_id = %d AND användar_id = (SELECT id FROM skolans_användare "
                             + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
@@ -117,7 +118,6 @@ public class AktivitetManager {
                 default:
                     break;
             }
-            System.out.println(sql);
             stmt.executeUpdate(sql);
             conn.close();
             return true;
