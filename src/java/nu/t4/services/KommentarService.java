@@ -33,13 +33,13 @@ import nu.t4.beans.KommentarManager;
  */
 @Path("kommentar")
 public class KommentarService {
-    
+
     @EJB
     APLManager manager;
-    
+
     @EJB
     KommentarManager kommentarManager;
-    
+
     @POST
     @Path("/postKommentar")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -47,7 +47,6 @@ public class KommentarService {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-        System.out.println(idTokenString);
 
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -56,36 +55,36 @@ public class KommentarService {
         if (användare == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-
+        System.out.println(body);
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject kommentarObjekt = jsonReader.readObject();
         jsonReader.close();
-        
-        
+
         //Hämtar användarens id mha den medskickade id_token
         int användar_id = användare.getInt("id");
-        
+
         //Hämtar loggbok_id, innehållet och datum från objektet av indatan
         int loggbok_id = kommentarObjekt.getInt("loggbok_id");
         String innehåll = kommentarObjekt.getString("innehall");
-        String datum = kommentarObjekt.getString("datum");        
-        
+        String datum = kommentarObjekt.getString("datum");
+
         if (kommentarManager.postKommentar(användar_id, loggbok_id, innehåll, datum)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
         }
     }
-    
+
     @POST
     @Path("/getKommentar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getKommentar(@Context HttpHeaders headers, String body){
+    public Response getKommentar(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        System.out.println(body);
 
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -94,15 +93,15 @@ public class KommentarService {
         if (användare == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
+
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject kommentarObjekt = jsonReader.readObject();
         jsonReader.close();
         System.out.println(kommentarObjekt);
-        
+
         int logg_id = kommentarObjekt.getInt("loggbok_id");
-        
+
         JsonArray data = kommentarManager.getKommentar(logg_id);
         if (data != null) {
             return Response.ok(data).build();

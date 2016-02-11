@@ -29,7 +29,7 @@ public class GetLoggElevManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT * FROM loggbokvy WHERE "
-                    + "loggbok.elev_id = %d ORDER BY loggbok.datum DESC", elev_id);
+                    + "loggbokvy.elev_id = %d ORDER BY loggbokvy.datum DESC", elev_id);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jsonArray = Json.createArrayBuilder();
             while (data.next()) {
