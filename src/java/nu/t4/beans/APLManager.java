@@ -43,10 +43,10 @@ public class APLManager {
             Statement stmt = conn.createStatement();
             String sql = String.format(
                     "INSERT INTO skolans_användare VALUES"
-                    + "('%s',null,'%s','%s','%s',%d,1,1,0)",
+                    + "('%s',null,'%s','%s','%s',%d,null,1,0)",
                     googleID, namn, tfnr, email, klass
             );
-            stmt.executeUpdate(sql);
+            stmt.execute(sql);
 
             conn.close();
             return true;
