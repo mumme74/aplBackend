@@ -5,6 +5,7 @@
  */
 package nu.t4.beans;
 
+import java.util.Base64;
 import javax.ejb.embeddable.EJBContainer;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -49,28 +50,27 @@ public class ElevHandledareTest {
     @Test
     public void testElevHandledareKoppling() throws Exception {
         System.out.println("setElevHandledare");
-        
+
         EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        ElevHandledare instance = (ElevHandledare) container.getContext().lookup("java:global/classes/ElevHandledare");
+        ElevHandledare elevHandledare = (ElevHandledare) container.getContext().lookup("java:global/classes/ElevHandledare");
+        APLManager aplManager = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
         //Hämta en elev att testa på
-        JsonArray elever = instance.getElev();
-        JsonObject elev = (JsonObject)elever.get(0);
+        JsonArray elever = elevHandledare.getElev();
+        JsonObject elev = (JsonObject) elever.get(0);
         int originellaHandledaren = elev.getInt("handledare_ID");
         int targetElev = elev.getInt("ID");
-        //Hämta en handledare
-        JsonArray handledare = instance.getHandledare();
-        JsonObject handledaren;
-        int nyaHandledaren = -1;
-        while(handledare.iterator().hasNext())
-        {
-            handledaren = (JsonObject)handledare.iterator().next();
-            if(handledaren.getInt("ID") != originellaHandledaren)
-            {
-                nyaHandledaren = handledaren.getInt("ID");
-                break;
-            }
-        }
-        assertNotEquals(nyaHandledaren, -1);
+
+        //skapa en ny handledare att byta till
+        String användarnamn = "testHandledare";
+        String lösenord = "testPass";
+        
+        boolean expResult = true;
+        boolean result = aplManager.registerHandledare(användarnamn, "DELETE ME", lösenord, "0987667", "test@test.se", 1, "Test Inc");
+        assertEquals(expResult, result);
+
+        byte[] byteArray = (användarnamn + ":" + lösenord).getBytes();
+        String basic_auth = "Basic " + Base64.getEncoder().encodeToString(byteArray);
+        int nyaHandledaren = aplManager.getHandledarId(basic_auth);
         
         //Testa att byta handledare
         JsonArrayBuilder abuilder = Json.createArrayBuilder();
@@ -80,9 +80,10 @@ public class ElevHandledareTest {
                 .add("handledare_id", nyaHandledaren).build()
         );
         JsonArray data = abuilder.build();
-        
-        boolean expResult = true;
-        boolean result = instance.setElevHandledare(data);
+
+        System.out.println(targetElev);
+        System.out.println(nyaHandledaren);
+        result = elevHandledare.setElevHandledare(data);
         assertEquals(expResult, result);
 
         //Byt tillbaka
@@ -91,9 +92,13 @@ public class ElevHandledareTest {
                 .add("handledare_id", originellaHandledaren).build()
         );
         data = abuilder.build();
-        
+
         expResult = true;
-        result = instance.setElevHandledare(data);
+        result = elevHandledare.setElevHandledare(data);
+        assertEquals(expResult, result);
+        
+        //Ta bort den nya handledaren
+        result = aplManager.deleteUser(användarnamn, false);
         assertEquals(expResult, result);
 
         container.close();

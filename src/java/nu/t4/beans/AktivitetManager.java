@@ -77,11 +77,11 @@ public class AktivitetManager {
                 } else {
                     obuilder.add("datum", datum);
                 }
-                int bild_id = data.getInt("bild_id");
+                String bild = data.getString("bild");
                 if (data.wasNull()) {
-                    obuilder.add("bild_id", JsonObject.NULL);
+                    obuilder.add("bild", JsonObject.NULL);
                 } else {
-                    obuilder.add("bild_id", bild_id);
+                    obuilder.add("bild", bild);
                 }
                 jBuilder.add(obuilder.build());
             }
