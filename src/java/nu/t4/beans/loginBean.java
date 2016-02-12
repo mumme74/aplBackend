@@ -19,7 +19,7 @@ import org.mindrot.jbcrypt.BCrypt;
 @ManagedBean
 @Named
 @ApplicationScoped
-public class LoginBean implements Serializable {
+public class loginBean implements Serializable {
 
     private String username;
 
