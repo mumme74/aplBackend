@@ -32,11 +32,16 @@ public class ApplicationConfig extends Application {
         resources.add(nu.t4.filters.CORSFilter.class);
         resources.add(nu.t4.services.APLService.class);
         resources.add(nu.t4.services.ElevService.class);
+        resources.add(nu.t4.services.GetLoggElevService.class);
+        resources.add(nu.t4.services.GetLoggLärareService.class);
         resources.add(nu.t4.services.GetService.class);
         resources.add(nu.t4.services.HandledareService.class);
+        resources.add(nu.t4.services.KommentarService.class);
+        resources.add(nu.t4.services.MomentService.class);
         resources.add(nu.t4.services.NarvaroService.class);
         resources.add(nu.t4.services.PostService.class);
         resources.add(nu.t4.services.ProgramService.class);
+        resources.add(nu.t4.services.lärareKontaktService.class);
     }
     
 }
