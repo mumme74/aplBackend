@@ -27,7 +27,7 @@ public class ElevMomentManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
             String sql = String.format(
-                    "SELECT moment.innehåll, tilldela_moment.godkänd "
+                    "SELECT moment.innehåll, tilldela_moment.godkänd, tilldela_moment.moment_id "
                    +"FROM moment, tilldela_moment "
                    +"WHERE moment.id = tilldela_moment.moment_id AND tilldela_moment.användar_id =%d",id
             );
@@ -40,6 +40,7 @@ public class ElevMomentManager {
                 elever.add(Json.createObjectBuilder()
                         .add("innehall", data.getString("innehåll"))
                         .add("godkand", data.getInt("godkänd"))
+                        .add("moment_id", data.getInt("moment_id"))
                         .build());
             }
 
@@ -90,13 +91,13 @@ public class ElevMomentManager {
     
     
     
-    public boolean skickaMomentTillHandledare(int id) {
+    public boolean skickaMomentTillHandledare(int moment_id, int användar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
-            String sqlbase = String.format("UPDATE moment SET godkänt = 1 WHERE ID = %d", id);
-            String sql = "";
-            stmt.executeBatch();
+            String sql = String.format("UPDATE tilldela_moment SET godkänd = 1 "
+                    + "WHERE moment_id = %d AND användar_id = %d", moment_id, användar_id);
+            stmt.executeUpdate(sql);
             conn.close();
             return true;
 

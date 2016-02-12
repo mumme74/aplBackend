@@ -83,15 +83,25 @@ public class MomentService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response skickaMomentTillHandledare(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
 
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject elev = manager.getGoogleUser(payload.getSubject());
+        if (elev == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
         jsonReader.close();
 
-        int id = object.getInt("id");
+        int moment_id = object.getInt("id");
+        int användar_id = elev.getInt("id");
 
-        if (momentManager.skickaMomentTillHandledare(id)) {
+        if (momentManager.skickaMomentTillHandledare(moment_id, användar_id)) {
             return Response.ok().build();
         } else {
             return Response.serverError().build();
