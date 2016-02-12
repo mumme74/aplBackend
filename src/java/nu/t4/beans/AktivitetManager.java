@@ -5,28 +5,15 @@
  */
 package nu.t4.beans;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -36,16 +23,29 @@ import org.mindrot.jbcrypt.BCrypt;
 public class AktivitetManager {
 
     public final int NARVARO = 0;
+    public final int HANDLEDARE = 0;
     public final int LOGGBOK = 1;
+    public final int NEKADE = 1;
     public final int MOMENT = 2;
-    
-    public JsonArray getAktiviteter(int handledare_id) {
+
+    public JsonArray getAktiviteter(int anv_id, int tabell) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT * FROM aktiviteter "
-                    + "WHERE användar_id = (SELECT id FROM skolans_användare "
-                    + "WHERE handledare_id = %d)", handledare_id);
+            String sql = "";
+            switch (tabell) {
+                case HANDLEDARE:
+                    sql = String.format("SELECT * FROM aktiviteter "
+                            + "WHERE användar_id = (SELECT id FROM skolans_användare "
+                            + "WHERE handledare_id = %d)", anv_id);
+                    break;
+                case NEKADE:
+                    sql = String.format("SELECT * FROM nekade_aktiviteter "
+                            + "WHERE användar_id = %d", anv_id);
+                    break;
+                default:
+                    break;
+            }
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
 
@@ -111,9 +111,40 @@ public class AktivitetManager {
                             + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
                     break;
                 case MOMENT:
+                    godkant++;
                     sql = String.format("UPDATE tilldela_moment SET godkänd = %d "
                             + "WHERE moment_id = %d AND användar_id = (SELECT id FROM skolans_användare "
                             + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
+                    break;
+                default:
+                    break;
+            }
+            stmt.executeUpdate(sql);
+            conn.close();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean uppdateraElevAktivitet(int typ, int aktivitets_id, int elev_id, int trafikljus, String innehall) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "";
+            switch (typ) {
+                case NARVARO:
+                    sql = String.format("UPDATE närvaro SET godkänt = 0, trafikljus = %d "
+                            + "WHERE närvaro_id = %d AND användar_id = %d", trafikljus, aktivitets_id, elev_id);
+                    break;
+                case LOGGBOK:
+                    sql = String.format("UPDATE loggbok SET godkänt = 0, innehåll = '%s'"
+                            + "WHERE ID = %d AND elev_id = %d", innehall, aktivitets_id, elev_id);
+                    break;
+                case MOMENT:
+                    sql = String.format("UPDATE tilldela_moment SET godkänd = 0 "
+                            + "WHERE moment_id = %d AND användar_id = %d", aktivitets_id, elev_id);
                     break;
                 default:
                     break;
