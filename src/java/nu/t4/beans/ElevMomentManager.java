@@ -27,9 +27,9 @@ public class ElevMomentManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
             String sql = String.format(
-                    "SELECT moment.innehåll, tilldela_moment.godkänd"
-                   +"FROM moment, tilldela_moment"
-                   +"WHERE moment.id = tilldela_moment.moment_id AND användar_id =%d",id
+                    "SELECT moment.innehåll, tilldela_moment.godkänd "
+                   +"FROM moment, tilldela_moment "
+                   +"WHERE moment.id = tilldela_moment.moment_id AND tilldela_moment.användar_id =%d",id
             );
             
             ResultSet data = stmt.executeQuery(sql);
@@ -39,7 +39,7 @@ public class ElevMomentManager {
             while (data.next()) {
                 elever.add(Json.createObjectBuilder()
                         .add("innehall", data.getString("innehåll"))
-                        .add("godkant", data.getInt("godkänt"))
+                        .add("godkand", data.getInt("godkänd"))
                         .build());
             }
 

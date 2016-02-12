@@ -67,6 +67,7 @@ public class MomentService {
 
 
     @GET
+    @Path("/handledare")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMomentPerHandledare() {
         JsonArray moment = momentManager.getMomentPerHandledare();
