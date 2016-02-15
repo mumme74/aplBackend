@@ -5,7 +5,6 @@
  */
 package nu.t4.beans;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -19,32 +18,30 @@ import javax.json.JsonArrayBuilder;
  * @author Daniel Nilsson
  */
 @Stateless
-public class ElevKontaktManager {
+public class HLKontaktManager {
 
-    public JsonArray getElevKontakt(int elev_id) {
+    public JsonArray getHLKontakt(int hl_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT hlnamn AS namn, hlmail AS mail, "
-                    + "hlnr AS tfnr FROM hlkontakt "
-                    + "WHERE hlkontakt.ID = (SELECT handledare_ID FROM skolans_användare WHERE ID = %d) "
+            String sql = String.format("SELECT namn, email AS mail, telefonnummer AS tfnr FROM elevkontakt "
+                    + "WHERE elevkontakt.ID = (SELECT ID FROM skolans_användare WHERE handledare_ID = %d) "
                     + "UNION "
                     + "SELECT lärarnamn AS namn, lärarmail AS mail, lärarnr AS tfnr FROM lärarekontakt "
-                    + "WHERE klass = "
-                    + "(SELECT klass FROM skolans_användare WHERE ID = %d)",
-                    elev_id, elev_id);
+                    + "WHERE klass = (SELECT klass FROM skolans_användare WHERE handledare_ID = %d)",
+                    hl_id, hl_id);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
-            
-            while(data.next()){
+
+            while (data.next()) {
                 jBuilder.add(Json.createObjectBuilder()
                         .add("namn", data.getString("namn"))
-                        .add("mail",data.getString("mail"))
+                        .add("mail", data.getString("mail"))
                         .add("tfnr", data.getString("tfnr"))
                         .build()
                 );
             }
-            
+
             conn.close();
             return jBuilder.build();
         } catch (Exception e) {
@@ -53,3 +50,4 @@ public class ElevKontaktManager {
         }
     }
 }
+

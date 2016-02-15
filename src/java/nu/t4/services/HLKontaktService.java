@@ -17,43 +17,42 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
-import nu.t4.beans.ElevKontaktManager;
+import nu.t4.beans.HLKontaktManager;
 
 /**
  *
  * @author Daniel Nilsson
  */
-@Path("elev")
-public class ElevKontaktService {
-
+@Path("handledare")
+public class HLKontaktService {
     @EJB
     APLManager manager;
-
+    
     @EJB
-    ElevKontaktManager elevManager;
-
-    @GET
+    HLKontaktManager hlManager;
+    
     @Path("/kontakt")
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getElevKontakt(@Context HttpHeaders headers) {
+    public Response getHLKontakt(@Context HttpHeaders headers){
         //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-        if (payload == null) {
+        String basic_auth = headers.getHeaderString("Authorization");
+        
+        if (!manager.handledarAuth(basic_auth)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
-
+        int hl_id = manager.getHandledarId(basic_auth);
+        
+        if (hl_id == -1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int användar_id = användare.getInt("id");
 
-        JsonArray data = elevManager.getElevKontakt(användar_id);
+        JsonArray data = hlManager.getHLKontakt(hl_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {
             return Response.serverError().build();
         }
+        
     }
 }
