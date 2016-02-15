@@ -26,10 +26,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
 import nu.t4.beans.AktivitetManager;
+import nu.t4.beans.ElevManager;
 
 /**
  *
  * @author maikwagner
+ * @author Daniel Lundberg
  */
 @Path("elev")
 public class ElevService {
@@ -40,6 +42,8 @@ public class ElevService {
     APLManager manager;
     @EJB
     AktivitetManager aktivitetManager;
+    @EJB
+    ElevManager elevManager;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -99,5 +103,24 @@ public class ElevService {
             return Response.serverError().build();
         }
     }
+    
+    @GET
+    @Path("/klass/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getElevFramKlass(@Context HttpHeaders headers, @PathParam("id") int id){
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.ok(elevManager.getElevFranKlass(id)).build();
+    }
+    
 
 }
