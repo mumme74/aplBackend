@@ -87,12 +87,13 @@ public class MomentManager {
             try {
             Connection conn = ConnectionFactory.getConnection();
             String sql = String.format("INSERT INTO tilldela_moment VALUES(%d,%d,0);", elev_id, moment_id);
+                System.out.println(sql);
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
             conn.close();
             return true;
         } catch (Exception e) {
-            System.out.println("Error from MomentManager:skapaMoment: " + e.getMessage());
+            System.out.println("Error from MomentManager:kopplaElev_Moment: " + e.getMessage());
             return false;
         }
     }
@@ -109,6 +110,7 @@ public class MomentManager {
             List<Integer> elev_ids = new ArrayList<>();
             Connection conn = ConnectionFactory.getConnection();
             String sql = String.format("SELECT ID FROM aplapp.skolans_användare WHERE klass=%d AND behörighet = 0", klass_id);
+            System.out.println(sql);
             Statement stmt = conn.createStatement();
             ResultSet data = stmt.executeQuery(sql);
             while(data.next()){
@@ -116,11 +118,12 @@ public class MomentManager {
             }
             conn.close();
             for(int elev_id: elev_ids){
+                System.out.println(String.format("Elev_ID : %d, Moment_ID: %d",elev_id,moment_id));
                 kopplaElev_Moment(elev_id, moment_id);
             }
             return true;
         } catch (Exception e) {
-            System.out.println("Error from MomentManager:skapaMoment: " + e.getMessage());
+            System.out.println("Error from MomentManager:koplaKlass: " + e.getMessage());
             return false;
         }
     }
