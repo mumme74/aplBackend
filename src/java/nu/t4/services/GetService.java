@@ -9,6 +9,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import nu.t4.beans.ElevHandledare;
 import javax.ejb.EJB;
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -80,10 +81,38 @@ public class GetService {
         if (!manager.handledarAuth(basic_auth)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
-        int id = manager.getHandledarId(basic_auth);
 
-        JsonArray aktiviteter = aktivitetManager.getAktiviteter(id);
+        int id = manager.getHandledarId(basic_auth);
+        int HANDLEDARE = 0;
+        
+        JsonArray aktiviteter = aktivitetManager.getAktiviteter(id, HANDLEDARE);
+        if (aktiviteter != null) {
+            return Response.ok(aktiviteter).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path("nekade_aktiviteter")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getNekadeAktiviteter(@Context HttpHeaders headers) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject elev = manager.getGoogleUser(payload.getSubject());
+        if (elev == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        int id = elev.getInt("id");
+        int NEKADE = 1;
+
+        JsonArray aktiviteter = aktivitetManager.getAktiviteter(id, NEKADE);
         if (aktiviteter != null) {
             return Response.ok(aktiviteter).build();
         } else {
