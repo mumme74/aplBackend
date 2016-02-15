@@ -172,7 +172,7 @@ public class MomentService {
         jsonReader.close();
 
         if (momentManager.skapaMoment(user.getInt("id"),object.getString("beskrivning"))){
-            return Response.status(201).build();
+            return Response.status(201).build(); 
         }else{
             return Response.status(400).build();
         }
@@ -180,7 +180,7 @@ public class MomentService {
     }
     
     @POST
-    @Path("elev_moment/{elev_id}/{moment_id}")
+    @Path("elev_moment/")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response kopplaMomentElev(@Context HttpHeaders headers, String body){
         //Kollar att inloggningen är ok
@@ -208,7 +208,7 @@ public class MomentService {
     }
     
      @POST
-    @Path("klass_moment/{elev_id}/{moment_id}")
+    @Path("klass_moment/")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response kopplaMomentKlass(@Context HttpHeaders headers, String body){
         //Kollar att inloggningen är ok
