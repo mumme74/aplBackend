@@ -146,7 +146,9 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("UPDATE skolans_användare SET behörighet = 1 WHERE email ='%s'", email);
+            String sql = String.format("UPDATE skolans_användare SET "
+                    + "behörighet = 1, handledare_ID = NULL WHERE email ='%s'",
+                    email);
             stmt.executeUpdate(sql);
             conn.close();
         } catch (Exception e) {
