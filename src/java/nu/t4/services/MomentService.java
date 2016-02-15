@@ -16,6 +16,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -23,16 +24,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
 import nu.t4.beans.ElevMomentManager;
+import nu.t4.beans.MomentManager;
 
 /**
  *
  * @author maikwagner
+ * @author Daniel Lundberg
  */
 @Path("moment")
 public class MomentService {
 
     @EJB
-    ElevMomentManager momentManager;
+    ElevMomentManager elevMomentManager;
+    
+    @EJB
+    MomentManager momentManager;
 
     @EJB
     APLManager manager;
@@ -56,7 +62,7 @@ public class MomentService {
         }
         int användar_id = elev.getInt("id");
 
-        JsonArray moment = momentManager.getMomentElev(användar_id);
+        JsonArray moment = elevMomentManager.getMomentElev(användar_id);
         if (moment != null) {
             return Response.ok(moment).build();
         } else {
@@ -70,7 +76,7 @@ public class MomentService {
     @Path("/handledare")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMomentPerHandledare() {
-        JsonArray moment = momentManager.getMomentPerHandledare();
+        JsonArray moment = elevMomentManager.getMomentPerHandledare();
         if (moment != null) {
             return Response.ok(moment).build();
         } else {
@@ -101,7 +107,7 @@ public class MomentService {
         int moment_id = object.getInt("id");
         int användar_id = elev.getInt("id");
 
-        if (momentManager.skickaMomentTillHandledare(moment_id, användar_id)) {
+        if (elevMomentManager.skickaMomentTillHandledare(moment_id, användar_id)) {
             return Response.ok().build();
         } else {
             return Response.serverError().build();
@@ -121,11 +127,112 @@ public class MomentService {
 
         int id = object.getInt("id");
 
-        if (momentManager.skickaMomentTillElev(id)) {
+        if (elevMomentManager.skickaMomentTillElev(id)) {
             return Response.ok().build();
         } else {
             return Response.serverError().build();
         }
+    }
+  
+    @GET
+    @Path("elev/{id}")
+     @Produces(MediaType.APPLICATION_JSON)
+    public Response visaElevsMoment(@Context HttpHeaders headers, @PathParam("id") int id){
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.ok(momentManager.seMoment(id)).build();
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response skapaMoment(@Context HttpHeaders headers, String body){
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject object = jsonReader.readObject();
+        jsonReader.close();
+
+        if (momentManager.skapaMoment(user.getInt("id"),object.getString("beskrivning"))){
+            return Response.status(201).build();
+        }else{
+            return Response.status(400).build();
+        }
+       
+    }
+    
+    @POST
+    @Path("elev_moment/{elev_id}/{moment_id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response kopplaMomentElev(@Context HttpHeaders headers, String body){
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject object = jsonReader.readObject();
+        jsonReader.close();
+
+        if (momentManager.kopplaElev_Moment(object.getInt("elev_id"),object.getInt("moment_id"))){
+            return Response.status(201).build();
+        }else{
+            return Response.status(400).build();
+        }
+       
+    }
+    
+     @POST
+    @Path("klass_moment/{elev_id}/{moment_id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response kopplaMomentKlass(@Context HttpHeaders headers, String body){
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject object = jsonReader.readObject();
+        jsonReader.close();
+
+        if (momentManager.kopplaKlass_Moment(object.getInt("klass_id"),object.getInt("moment_id"))){
+            return Response.status(201).build();
+        }else{
+            return Response.status(400).build();
+        }
+       
     }
 
 }
