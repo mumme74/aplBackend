@@ -39,9 +39,6 @@ public class GetLoggElevService {
         
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
-        System.out.println("Före############################");
-        System.out.println(idTokenString);
-        System.out.println("Efter############################");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
