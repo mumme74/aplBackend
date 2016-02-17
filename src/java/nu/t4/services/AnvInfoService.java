@@ -95,7 +95,7 @@ public class AnvInfoService {
     @Path("/getHL")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getHandledare(@Context HttpHeaders headers, String body){
+    public Response getHandledare(@Context HttpHeaders headers){
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
@@ -103,12 +103,12 @@ public class AnvInfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject elevObjekt = jsonReader.readObject();
-        jsonReader.close();
+        JsonObject användare = manager.getGoogleUser(payload.getSubject());
+        if (användare == null) {
 
-        int klass = elevObjekt.getInt("klass");
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int klass = användare.getInt("klass");
         
         JsonArray data = infoManager.getHandledare(klass);
         if (data != null) {
