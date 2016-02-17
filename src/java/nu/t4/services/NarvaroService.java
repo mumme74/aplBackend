@@ -46,7 +46,7 @@ public class NarvaroService {
         if(narvaro != null){
             return Response.ok(narvaro).build();
         }else{
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+            return Response.serverError().build();
         }
     }
     
@@ -81,5 +81,29 @@ public class NarvaroService {
         }
     }
     
+    @GET
+    @Path("/godkand")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGodkandNarvaro(@Context HttpHeaders headers) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = aplManager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject larare = aplManager.getGoogleUser(payload.getSubject());
+        if (larare == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int larare_id = larare.getInt("id");
+        
+        JsonArray narvaro = narvaroManager.getGodkandNarvaro(larare_id);
+        if(narvaro != null){
+            return Response.ok(narvaro).build();
+        }else{
+            return Response.serverError().build();
+        }
+    }
     
 }
