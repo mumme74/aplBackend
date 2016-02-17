@@ -13,6 +13,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -91,9 +92,8 @@ public class AnvInfoService {
         }
     }
     
-    @POST
+    @GET
     @Path("/getHL")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getHandledare(@Context HttpHeaders headers){
         //Kollar att inloggningen är ok
