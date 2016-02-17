@@ -26,7 +26,7 @@ public class LarareEleverManager {
         try {
             Connection conn = ConnectionFactory.getConnection("");
             Statement stmt = conn.createStatement();
-            String sql = "SELECT namn, ID FROM skolans_användare WHERE klass = " + klass_id;
+            String sql = "SELECT namn, ID FROM skolans_användare WHERE behörighet= 0 AND klass = " + klass_id;
             ResultSet data = stmt.executeQuery(sql);
             System.out.println(sql);
 
