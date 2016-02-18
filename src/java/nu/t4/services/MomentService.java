@@ -134,14 +134,17 @@ public class MomentService {
         }
     }
   
-    @GET
-    @Path("elev/{id}")
+    @POST
+    @Path("/elev") 
      @Produces(MediaType.APPLICATION_JSON)
-    public Response visaElevsMoment(@Context HttpHeaders headers, @PathParam("id") int id){
-        //Kollar att inloggningen är ok
+    public Response visaElevsMoment(@Context HttpHeaders headers, String body){
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject object = jsonReader.readObject();
+        jsonReader.close();
+        //Kol   lar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-
+            int id = object.getInt("elev_id");
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
