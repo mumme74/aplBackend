@@ -59,6 +59,10 @@
                                                itemLabel="#{handledaren.email}" />
                             </p:selectOneMenu>
                         </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <p:commandButton title="Spara" action="#{adminManager.sparaSkAnv()}"></p:commandButton>
+                            <p:commandButton title="Avbryt" action="redigeraSkAnvStart"></p:commandButton>
+                        </h:panelGrid>
                     </h:form>
 
                 </p:layoutUnit>                  

@@ -12,6 +12,38 @@ package nu.t4.beans;
 public class Users {
 
     private int id;
+
+    public String getFöretag() {
+        return företag;
+    }
+
+    public void setFöretag(String företag) {
+        this.företag = företag;
+    }
+
+    public int getProgram_id() {
+        return program_id;
+    }
+
+    public void setProgram_id(int program_id) {
+        this.program_id = program_id;
+    }
+
+    public String getAnvnamn() {
+        return anvnamn;
+    }
+
+    public void setAnvnamn(String anvnamn) {
+        this.anvnamn = anvnamn;
+    }
+
+    public String getLösenord() {
+        return lösenord;
+    }
+
+    public void setLösenord(String lösenord) {
+        this.lösenord = lösenord;
+    }
     private String namn;
     private String tfnr;
     private String email;
