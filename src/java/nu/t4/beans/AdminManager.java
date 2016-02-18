@@ -31,6 +31,22 @@ public class AdminManager implements Serializable {
     private String programnamn;
     
     private String programIdNamn;
+    
+    private List filteredUsers;
+    
+    private List filteredLärare;
+
+    public List getFilteredLärare() {
+        return filteredLärare;
+    }
+
+    public void setFilteredLärare(List filteredLärare) {
+        this.filteredLärare = filteredLärare;
+    }
+
+    public void setFilteredUsers(List filteredUsers) {
+        this.filteredUsers = filteredUsers;
+    }
 
     public String getProgramIdNamn() {
         return programIdNamn;
@@ -54,6 +70,10 @@ public class AdminManager implements Serializable {
 
     public void setKlassnamn(String klassnamn) {
         this.klassnamn = klassnamn;
+    }
+    
+    public List getFilteredUsers() {
+        return filteredUsers;
     }
 
     //Lägger till klassen i databasen
@@ -177,6 +197,7 @@ public class AdminManager implements Serializable {
 
     //Tar bort behörigheten som lärare mha deras email
     public void removeBehörighet(String email) {
+        System.out.println("removing" + email);
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();

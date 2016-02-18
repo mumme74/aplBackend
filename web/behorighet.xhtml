@@ -36,14 +36,16 @@
                 <p:layoutUnit position="center" size="50%">
                     <h:panelGrid columns="2">
                         <h:form>
-                            <h:panelGrid columns="2">
-                                <h:outputLabel value="Användare utan behörighet"/>
-                                <br/>
-                                <c:forEach items="#{adminManager.users}" var="usersList">
-                                    <h:outputText value="${usersList}"/>
-                                    <h:commandLink id="info" action="#{adminManager.setBehörighet(usersList)}" value="#"/>
-                                </c:forEach>
-                            </h:panelGrid>
+                            <h:outputLabel value="Användare utan behörighet"/>
+                            <br/>
+                            <p:dataTable var="usersList" value='#{adminManager.users}' filteredValue="#{adminManager.filteredUsers}">
+                                <p:column filterBy="#{usersList}" headerText="Sök" filterMatchMode="contains">
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="#{usersList}" />
+                                        <h:commandLink id="info" action="#{adminManager.setBehörighet(usersList)}" value="#"/>
+                                    </h:panelGrid>
+                                </p:column>
+                            </p:dataTable>
                         </h:form>
                     </h:panelGrid>
                 </p:layoutUnit>
@@ -53,10 +55,14 @@
                         <h:panelGrid columns="2">
                             <h:outputLabel value="Användare med behörighet"/>
                             <br/>
-                            <c:forEach items="#{adminManager.lärare}" var="lärareList">
-                                <h:outputText value="${lärareList}"/>
-                                <h:commandLink id="info" action="#{adminManager.removeBehörighet(lärareList)}" value="X"/>
-                            </c:forEach>
+                            <p:dataTable var="lärareList" value='#{adminManager.lärare}' filteredValue="#{adminManager.filteredLärare}">
+                                <p:column filterBy="#{lärareList}" headerText="Sök" filterMatchMode="contains">
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="#{lärareList}" />
+                                        <h:commandLink id="info" action="#{adminManager.removeBehörighet(lärareList)}" value="X"/>
+                                    </h:panelGrid>
+                                </p:column>
+                            </p:dataTable>
                         </h:panelGrid>
                     </h:form>
                 </p:layoutUnit>
