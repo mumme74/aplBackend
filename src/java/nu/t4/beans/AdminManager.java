@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.xml.registry.infomodel.User;
+import nu.t4.beans.Users;
 
 /**
  *
@@ -27,14 +29,25 @@ import javax.faces.bean.ManagedBean;
 public class AdminManager implements Serializable {
 
     private String klassnamn;
-
     private String programnamn;
-    
     private String programIdNamn;
-    
     private List filteredUsers;
-    
     private List filteredLärare;
+    private Users selectedUser;
+
+    public Users getSelectedUser() {
+        return selectedUser;
+    }
+
+    public void setSelectedUser(Users selectedUser) {
+        this.selectedUser = selectedUser;
+    }
+
+    public String redigera(Users temp) {
+        selectedUser = temp;
+        System.out.println(selectedUser.getNamn());
+        return "redigeraAnv";
+    }
 
     public List getFilteredLärare() {
         return filteredLärare;
@@ -71,7 +84,7 @@ public class AdminManager implements Serializable {
     public void setKlassnamn(String klassnamn) {
         this.klassnamn = klassnamn;
     }
-    
+
     public List getFilteredUsers() {
         return filteredUsers;
     }
@@ -91,7 +104,7 @@ public class AdminManager implements Serializable {
             }
             klassnamn = "";
             programIdNamn = "Välj klass";
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -122,9 +135,7 @@ public class AdminManager implements Serializable {
         try {
             String tempArray[];
             tempArray = namn.split(", ");
-            
-            
-            
+
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("DELETE FROM klass WHERE namn ='%s'", tempArray[1]);
@@ -226,7 +237,7 @@ public class AdminManager implements Serializable {
             System.out.println(ex.getMessage());
         }
     }
-    
+
     //Hämtar alla program
     public List getPrograms() {
         try {
@@ -258,13 +269,13 @@ public class AdminManager implements Serializable {
             System.out.println(e.getMessage());
         }
     }
-    
+
     //Hämtar id på inmatat program
     public int getProgramId(String namn) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT id FROM program WHERE namn = '%s'",namn);
+            String sql = String.format("SELECT id FROM program WHERE namn = '%s'", namn);
             System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
             data.next();
@@ -275,6 +286,31 @@ public class AdminManager implements Serializable {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return 0;
+        }
+    }
+
+    public List getSkolansAnvändare() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM skolans_användare";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> skolans_användare = new ArrayList();
+            while (data.next()) {
+                Users temp = new Users();
+                temp.setId(data.getInt("ID"));
+                temp.setNamn(data.getString("namn"));
+                temp.setTfnr(data.getString("Telefonnummer"));
+                temp.setEmail(data.getString("email"));
+                temp.setHl_id(data.getInt("handledare_ID"));
+                temp.setBehörighet(data.getInt("behörighet"));
+                skolans_användare.add(temp);
+            }
+            conn.close();
+            return skolans_användare;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 

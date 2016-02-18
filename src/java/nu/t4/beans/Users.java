@@ -10,9 +10,18 @@ package nu.t4.beans;
  * @author Daniel Nilsson
  */
 public class Users {
+
+    private int id;
     private String namn;
+    private String tfnr;
     private String email;
-    private String behörighet;
+    private int klass;
+    private int hl_id;
+    private int behörighet;
+    private String företag;
+    private int program_id;
+    private String anvnamn;
+    private String lösenord;
 
     public String getNamn() {
         return namn;
@@ -30,11 +39,43 @@ public class Users {
         this.email = email;
     }
 
-    public String getBehörighet() {
+    public int getBehörighet() {
         return behörighet;
     }
 
-    public void setBehörighet(String behörighet) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTfnr() {
+        return tfnr;
+    }
+
+    public void setTfnr(String tfnr) {
+        this.tfnr = tfnr;
+    }
+
+    public int getKlass() {
+        return klass;
+    }
+
+    public void setKlass(int klass) {
+        this.klass = klass;
+    }
+
+    public int getHl_id() {
+        return hl_id;
+    }
+
+    public void setHl_id(int hl_id) {
+        this.hl_id = hl_id;
+    }
+
+    public void setBehörighet(int behörighet) {
         this.behörighet = behörighet;
     }
 }
