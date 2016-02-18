@@ -82,7 +82,6 @@ public class NarvaroManager {
                     + "WHERE klass IN (SELECT klass_id FROM klass_lärare "
                     + "WHERE lärare_id = %d)", larare_id);
             ResultSet data = stmt.executeQuery(sql);
-            System.out.println("nu.t4...(4)");
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             while (data.next()) {
                 int elev_id = data.getInt("id");
@@ -92,7 +91,6 @@ public class NarvaroManager {
                         .add("namn", namn)
                         .build());
             }
-            System.out.println("nu.t4...(3)");
             Iterator<JsonValue> iterator = arrayBuilder.build().iterator();
             while (iterator.hasNext()) {
                 JsonObject obj = (JsonObject) iterator.next();
@@ -116,7 +114,6 @@ public class NarvaroManager {
                         .add("narvaro", arrayBuilder2.build())
                         .build());
             }
-            System.out.println("nu.t4...(1)");
 
             conn.close();
             return arrayBuilder.build();
