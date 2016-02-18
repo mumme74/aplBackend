@@ -55,14 +55,16 @@ public class MomentManager {
      */
     public JsonArray seMoment(int elev_id) {
         try {
-  Connection conn = ConnectionFactory.getConnection();
-            String sql = String.format("SELECT * FROM aplapp.tilldela_moment WHERE användar_id = %d;", elev_id);
+            Connection conn = ConnectionFactory.getConnection();
+            String sql = String.format("SELECT * FROM aplapp.tilldela_moment, moment WHERE tilldela_moment.användar_id = %d AND moment_id = moment.ID;;", elev_id);
             Statement stmt = conn.createStatement();
+            System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             while(data.next()){
                 arrayBuilder.add(Json.createObjectBuilder()
                         .add("moment",data.getInt("moment_id"))
+                        .add("innehall",data.getString("innehåll"))
                         .add("godkand",data.getInt("godkänd"))
                         .build()
                 );
