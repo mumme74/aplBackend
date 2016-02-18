@@ -11,12 +11,14 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
+import nu.t4.beans.GetLoggLärareManager;
 import nu.t4.beans.LarareEleverManager;
 
 /**
@@ -30,6 +32,9 @@ public class LarareEleverService {
     
     @EJB
     LarareEleverManager lararManager ;
+    
+    @EJB
+    GetLoggLärareManager loggLärareManager;
     
     @GET
     @Path("/elever")
@@ -56,4 +61,29 @@ public class LarareEleverService {
         }
  
     }
+    
+     @GET
+    @Path("/elev/{id}/logg/")
+     @Produces(MediaType.APPLICATION_JSON)
+    public Response getLog(@Context HttpHeaders headers, @PathParam("id") int elev_id){
+       //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonArray data = loggLärareManager.getLoggar(user.getInt("id"), elev_id);
+        if (data != null) {
+            return Response.ok(data).build();
+        } else {
+            return Response.serverError().build();
+        }
+ 
+    }
+    
 }
