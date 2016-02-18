@@ -42,6 +42,7 @@ public class AnvInfoService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getElevInfo(@Context HttpHeaders headers, String body){
+        System.out.println(body);
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);

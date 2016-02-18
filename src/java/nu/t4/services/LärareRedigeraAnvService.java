@@ -94,12 +94,11 @@ public class LärareRedigeraAnvService {
         String namn = obj.getString("namn");
         String tfnr = obj.getString("tfnr");
         String email = obj.getString("email");
-        int program_id = obj.getInt("program_id");
         String företag = obj.getString("foretag");
         String användarnamn = obj.getString("anvnamn");
         String lösenord = obj.getString("losenord");
         
-        if(anvManager.redigeraHandledare(ID, namn, tfnr, email, program_id, företag, användarnamn, lösenord)){
+        if(anvManager.redigeraHandledare(ID, namn, tfnr, email, företag, användarnamn, lösenord)){
             return Response.status(Response.Status.CREATED).build();
         }else{
             return Response.serverError().build();

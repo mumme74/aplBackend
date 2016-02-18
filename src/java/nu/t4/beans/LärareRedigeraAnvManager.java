@@ -41,17 +41,16 @@ public class LärareRedigeraAnvManager {
     }
 
     public boolean redigeraHandledare(int ID, String namn, String tfnr,
-            String email, int program_id, String företag, String användarnamn, String lösenord) {
+            String email, String företag, String användarnamn, String lösenord) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("UPDATE handledare SET namn = '%s', "
                     + "telefonnummer = '%s', "
                     + "email = '%s', "
-                    + "program_id = %d, "
                     + "företag = '%s', "
                     + "användarnamn = '%s' ",
-                    namn, tfnr, email, program_id, företag, användarnamn);
+                    namn, tfnr, email, företag, användarnamn);
             if (!lösenord.equals("")) {
                 String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
                 sql += String.format(", lösenord = '%s' ", encrypted_lösenord);
