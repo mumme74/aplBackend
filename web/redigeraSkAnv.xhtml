@@ -4,11 +4,13 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
     <h:body>
+        <h1>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</h1>
         <c:if test="#{loginBean.loggedIn}">
 
             <p:layout fullPage="true">
@@ -41,9 +43,21 @@
                             <p:outputLabel value="Email"/>
                             <p:inputText value="#{adminManager.selectedUser.email}"/>
                             <p:outputLabel value="Klass"/>
-                            <p:inputText value="#{adminManager.selectedUser.klass}"/>
+                            <p:selectOneMenu value="#{adminManager.selectedUser.klass}">
+                                <f:selectItem itemLabel="Välj Klass" itemValue="" noSelectionOption="true" />
+                                <f:selectItems value="#{adminManager.klasser}"
+                                               var="klass"
+                                               itemValue="#{klass.id}"
+                                               itemLabel="#{klass.email}" />
+                            </p:selectOneMenu>
                             <p:outputLabel value="Handledar id"/>
-                            <p:inputText value="#{adminManager.selectedUser.hl_id}"/>
+                            <p:selectOneMenu value="#{adminManager.selectedUser.hl_id}">
+                                <f:selectItem itemLabel="Välj Handledare" itemValue="" noSelectionOption="true" />
+                                <f:selectItems value="#{adminManager.handledare}"
+                                               var="handledaren"
+                                               itemValue="#{handledaren.id}"
+                                               itemLabel="#{handledaren.email}" />
+                            </p:selectOneMenu>
                         </h:panelGrid>
                     </h:form>
 

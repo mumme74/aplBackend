@@ -46,7 +46,7 @@ public class AdminManager implements Serializable {
     public String redigera(Users temp) {
         selectedUser = temp;
         System.out.println(selectedUser.getNamn());
-        return "redigeraAnv";
+        return "redigeraSkAnv";
     }
 
     public List getFilteredLärare() {
@@ -206,6 +206,48 @@ public class AdminManager implements Serializable {
         }
     }
 
+    public List getHandledare() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT id, email FROM handledare";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> handledare = new ArrayList();
+            while (data.next()) {
+                Users user = new Users();
+                user.setId(data.getInt("id"));
+                user.setEmail(data.getString("email"));
+                handledare.add(user);
+            }
+            conn.close();
+            return handledare;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    public List getKlasser() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT id, namn FROM klass";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> handledare = new ArrayList();
+            while (data.next()) {
+                Users user = new Users();
+                user.setId(data.getInt("id"));
+                user.setEmail(data.getString("namn"));
+                handledare.add(user);
+            }
+            conn.close();
+            return handledare;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     //Tar bort behörigheten som lärare mha deras email
     public void removeBehörighet(String email) {
         System.out.println("removing" + email);
@@ -302,6 +344,7 @@ public class AdminManager implements Serializable {
                 temp.setNamn(data.getString("namn"));
                 temp.setTfnr(data.getString("Telefonnummer"));
                 temp.setEmail(data.getString("email"));
+                temp.setKlass(data.getInt("klass"));
                 temp.setHl_id(data.getInt("handledare_ID"));
                 temp.setBehörighet(data.getInt("behörighet"));
                 skolans_användare.add(temp);
