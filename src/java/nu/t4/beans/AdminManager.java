@@ -17,6 +17,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.xml.registry.infomodel.User;
+import nu.t4.beans.Users;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -27,14 +30,29 @@ import javax.faces.bean.ManagedBean;
 public class AdminManager implements Serializable {
 
     private String klassnamn;
-
     private String programnamn;
-    
     private String programIdNamn;
-    
     private List filteredUsers;
-    
     private List filteredLärare;
+    private Users selectedUser;
+    private Users selectedHL;
+
+    //Getters och setters start
+    public Users getSelectedUser() {
+        return selectedUser;
+    }
+
+    public void setSelectedUser(Users selectedUser) {
+        this.selectedUser = selectedUser;
+    }
+
+    public Users getSelectedHL() {
+        return selectedHL;
+    }
+
+    public void setSelectedHL(Users selectedHL) {
+        this.selectedHL = selectedHL;
+    }
 
     public List getFilteredLärare() {
         return filteredLärare;
@@ -71,9 +89,22 @@ public class AdminManager implements Serializable {
     public void setKlassnamn(String klassnamn) {
         this.klassnamn = klassnamn;
     }
-    
+
     public List getFilteredUsers() {
         return filteredUsers;
+    }
+
+    //Getters och setters slut
+    public String redigeraSkAnv(Users temp) {
+        selectedUser = new Users();
+        selectedUser = temp;
+        return "redigeraSkAnv";
+    }
+
+    public String redigeraHL(Users temp) {
+        selectedHL = new Users();
+        selectedHL = temp;
+        return "redigeraHL";
     }
 
     //Lägger till klassen i databasen
@@ -91,7 +122,7 @@ public class AdminManager implements Serializable {
             }
             klassnamn = "";
             programIdNamn = "Välj klass";
-            
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -122,9 +153,7 @@ public class AdminManager implements Serializable {
         try {
             String tempArray[];
             tempArray = namn.split(", ");
-            
-            
-            
+
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("DELETE FROM klass WHERE namn ='%s'", tempArray[1]);
@@ -195,6 +224,69 @@ public class AdminManager implements Serializable {
         }
     }
 
+    public List getHandledare() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT id, email FROM handledare";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> handledare = new ArrayList();
+            while (data.next()) {
+                Users user = new Users();
+                user.setId(data.getInt("id"));
+                user.setEmail(data.getString("email"));
+                handledare.add(user);
+            }
+            conn.close();
+            return handledare;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List getProgram() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT id, namn FROM program";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> programs = new ArrayList();
+            while (data.next()) {
+                Users user = new Users();
+                user.setId(data.getInt("id"));
+                user.setEmail(data.getString("namn"));
+                programs.add(user);
+            }
+            conn.close();
+            return programs;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List getKlasser() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT id, namn FROM klass";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> handledare = new ArrayList();
+            while (data.next()) {
+                Users user = new Users();
+                user.setId(data.getInt("id"));
+                user.setEmail(data.getString("namn"));
+                handledare.add(user);
+            }
+            conn.close();
+            return handledare;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     //Tar bort behörigheten som lärare mha deras email
     public void removeBehörighet(String email) {
         System.out.println("removing" + email);
@@ -226,7 +318,7 @@ public class AdminManager implements Serializable {
             System.out.println(ex.getMessage());
         }
     }
-    
+
     //Hämtar alla program
     public List getPrograms() {
         try {
@@ -258,13 +350,13 @@ public class AdminManager implements Serializable {
             System.out.println(e.getMessage());
         }
     }
-    
+
     //Hämtar id på inmatat program
     public int getProgramId(String namn) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT id FROM program WHERE namn = '%s'",namn);
+            String sql = String.format("SELECT id FROM program WHERE namn = '%s'", namn);
             System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
             data.next();
@@ -278,4 +370,118 @@ public class AdminManager implements Serializable {
         }
     }
 
+    public List getSkolansAnvändare() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM skolans_användare";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> skolans_användare = new ArrayList();
+            while (data.next()) {
+                Users temp = new Users();
+                temp.setId(data.getInt("ID"));
+                temp.setNamn(data.getString("namn"));
+                temp.setTfnr(data.getString("Telefonnummer"));
+                temp.setEmail(data.getString("email"));
+                temp.setKlass(data.getInt("klass"));
+                temp.setHl_id(data.getInt("handledare_ID"));
+                temp.setBehörighet(data.getInt("behörighet"));
+                skolans_användare.add(temp);
+            }
+            conn.close();
+            return skolans_användare;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public List getHandledareAnv() {
+        try {
+            Connection conn = ConnectionFactory.getConnection("local");
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM handledare";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Users> handledareList = new ArrayList();
+            while (data.next()) {
+                Users temp = new Users();
+                temp.setId(data.getInt("ID"));
+                temp.setNamn(data.getString("namn"));
+                temp.setTfnr(data.getString("Telefonnummer"));
+                temp.setEmail(data.getString("email"));
+                temp.setProgram_id(data.getInt("program_id"));
+                temp.setAnvnamn(data.getString("användarnamn"));
+                temp.setLösenord(data.getString("lösenord"));
+                temp.setFöretag(data.getString("företag"));
+
+                handledareList.add(temp);
+            }
+            conn.close();
+            return handledareList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public String sparaSkAnv() {
+        try {
+            int id = selectedUser.getId();
+            String namn = selectedUser.getNamn();
+            String tfnr = selectedUser.getTfnr();
+            String email = selectedUser.getEmail();
+            int klass = selectedUser.getKlass();
+            int hl_id = selectedUser.getHl_id();
+            
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("UPDATE skolans_användare SET namn = '%s', "
+                    + "Telefonnummer = '%s', "
+                    + "email = '%s', "
+                    + "handledare_ID = %d, "
+                    + "klass = %d "
+                    + "WHERE ID = %d", namn, tfnr, email, hl_id, klass, id);
+            stmt.executeUpdate(sql);
+            conn.close();
+            return "redigeraSkAnvStart";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "redigeraSkAnv";
+        }
+    }
+
+    public String sparaHL() {
+        try {
+            int id = selectedHL.getId();
+            String namn = selectedHL.getNamn();
+            String tfnr = selectedHL.getTfnr();
+            String email = selectedHL.getEmail();
+            int p_id = selectedHL.getProgram_id();
+            String företag = selectedHL.getFöretag();
+            String anvnamn = selectedHL.getAnvnamn();
+            String lösenord = selectedHL.getLösenord().trim();
+            
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("UPDATE handledare SET namn = '%s', "
+                    + "telefonnummer = '%s', "
+                    + "email = '%s', "
+                    + "företag = '%s', "
+                    + "program_id = %d, "
+                    + "användarnamn = '%s' ",
+                    namn, tfnr, email, företag, p_id, anvnamn);
+            if (!lösenord.equals("")) {
+                String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
+                sql += String.format(", lösenord = '%s' ", encrypted_lösenord);
+            }
+            sql += String.format("WHERE ID = %d", id);
+            System.out.println(sql);
+            stmt.executeUpdate(sql);
+            conn.close();
+            return "redigeraHLStart";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "redigeraHL";
+        }
+    }
 }
