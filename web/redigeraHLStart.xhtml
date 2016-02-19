@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
@@ -33,24 +34,34 @@
                 <p:layoutUnit position="center">
                     <h:panelGrid columns="2">
                         <h:form>
-                            <p:dataTable stickyHeader="true" var="usersList" value='#{adminManager.handledareAnv}' resizableColumns="true">
-                                <p:column headerText="Namn">
+                            <p:dataTable var="usersList" 
+                                         value='#{adminManager.handledareAnv}' 
+                                         resizableColumns="true"
+                                         widgetVar="anvTable"
+                                         filteredValue="#{adminManager.filteredHL}"
+                                         emptyMessage="Ingen användare hittades">
+                                <f:facet name="header">
+                                    <p:outputPanel style="width: 200px;">
+                                        <h:outputText value="Sök:" />
+                                        <p:inputText id="globalFilter"
+                                                     onkeyup="PF('anvTable').filter()" 
+                                                     placeholder="Ange sökord:"/>
+                                    </p:outputPanel>
+                                </f:facet>
+                                <p:column headerText="Namn" filterBy="#{usersList.namn}" filterMatchMode="contains" filterStyle="display:none">
                                     <h:outputText value="#{usersList.namn}" />
                                 </p:column>
-                                <p:column headerText="Telefonnummer">
+                                <p:column headerText="Telefonnummer" filterBy="#{usersList.tfnr}" filterMatchMode="contains" filterStyle="display:none">
                                     <h:outputText value="#{usersList.tfnr}" />
                                 </p:column>
-                                <p:column headerText="Email">
+                                <p:column headerText="Email" filterBy="#{usersList.email}" filterMatchMode="contains" filterStyle="display:none">
                                     <h:outputText value="#{usersList.email}" />
                                 </p:column>
-                                <p:column headerText="Företag">
+                                <p:column headerText="Företag" filterBy="#{usersList.företag}" filterMatchMode="contains" filterStyle="display:none">
                                     <h:outputText value="#{usersList.företag}" />
                                 </p:column>
-                                <p:column headerText="Användarnamn">
+                                <p:column headerText="Användarnamn" filterBy="#{usersList.anvnamn}" filterMatchMode="contains" filterStyle="display:none">
                                     <h:outputText value="#{usersList.anvnamn}" />
-                                </p:column>
-                                <p:column headerText="Program id">
-                                    <h:outputText value="#{usersList.program_id}" />
                                 </p:column>
                                 <p:column headerText="Välj">
                                     <p:commandButton value="Redigera" 

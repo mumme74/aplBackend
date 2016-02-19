@@ -33,11 +33,29 @@ public class AdminManager implements Serializable {
     private String programnamn;
     private String programIdNamn;
     private List filteredUsers;
+    private List filteredHL;
+    private List filteredAnv;
     private List filteredLärare;
     private Users selectedUser;
     private Users selectedHL;
 
     //Getters och setters start
+    public List getFilteredHL() {
+        return filteredHL;
+    }
+
+    public void setFilteredHL(List filteredHL) {
+        this.filteredHL = filteredHL;
+    }
+
+    public List getFilteredAnv() {
+        return filteredAnv;
+    }
+
+    public void setFilteredAnv(List filteredAnv) {
+        this.filteredAnv = filteredAnv;
+    }
+
     public Users getSelectedUser() {
         return selectedUser;
     }
@@ -95,8 +113,6 @@ public class AdminManager implements Serializable {
     }
 
     //Getters och setters slut
-    
-    
     public String redigeraSkAnv(Users temp) {
         selectedUser = new Users();
         selectedUser = temp;
@@ -376,7 +392,7 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM skolans_användare";
+            String sql = "SELECT * FROM skolans_användare ORDER BY namn";
             ResultSet data = stmt.executeQuery(sql);
             List<Users> skolans_användare = new ArrayList();
             while (data.next()) {
@@ -402,7 +418,7 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM handledare";
+            String sql = "SELECT * FROM handledare ORDER BY namn";
             ResultSet data = stmt.executeQuery(sql);
             List<Users> handledareList = new ArrayList();
             while (data.next()) {
@@ -414,7 +430,6 @@ public class AdminManager implements Serializable {
                 temp.setProgram_id(data.getInt("program_id"));
                 temp.setAnvnamn(data.getString("användarnamn"));
                 temp.setFöretag(data.getString("företag"));
-                System.out.println(data.getString("företag"));
 
                 handledareList.add(temp);
             }
@@ -434,7 +449,7 @@ public class AdminManager implements Serializable {
             String email = selectedUser.getEmail();
             int klass = selectedUser.getKlass();
             int hl_id = selectedUser.getHl_id();
-            
+
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("UPDATE skolans_användare SET namn = '%s', "
@@ -463,7 +478,7 @@ public class AdminManager implements Serializable {
             String företag = selectedHL.getFöretag();
             String anvnamn = selectedHL.getAnvnamn();
             String lösenord = selectedHL.getLösenord().trim();
-            
+
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("UPDATE handledare SET namn = '%s', "
