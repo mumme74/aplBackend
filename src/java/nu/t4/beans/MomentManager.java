@@ -56,7 +56,31 @@ public class MomentManager {
     public JsonArray seMoment(int elev_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
-            String sql = String.format("SELECT * FROM aplapp.tilldela_moment, moment WHERE tilldela_moment.användar_id = %d AND moment_id = moment.ID;;", elev_id);
+            String sql = String.format("SELECT * FROM aplapp.tilldela_moment, moment WHERE tilldela_moment.användar_id = %d AND moment_id = moment.ID;", elev_id);
+            Statement stmt = conn.createStatement();
+            System.out.println(sql);
+            ResultSet data = stmt.executeQuery(sql);
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            while(data.next()){
+                arrayBuilder.add(Json.createObjectBuilder()
+                        .add("moment",data.getInt("moment_id"))
+                        .add("innehall",data.getString("innehåll"))
+                        .add("godkand",data.getInt("godkänd"))
+                        .build()
+                );
+            }
+            conn.close();
+            return arrayBuilder.build();
+        } catch (Exception e) {
+            System.out.println("Error from MomentManager:seMoment: " + e.getMessage());
+             return null;
+        }
+
+    }
+        public JsonArray handledareSeMoment(int elev_id) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            String sql = String.format("SELECT * FROM aplapp.tilldela_moment, moment WHERE moment_id = moment.ID AND tilldela_moment.användar_id = (SELECT id FROM skolans_användare WHERE handledare_id = 1)", elev_id);
             Statement stmt = conn.createStatement();
             System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
