@@ -145,7 +145,7 @@ public class MomentService {
         //Kol   lar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-            int id = object.getInt("elev_id");
+        int id = object.getInt("elev_id");
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }

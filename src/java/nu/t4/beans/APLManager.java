@@ -33,9 +33,7 @@ import org.mindrot.jbcrypt.BCrypt;
 public class APLManager {
 
     //ID för vår app
-    private final String CLIENT_ID = "60685140292-vlvgllsnphie69dbm0qag4n4v4oqlned.apps.googleusercontent.com";
-    //Namnet på appen, bundet till ID:t
-    private final String APPLICATION_NAME = "APL Test";
+    private final String CLIENT_ID = "550162747744-m4r2h8egnvqicsbhoefdlo54lk8q399n.apps.googleusercontent.com";
 
     public boolean registerGoogleUser(String googleID, String namn, int klass, String tfnr, String email) {
         try {

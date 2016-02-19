@@ -74,13 +74,15 @@ public class NarvaroManager {
         }
     }
 
-    public JsonArray getGodkandNarvaro(int larare_id) {
+    public JsonArray getGodkandNarvaro(int larare_id, int klass_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
-            String sql = String.format("SELECT id,namn FROM skolans_användare "
-                    + "WHERE klass IN (SELECT klass_id FROM klass_lärare "
-                    + "WHERE lärare_id = %d)", larare_id);
+            String sql = String.format("SELECT namn, id FROM skolans_användare "
+                    + "WHERE behörighet = 0 AND klass = %d AND %d IN (SELECT id FROM klass "
+                    + "WHERE program_id = (SELECT program_id FROM klass "
+                    + "WHERE id = (SELECT klass FROM skolans_användare "
+                    + "WHERE id = %d)))", klass_id, klass_id, larare_id);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             while (data.next()) {

@@ -6,11 +6,16 @@
 package nu.t4.services;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import java.io.StringReader;
 import nu.t4.beans.ElevHandledare;
 import javax.ejb.EJB;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -19,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
 import nu.t4.beans.AktivitetManager;
+import nu.t4.beans.LarareManager;
 
 /**
  *
@@ -113,6 +119,67 @@ public class GetService {
         int NEKADE = 1;
 
         JsonArray aktiviteter = aktivitetManager.getAktiviteter(id, NEKADE);
+        if (aktiviteter != null) {
+            return Response.ok(aktiviteter).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @EJB
+    LarareManager larareManager;
+
+    @GET
+    @Path("/larare/klasser")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getKlasser(@Context HttpHeaders headers) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        int id = user.getInt("id");
+
+        JsonArray klasser = larareManager.getKlasser(id);
+        if (klasser != null) {
+            return Response.ok(klasser).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("/larare/elever")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getNekadeAktiviteter(@Context HttpHeaders headers, String body) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        //Skapa ett json objekt av indatan
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject data = jsonReader.readObject();
+        jsonReader.close();
+        
+        int anv_id = user.getInt("id");
+        int klass_id = data.getInt("klass_id");
+
+        JsonArray aktiviteter = larareManager.getElever(anv_id, klass_id);
         if (aktiviteter != null) {
             return Response.ok(aktiviteter).build();
         } else {

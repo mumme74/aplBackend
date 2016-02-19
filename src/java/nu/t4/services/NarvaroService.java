@@ -81,10 +81,11 @@ public class NarvaroService {
         }
     }
     
-    @GET
+    @POST
     @Path("/godkand")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getGodkandNarvaro(@Context HttpHeaders headers) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getGodkandNarvaro(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = aplManager.googleAuth(idTokenString);
@@ -92,13 +93,20 @@ public class NarvaroService {
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject larare = aplManager.getGoogleUser(payload.getSubject());
-        if (larare == null) {
+        JsonObject user = aplManager.getGoogleUser(payload.getSubject());
+        if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int larare_id = larare.getInt("id");
         
-        JsonArray narvaro = narvaroManager.getGodkandNarvaro(larare_id);
+        //Skapa ett json objekt av indatan
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject data = jsonReader.readObject();
+        jsonReader.close();
+        
+        int larare_id = user.getInt("id");
+        int klass_id = data.getInt("klass_id");
+        
+        JsonArray narvaro = narvaroManager.getGodkandNarvaro(larare_id, klass_id);
         if(narvaro != null){
             return Response.ok(narvaro).build();
         }else{
