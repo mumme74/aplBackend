@@ -95,6 +95,8 @@ public class AdminManager implements Serializable {
     }
 
     //Getters och setters slut
+    
+    
     public String redigeraSkAnv(Users temp) {
         selectedUser = new Users();
         selectedUser = temp;
@@ -398,7 +400,7 @@ public class AdminManager implements Serializable {
 
     public List getHandledareAnv() {
         try {
-            Connection conn = ConnectionFactory.getConnection("local");
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM handledare";
             ResultSet data = stmt.executeQuery(sql);
@@ -411,8 +413,8 @@ public class AdminManager implements Serializable {
                 temp.setEmail(data.getString("email"));
                 temp.setProgram_id(data.getInt("program_id"));
                 temp.setAnvnamn(data.getString("användarnamn"));
-                temp.setLösenord(data.getString("lösenord"));
                 temp.setFöretag(data.getString("företag"));
+                System.out.println(data.getString("företag"));
 
                 handledareList.add(temp);
             }
@@ -441,9 +443,10 @@ public class AdminManager implements Serializable {
                     + "handledare_ID = %d, "
                     + "klass = %d "
                     + "WHERE ID = %d", namn, tfnr, email, hl_id, klass, id);
+            System.out.println(sql);
             stmt.executeUpdate(sql);
             conn.close();
-            return "redigeraSkAnvStart";
+            return "redigeraSkStart";
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return "redigeraSkAnv";
