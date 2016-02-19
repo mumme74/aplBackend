@@ -71,19 +71,6 @@ public class MomentService {
 
     }
 
-
-    @GET
-    @Path("/handledare")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMomentPerHandledare() {
-        JsonArray moment = elevMomentManager.getMomentPerHandledare();
-        if (moment != null) {
-            return Response.ok(moment).build();
-        } else {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
-        }
-    }
-
     @POST
     @Path("/tillHandledare")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -142,7 +129,7 @@ public class MomentService {
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
         jsonReader.close();
-        //Kol   lar att inloggningen är ok
+        //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
             int id = object.getInt("elev_id");
@@ -159,6 +146,28 @@ public class MomentService {
         else 
             return Response.serverError().build();
     }
+    
+    @GET
+    @Path("/handledare")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMomentHandledare(@Context HttpHeaders headers) {
+        String basic_auth = headers.getHeaderString("Authorization");
+
+        if (!manager.handledarAuth(basic_auth)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        int id = manager.getHandledarId(basic_auth);
+        
+        JsonArray moment = momentManager.handledareSeMoment(id);
+        if (moment != null) {
+            return Response.ok(moment).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
