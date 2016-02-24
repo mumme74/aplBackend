@@ -162,7 +162,6 @@ public class GetService {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -175,9 +174,10 @@ public class GetService {
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject data = jsonReader.readObject();
         jsonReader.close();
-        
+        System.out.println(body);
         int anv_id = user.getInt("id");
         int klass_id = data.getInt("klass_id");
+        System.out.println(klass_id);
 
         JsonArray aktiviteter = larareManager.getElever(anv_id, klass_id);
         if (aktiviteter != null) {

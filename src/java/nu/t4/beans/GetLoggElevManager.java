@@ -71,9 +71,10 @@ public class GetLoggElevManager {
                 ResultSet data2 = stmt.executeQuery(sql);
                 JsonArrayBuilder jsonArray = Json.createArrayBuilder();
                 while (data2.next()) {
+                    String datum = data2.getString("datum").substring(0,16);
                     JsonObjectBuilder obuilder = Json.createObjectBuilder();
                     obuilder.add("innehall", data2.getString("innehåll"))
-                            .add("datum", data2.getString("datum"))
+                            .add("datum", datum)
                             .add("namn", data2.getString("namn"));
                     arrayBuilder2.add(obuilder.build());
                 }
