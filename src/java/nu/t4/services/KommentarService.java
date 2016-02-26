@@ -19,6 +19,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -31,7 +32,7 @@ import nu.t4.beans.KommentarManager;
  *
  * @author Daniel Nilsson
  */
-@Path("kommentar")
+@Path("logg")
 public class KommentarService {
 
     @EJB
@@ -41,7 +42,7 @@ public class KommentarService {
     KommentarManager kommentarManager;
 
     @POST
-    @Path("/postKommentar")
+    @Path("/kommentar")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postLogg(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
@@ -76,15 +77,15 @@ public class KommentarService {
         }
     }
 
-    @POST
-    @Path("/getKommentar")
+    @GET
+    @Path("/{id}/kommentar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getKommentar(@Context HttpHeaders headers, String body) {
+    public Response getKommentar(@Context HttpHeaders headers, @PathParam("id") int logg_id) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-        System.out.println(body);
+        
 
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -93,14 +94,6 @@ public class KommentarService {
         if (användare == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject kommentarObjekt = jsonReader.readObject();
-        jsonReader.close();
-        System.out.println(kommentarObjekt);
-
-        int logg_id = kommentarObjekt.getInt("loggbok_id");
 
         JsonArray data = kommentarManager.getKommentar(logg_id);
         if (data != null) {
