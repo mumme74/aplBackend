@@ -188,61 +188,61 @@ public class MomentService {
 
     }
 
-    @POST
-    @Path("elev_moment/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response kopplaMomentElev(@Context HttpHeaders headers, String body) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-
-        if (payload == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        JsonObject user = manager.getGoogleUser(payload.getSubject());
-        if (user == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject object = jsonReader.readObject();
-        jsonReader.close();
-
-        if (momentManager.kopplaElev_Moment(object.getInt("elev_id"), object.getInt("moment_id"))) {
-            return Response.status(201).build();
-        } else {
-            return Response.status(400).build();
-        }
-
-    }
-
-    @POST
-    @Path("klass_moment/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response kopplaMomentKlass(@Context HttpHeaders headers, String body) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-
-        if (payload == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        JsonObject user = manager.getGoogleUser(payload.getSubject());
-        if (user == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject object = jsonReader.readObject();
-        jsonReader.close();
-
-        if (momentManager.kopplaKlass_Moment(object.getInt("klass_id"), object.getInt("moment_id"))) {
-            return Response.status(201).build();
-        } else {
-            return Response.status(400).build();
-        }
-
-    }
+//    @POST
+//    @Path("elev_moment/")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response kopplaMomentElev(@Context HttpHeaders headers, String body) {
+//        //Kollar att inloggningen är ok
+//        String idTokenString = headers.getHeaderString("Authorization");
+//        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+//
+//        if (payload == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        JsonObject user = manager.getGoogleUser(payload.getSubject());
+//        if (user == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//
+//        JsonReader jsonReader = Json.createReader(new StringReader(body));
+//        JsonObject object = jsonReader.readObject();
+//        jsonReader.close();
+//
+//        if (momentManager.kopplaElev_Moment(object.getInt("elev_id"), object.getInt("moment_id"))) {
+//            return Response.status(201).build();
+//        } else {
+//            return Response.status(400).build();
+//        }
+//
+//    }
+//
+//    @POST
+//    @Path("klass_moment/")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response kopplaMomentKlass(@Context HttpHeaders headers, String body) {
+//        //Kollar att inloggningen är ok
+//        String idTokenString = headers.getHeaderString("Authorization");
+//        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+//
+//        if (payload == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        JsonObject user = manager.getGoogleUser(payload.getSubject());
+//        if (user == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//
+//        JsonReader jsonReader = Json.createReader(new StringReader(body));
+//        JsonObject object = jsonReader.readObject();
+//        jsonReader.close();
+//
+//        if (momentManager.kopplaKlass_Moment(object.getInt("klass_id"), object.getInt("moment_id"))) {
+//            return Response.status(201).build();
+//        } else {
+//            return Response.status(400).build();
+//        }
+//
+//    }
 
     @GET
     @Path("/larare")
