@@ -154,4 +154,16 @@ public class MomentManager {
         }
     }
 
+    public boolean raderaMomentLärare(int moment_id, int lärar_id){
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM moment WHERE ID = %d AND användar_ID = %d", moment_id, lärar_id);
+            stmt.executeUpdate(sql);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }

@@ -268,4 +268,27 @@ public class MomentService {
             return Response.serverError().build();
         }
     }
+
+    @DELETE
+    @Path("/larare/{id}")
+    public Response raderaMoment(@Context HttpHeaders headers, @PathParam("id") int moment_id) {
+
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int lärar_id = user.getInt("id");
+
+        if (momentManager.raderaMomentLärare(moment_id, lärar_id)) {
+            return Response.status(Response.Status.ACCEPTED).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
