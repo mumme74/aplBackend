@@ -291,4 +291,33 @@ public class MomentService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+    
+    @POST
+    @Path("/tilldela")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response tilldelaMoment(@Context HttpHeaders headers, String body){
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject object = jsonReader.readObject();
+        jsonReader.close();
+        
+        JsonArray moment = object.getJsonArray("moment");
+        JsonArray elever = object.getJsonArray("elever");
+
+        if (momentManager.tilldelaMoment(moment, elever)){
+            return Response.status(201).build();
+        }else{
+            return Response.serverError().build();
+        }
+    }  
 }

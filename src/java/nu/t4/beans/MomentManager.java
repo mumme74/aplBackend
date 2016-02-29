@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.json.Json;
@@ -27,8 +28,10 @@ import javax.json.JsonValue;
 public class MomentManager {
 
     /**
-     *  <h2>Skapa Moment</h2>
-     * <p>Funktion för att skapa moment, skall användas av lärare</p>
+     * <h2>Skapa Moment</h2>
+     * <p>
+     * Funktion för att skapa moment, skall användas av lärare</p>
+     *
      * @param user_id Lärarens id
      * @param Innehåll beskrivning av momentet
      * @return true om det skapats någonting annars false
@@ -48,8 +51,10 @@ public class MomentManager {
     }
 
     /**
-     *<h2>Se moment</h2>
-     * <p>Funktion för att se de moment som en elev har sig tilldelade</p>
+     * <h2>Se moment</h2>
+     * <p>
+     * Funktion för att se de moment som en elev har sig tilldelade</p>
+     *
      * @param elev_id elevens id
      * @return jsonarray med [{moment:number, godkand:number},..]
      */
@@ -61,11 +66,11 @@ public class MomentManager {
             System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-            while(data.next()){
+            while (data.next()) {
                 arrayBuilder.add(Json.createObjectBuilder()
-                        .add("moment",data.getInt("moment_id"))
-                        .add("innehall",data.getString("innehåll"))
-                        .add("godkand",data.getInt("godkänd"))
+                        .add("moment", data.getInt("moment_id"))
+                        .add("innehall", data.getString("innehåll"))
+                        .add("godkand", data.getInt("godkänd"))
                         .build()
                 );
             }
@@ -73,23 +78,25 @@ public class MomentManager {
             return arrayBuilder.build();
         } catch (Exception e) {
             System.out.println("Error from MomentManager:seMoment: " + e.getMessage());
-             return null;
+            return null;
         }
 
     }
-    
+
     /**
-     *<h2>Koppla elev med moment</h2>
-     * <p>funktion som kopplar elev med ett moment</p>
+     * <h2>Koppla elev med moment</h2>
+     * <p>
+     * funktion som kopplar elev med ett moment</p>
+     *
      * @param elev_id elevens id
      * @param moment_id momentets id
      * @return true om det skapats någonting annars false
      */
-    public boolean kopplaElev_Moment(int elev_id, int moment_id){
-            try {
+    public boolean kopplaElev_Moment(int elev_id, int moment_id) {
+        try {
             Connection conn = ConnectionFactory.getConnection();
             String sql = String.format("INSERT INTO tilldela_moment VALUES(%d,%d,0);", elev_id, moment_id);
-                System.out.println(sql);
+            System.out.println(sql);
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
             conn.close();
@@ -99,28 +106,30 @@ public class MomentManager {
             return false;
         }
     }
-    
+
     /**
-     *  <h2>Koppla klass med moment</h2>
-     * <p>funktion som kopplar de elever som tillhör en klass med ett moment</p>
+     * <h2>Koppla klass med moment</h2>
+     * <p>
+     * funktion som kopplar de elever som tillhör en klass med ett moment</p>
+     *
      * @param klass_id klassens id
      * @param moment_id momentets id
      * @return true om det skapats någonting annars false
      */
-    public boolean kopplaKlass_Moment(int klass_id, int moment_id){
-            try {
+    public boolean kopplaKlass_Moment(int klass_id, int moment_id) {
+        try {
             List<Integer> elev_ids = new ArrayList<>();
             Connection conn = ConnectionFactory.getConnection();
             String sql = String.format("SELECT ID FROM aplapp.skolans_användare WHERE klass=%d AND behörighet = 0", klass_id);
             System.out.println(sql);
             Statement stmt = conn.createStatement();
             ResultSet data = stmt.executeQuery(sql);
-            while(data.next()){
+            while (data.next()) {
                 elev_ids.add(data.getInt("ID"));
             }
             conn.close();
-            for(int elev_id: elev_ids){
-                System.out.println(String.format("Elev_ID : %d, Moment_ID: %d",elev_id,moment_id));
+            for (int elev_id : elev_ids) {
+                System.out.println(String.format("Elev_ID : %d, Moment_ID: %d", elev_id, moment_id));
                 kopplaElev_Moment(elev_id, moment_id);
             }
             return true;
@@ -129,26 +138,29 @@ public class MomentManager {
             return false;
         }
     }
-    
+
     /**
-     *<h2>Hämta lärarens moment</h2>
-     * <p>Funktion som hämtar alla momenten som den inloggade läraren har skapat</p>
+     * <h2>Hämta lärarens moment</h2>
+     * <p>
+     * Funktion som hämtar alla momenten som den inloggade läraren har
+     * skapat</p>
+     *
      * @param lärar_id
      * @return jsonarray med [{ID:number, innehall:varchar},..]
      */
-    public JsonArray seMomentLärare(int lärar_id){
-        
+    public JsonArray seMomentLärare(int lärar_id) {
+
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT ID, innehåll from moment WHERE användar_ID ="+lärar_id;
+            String sql = "SELECT ID, innehåll from moment WHERE användar_ID =" + lärar_id;
             ResultSet data = stmt.executeQuery(sql);
-            
+
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-            while(data.next()){
+            while (data.next()) {
                 arrayBuilder.add(Json.createObjectBuilder()
-                        .add("ID",data.getInt("ID"))
-                        .add("innehall",data.getString("innehåll"))
+                        .add("ID", data.getInt("ID"))
+                        .add("innehall", data.getString("innehåll"))
                         .build()
                 );
             }
@@ -161,13 +173,15 @@ public class MomentManager {
     }
 
     /**
-     *<h2>Radera lärarens moment</h2>
-     * <p>Funktion som raderar det valda momentet som läraren har skapat</p>
+     * <h2>Radera lärarens moment</h2>
+     * <p>
+     * Funktion som raderar det valda momentet som läraren har skapat</p>
+     *
      * @param moment_id
      * @param lärar_id
      * @return true om raderingen lyckas annars false
      */
-    public boolean raderaMomentLärare(int moment_id, int lärar_id){
+    public boolean raderaMomentLärare(int moment_id, int lärar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
@@ -176,6 +190,42 @@ public class MomentManager {
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * <h2>Tilldela Moment</h2>
+     * <p>
+     * funktion som kopplar moment med elever</p>
+     *
+     * @param moment json array av momenten
+     * @param elever json array av eleverna
+     * @return true om det skapats någonting annars false
+     */
+    public boolean tilldelaMoment(JsonArray moment, JsonArray elever) {
+        try {
+            Connection conn = ConnectionFactory.getConnection("test");
+            Statement stmt = conn.createStatement();
+
+            String sqlbase = "INSERT INTO tilldela_moment(användar_id, moment_id, godkänd) VALUES (%d,%d,0);";
+            Iterator<JsonValue> mIterator = moment.iterator();
+            while (mIterator.hasNext()) {
+                JsonObject momentet = (JsonObject) mIterator.next();
+                Iterator<JsonValue> eIterator = elever.iterator();
+                while (eIterator.hasNext()) {
+                    JsonObject eleven = (JsonObject) eIterator.next();
+                    int moment_id = momentet.getInt("moment_id");
+                    int elev_id = eleven.getInt("elev_id");
+                    String sql = String.format(sqlbase, elev_id, moment_id);
+                    stmt.addBatch(sql);
+                }
+            }
+            stmt.executeBatch();
+            conn.close();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error from MomentManager:kopplaElev_Moment: " + e.getMessage());
             return false;
         }
     }
