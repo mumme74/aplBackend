@@ -130,6 +130,12 @@ public class MomentManager {
         }
     }
     
+    /**
+     *<h2>Hämta lärarens moment</h2>
+     * <p>Funktion som hämtar alla momenten som den inloggade läraren har skapat</p>
+     * @param lärar_id
+     * @return jsonarray med [{ID:number, innehall:varchar},..]
+     */
     public JsonArray seMomentLärare(int lärar_id){
         
         try {
@@ -154,6 +160,13 @@ public class MomentManager {
         }
     }
 
+    /**
+     *<h2>Radera lärarens moment</h2>
+     * <p>Funktion som raderar det valda momentet som läraren har skapat</p>
+     * @param moment_id
+     * @param lärar_id
+     * @return true om raderingen lyckas annars false
+     */
     public boolean raderaMomentLärare(int moment_id, int lärar_id){
         try {
             Connection conn = ConnectionFactory.getConnection();
