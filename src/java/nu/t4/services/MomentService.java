@@ -270,7 +270,7 @@ public class MomentService {
     }
 
     @DELETE
-    @Path("/larare/{id}")
+    @Path("/{id}")
     public Response raderaMoment(@Context HttpHeaders headers, @PathParam("id") int moment_id) {
 
         //Kollar att inloggningen är ok
