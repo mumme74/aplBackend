@@ -129,5 +129,29 @@ public class MomentManager {
             return false;
         }
     }
+    
+    public JsonArray seMomentLärare(int lärar_id){
+        
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT ID, innehåll from moment WHERE användar_ID ="+lärar_id;
+            ResultSet data = stmt.executeQuery(sql);
+            
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            while(data.next()){
+                arrayBuilder.add(Json.createObjectBuilder()
+                        .add("ID",data.getInt("ID"))
+                        .add("innehall",data.getString("innehåll"))
+                        .build()
+                );
+            }
+            conn.close();
+            return arrayBuilder.build();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
 }

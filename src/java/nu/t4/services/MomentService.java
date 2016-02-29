@@ -13,6 +13,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,7 +37,7 @@ public class MomentService {
 
     @EJB
     ElevMomentManager elevMomentManager;
-    
+
     @EJB
     MomentManager momentManager;
 
@@ -70,7 +71,6 @@ public class MomentService {
         }
 
     }
-
 
     @GET
     @Path("/handledare")
@@ -133,11 +133,11 @@ public class MomentService {
             return Response.serverError().build();
         }
     }
-  
+
     @POST
-    @Path("/elev") 
-     @Produces(MediaType.APPLICATION_JSON)
-    public Response visaElevsMoment(@Context HttpHeaders headers, String body){
+    @Path("/elev")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response visaElevsMoment(@Context HttpHeaders headers, String body) {
         System.out.println(body);
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
@@ -154,15 +154,16 @@ public class MomentService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         JsonArray moment = momentManager.seMoment(id);
-        if(moment != null)
+        if (moment != null) {
             return Response.ok(moment).build();
-        else 
+        } else {
             return Response.serverError().build();
+        }
     }
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response skapaMoment(@Context HttpHeaders headers, String body){
+    public Response skapaMoment(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
@@ -174,23 +175,23 @@ public class MomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
+
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
         jsonReader.close();
 
-        if (momentManager.skapaMoment(user.getInt("id"),object.getString("beskrivning"))){
-            return Response.status(201).build(); 
-        }else{
+        if (momentManager.skapaMoment(user.getInt("id"), object.getString("beskrivning"))) {
+            return Response.status(201).build();
+        } else {
             return Response.status(400).build();
         }
-       
+
     }
-    
+
     @POST
     @Path("elev_moment/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response kopplaMomentElev(@Context HttpHeaders headers, String body){
+    public Response kopplaMomentElev(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
@@ -202,23 +203,23 @@ public class MomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
+
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
         jsonReader.close();
 
-        if (momentManager.kopplaElev_Moment(object.getInt("elev_id"),object.getInt("moment_id"))){
+        if (momentManager.kopplaElev_Moment(object.getInt("elev_id"), object.getInt("moment_id"))) {
             return Response.status(201).build();
-        }else{
+        } else {
             return Response.status(400).build();
         }
-       
+
     }
-    
-     @POST
+
+    @POST
     @Path("klass_moment/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response kopplaMomentKlass(@Context HttpHeaders headers, String body){
+    public Response kopplaMomentKlass(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
@@ -230,17 +231,41 @@ public class MomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
+
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
         jsonReader.close();
 
-        if (momentManager.kopplaKlass_Moment(object.getInt("klass_id"),object.getInt("moment_id"))){
+        if (momentManager.kopplaKlass_Moment(object.getInt("klass_id"), object.getInt("moment_id"))) {
             return Response.status(201).build();
-        }else{
+        } else {
             return Response.status(400).build();
         }
-       
+
     }
 
+    @GET
+    @Path("/larare")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response seMomentLärare(@Context HttpHeaders headers) {
+
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int lärar_id = user.getInt("id");
+
+        JsonArray moment = momentManager.seMomentLärare(lärar_id);
+        if (moment != null) {
+            return Response.ok(moment).build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
 }
