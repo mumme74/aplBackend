@@ -71,18 +71,18 @@ public class ElevMomentManager {
             JsonArrayBuilder moment = Json.createArrayBuilder();
 
             while (data.next()) {
-                String godkänd = "";
+                String status = "";
                 if (data.getInt("godkänd") == 0) {
-                    godkänd = "Ej avklarad";
+                    status = "Ej avklarad";
                 } else if (data.getInt("godkänd") == 1) {
-                    godkänd = "Väntande svar";
+                    status = "Väntande svar";
                 } else if (data.getInt("godkänd") == 2) {
-                    godkänd = "Godkänd";
+                    status = "Godkänd";
                 }
                 moment.add(Json.createObjectBuilder()
                         .add("ID", data.getInt("moment_id"))
                         .add("innehall", data.getString("innehåll"))
-                        .add("godkand", godkänd)
+                        .add("status", status)
                         .build());
             }
 
