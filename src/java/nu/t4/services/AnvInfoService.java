@@ -109,9 +109,8 @@ public class AnvInfoService {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int klass = användare.getInt("klass");
         
-        JsonArray data = infoManager.getHandledare(klass);
+        JsonArray data = infoManager.getHandledare();
         if (data != null) {
             return Response.ok(data).build();
         } else {

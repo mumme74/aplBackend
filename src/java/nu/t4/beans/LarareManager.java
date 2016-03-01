@@ -24,7 +24,7 @@ public class LarareManager {
 
     public JsonArray getKlasser(int larare_id) {
         try {
-            Connection conn = ConnectionFactory.getConnection("");
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT id, namn FROM aplapp.klass "
                     + "WHERE program_id = (SELECT program_id FROM klass "
@@ -52,7 +52,7 @@ public class LarareManager {
 
     public JsonArray getElever(int anv_id, int klass_id) {
         try {
-            Connection conn = ConnectionFactory.getConnection("");
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT namn, id FROM skolans_användare "
                     + "WHERE behörighet = 0 AND klass = %d AND %d IN (SELECT id FROM klass "

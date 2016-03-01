@@ -71,12 +71,12 @@ public class AnvInfoManager {
         }
     }
     
-    public JsonArray getHandledare(int klass_id) {
+    public JsonArray getHandledare() {
         
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT ID, email FROM hllista WHERE klass= %d", klass_id);
+            String sql = String.format("SELECT ID, email FROM handledare");
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
             while (data.next()) {
