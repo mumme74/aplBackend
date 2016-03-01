@@ -67,7 +67,7 @@ public class LarareOmdomeService {
 
         int id = omdomeObjekt.getInt("id");
 
-        JsonArray data = LarareOmdomeManager.getOmdome(id);
+        JsonObject data = LarareOmdomeManager.getOmdome(id);
         if (data != null) {
             return Response.ok(data).build();
         } else {

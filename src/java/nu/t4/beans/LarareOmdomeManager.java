@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -21,7 +23,7 @@ import javax.json.JsonArrayBuilder;
 
 @Stateless
 public class LarareOmdomeManager {
-    public JsonArray getOmdome(int id) {
+    public JsonObject getOmdome(int id) {
         String sql =""; 
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -30,15 +32,12 @@ public class LarareOmdomeManager {
                     "SELECT count(CASE WHEN intryck = 0 THEN 1 ELSE NULL END) as antal0,count(CASE WHEN intryck = 1 THEN 1 ELSE NULL END) as antal1,count(CASE WHEN intryck = 2 THEN 1 ELSE NULL END) as antal2 FROM loggbok WHERE elev_id = %d",id
             );
             ResultSet data = stmt.executeQuery(sql);
-            
-            JsonArrayBuilder omdome = Json.createArrayBuilder();
-            while (data.next()) {
-                omdome.add(Json.createObjectBuilder()
+            data.next();
+            JsonObjectBuilder omdome = Json.createObjectBuilder()
                         .add("antal0", data.getInt("antal0"))
                         .add("antal1", data.getInt("antal1"))
-                        .add("antal2", data.getInt("antal2"))
-                        .build());
-            }
+                        .add("antal2", data.getInt("antal2"));
+            
 
             conn.close();
             return omdome.build();
@@ -46,9 +45,7 @@ public class LarareOmdomeManager {
         } catch (Exception e) {
             System.out.println("LarareOmdomeManager");
             System.out.println(e.getMessage());
-            JsonArrayBuilder error = Json.createArrayBuilder();
-            error.add(Json.createObjectBuilder().add("sql",sql).add("Error", e.getMessage()).build());
-            return error.build();
+            return null;
         }
 
     }
