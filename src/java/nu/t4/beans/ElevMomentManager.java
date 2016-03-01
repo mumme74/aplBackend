@@ -19,19 +19,19 @@ import javax.json.JsonObject;
  *
  * @author maikwagner
  */
-
 @Stateless
 public class ElevMomentManager {
+
     public JsonArray getMomentElev(int id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
             String sql = String.format(
                     "SELECT moment.innehåll, tilldela_moment.godkänd, tilldela_moment.moment_id "
-                   +"FROM moment, tilldela_moment "
-                   +"WHERE moment.id = tilldela_moment.moment_id AND tilldela_moment.användar_id =%d",id
+                    + "FROM moment, tilldela_moment "
+                    + "WHERE moment.id = tilldela_moment.moment_id AND tilldela_moment.användar_id =%d", id
             );
-            
+
             ResultSet data = stmt.executeQuery(sql);
 
             JsonArrayBuilder elever = Json.createArrayBuilder();
@@ -54,32 +54,32 @@ public class ElevMomentManager {
         }
 
     }
-    
-    
-    
-    public JsonArray getMomentPerHandledare() {
+
+    public JsonArray getMomentPerHandledare(int handledar_id) {
         try {
-            int anv_id = 1;
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
-            String sql = String.format("SELECT * FROM moment WHERE användar_ID = %d", anv_id);
+            String sql = String.format("SELECT moment.innehåll, "
+                    + "tilldela_moment.godkänd, tilldela_moment.moment_id "
+                    + "FROM moment, tilldela_moment "
+                    + "WHERE moment.id = tilldela_moment.moment_id "
+                    + "AND tilldela_moment.användar_id = "
+                    + "(select ID from skolans_användare where handledare_ID = %d)",
+                    handledar_id);
             ResultSet data = stmt.executeQuery(sql);
 
-            
-            
-            JsonArrayBuilder elever = Json.createArrayBuilder();
+            JsonArrayBuilder moment = Json.createArrayBuilder();
 
             while (data.next()) {
-                elever.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("ID"))
-                        .add("anvandar_id", data.getInt("användar_ID"))
+                moment.add(Json.createObjectBuilder()
+                        .add("ID", data.getInt("moment_id"))
                         .add("innehall", data.getString("innehåll"))
-                        .add("godkant", data.getInt("godkänt"))
+                        .add("godkant", data.getInt("godkänd"))
                         .build());
             }
 
             conn.close();
-            return elever.build();
+            return moment.build();
 
         } catch (Exception e) {
             System.out.println("elevhandledare - getElev()");
@@ -88,9 +88,7 @@ public class ElevMomentManager {
         }
 
     }
-    
-    
-    
+
     public boolean skickaMomentTillHandledare(int moment_id, int användar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -107,10 +105,7 @@ public class ElevMomentManager {
             return false;
         }
     }
-    
-    
-    
-    
+
     public boolean skickaMomentTillElev(int id) {
         try {
             Connection conn = ConnectionFactory.getConnection();

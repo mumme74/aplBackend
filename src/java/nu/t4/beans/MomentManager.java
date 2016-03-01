@@ -83,62 +83,6 @@ public class MomentManager {
 
     }
 
-//    /**
-//     * <h2>Koppla elev med moment</h2>
-//     * <p>
-//     * funktion som kopplar elev med ett moment</p>
-//     *
-//     * @param elev_id elevens id
-//     * @param moment_id momentets id
-//     * @return true om det skapats någonting annars false
-//     */
-//    public boolean kopplaElev_Moment(int elev_id, int moment_id) {
-//        try {
-//            Connection conn = ConnectionFactory.getConnection();
-//            String sql = String.format("INSERT INTO tilldela_moment VALUES(%d,%d,0);", elev_id, moment_id);
-//            System.out.println(sql);
-//            Statement stmt = conn.createStatement();
-//            stmt.executeUpdate(sql);
-//            conn.close();
-//            return true;
-//        } catch (Exception e) {
-//            System.out.println("Error from MomentManager:kopplaElev_Moment: " + e.getMessage());
-//            return false;
-//        }
-//    }
-//
-//    /**
-//     * <h2>Koppla klass med moment</h2>
-//     * <p>
-//     * funktion som kopplar de elever som tillhör en klass med ett moment</p>
-//     *
-//     * @param klass_id klassens id
-//     * @param moment_id momentets id
-//     * @return true om det skapats någonting annars false
-//     */
-//    public boolean kopplaKlass_Moment(int klass_id, int moment_id) {
-//        try {
-//            List<Integer> elev_ids = new ArrayList<>();
-//            Connection conn = ConnectionFactory.getConnection();
-//            String sql = String.format("SELECT ID FROM aplapp.skolans_användare WHERE klass=%d AND behörighet = 0", klass_id);
-//            System.out.println(sql);
-//            Statement stmt = conn.createStatement();
-//            ResultSet data = stmt.executeQuery(sql);
-//            while (data.next()) {
-//                elev_ids.add(data.getInt("ID"));
-//            }
-//            conn.close();
-//            for (int elev_id : elev_ids) {
-//                System.out.println(String.format("Elev_ID : %d, Moment_ID: %d", elev_id, moment_id));
-//                kopplaElev_Moment(elev_id, moment_id);
-//            }
-//            return true;
-//        } catch (Exception e) {
-//            System.out.println("Error from MomentManager:koplaKlass: " + e.getMessage());
-//            return false;
-//        }
-//    }
-
     /**
      * <h2>Hämta lärarens moment</h2>
      * <p>
