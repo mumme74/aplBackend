@@ -78,6 +78,10 @@ public class ElevMomentManager {
                     status = "Väntande svar";
                 } else if (data.getInt("godkänd") == 2) {
                     status = "Godkänd";
+                }else if(data.getInt("godkänd") == 3){
+                    status = "Nekad";
+                }else{
+                    status = "error";
                 }
                 moment.add(Json.createObjectBuilder()
                         .add("ID", data.getInt("moment_id"))
