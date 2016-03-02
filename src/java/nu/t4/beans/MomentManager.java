@@ -137,6 +137,26 @@ public class MomentManager {
             return false;
         }
     }
+    /**
+     * <h2>Radera elevens moment</h2>
+     * <p>
+     * Funktion som raderar det valda momentet som är tilldelat till eleven</p>
+     *
+     * @param moment_id
+     * @return true om raderingen lyckas annars false
+     */
+    public boolean raderaMomentElev(int moment_id) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM tilldela_moment WHERE moment_id = %d ", moment_id);
+            stmt.executeUpdate(sql);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 
     /**
      * <h2>Tilldela Moment</h2>

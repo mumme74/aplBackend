@@ -81,7 +81,7 @@ public class MomentService {
         if (!manager.handledarAuth(basic_auth)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
+
         int handledar_id = manager.getHandledarId(basic_auth);
         JsonArray moment = elevMomentManager.getMomentPerHandledare(handledar_id);
         if (moment != null) {
@@ -242,11 +242,11 @@ public class MomentService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
-    @POST
-    @Path("/tilldela")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response tilldelaMoment(@Context HttpHeaders headers, String body){
+
+    @DELETE
+    @Path("/{id}/elev")
+    public Response raderaMomentElev(@Context HttpHeaders headers, @PathParam("id") int moment_id) {
+
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
@@ -257,18 +257,40 @@ public class MomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        
+
+        if (momentManager.raderaMomentElev(moment_id)) {
+            return Response.status(Response.Status.ACCEPTED).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("/tilldela")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response tilldelaMoment(@Context HttpHeaders headers, String body) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
         jsonReader.close();
-        
+
         JsonArray moment = object.getJsonArray("moment");
         JsonArray elever = object.getJsonArray("elever");
 
-        if (momentManager.tilldelaMoment(moment, elever)){
+        if (momentManager.tilldelaMoment(moment, elever)) {
             return Response.status(201).build();
-        }else{
+        } else {
             return Response.serverError().build();
         }
-    }  
+    }
 }
