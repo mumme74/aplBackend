@@ -42,7 +42,7 @@
                             <h:outputLabel value="Klassens program:" for="programIdNamn"/>
                             <br/>
                             <p:selectOneMenu id="programIdNamn" value="#{adminManager.programIdNamn}">
-                                <f:selectItem itemLabel="Välj klass" itemValue="0"/>
+                                <f:selectItem itemLabel="Välj program" itemValue="0"/>
                                 <c:forEach items="#{adminManager.programs}" var="programsList">
                                     <f:selectItem itemLabel="${programsList}" itemValue="${programsList}"/>
                                 </c:forEach>
