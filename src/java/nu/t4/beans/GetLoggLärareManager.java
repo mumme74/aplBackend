@@ -28,7 +28,7 @@ public class GetLoggLärareManager {
 
         try {
 
-            Connection conn = ConnectionFactory.getConnection("local");
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT loggbok.*, skolans_användare.namn"
                     + " FROM loggbok, skolans_användare WHERE loggbok.elev_id = "

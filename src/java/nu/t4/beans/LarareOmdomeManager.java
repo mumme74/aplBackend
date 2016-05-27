@@ -20,27 +20,30 @@ import javax.json.JsonObjectBuilder;
  *
  * @author maikwagner
  */
-
 @Stateless
 public class LarareOmdomeManager {
-    public JsonObject getOmdome(int id) {
-        String sql =""; 
+
+    public JsonArray getOmdome(int klass_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
-            sql = String.format(
-                    "SELECT count(CASE WHEN intryck = 0 THEN 1 ELSE NULL END) as antal0,count(CASE WHEN intryck = 1 THEN 1 ELSE NULL END) as antal1,count(CASE WHEN intryck = 2 THEN 1 ELSE NULL END) as antal2 FROM loggbok WHERE elev_id = %d",id
+            String sql = String.format(
+                    "SELECT * FROM intryckvy_month WHERE klass = %d", klass_id
             );
             ResultSet data = stmt.executeQuery(sql);
-            data.next();
-            JsonObjectBuilder omdome = Json.createObjectBuilder()
-                        .add("antal0", data.getInt("antal0"))
-                        .add("antal1", data.getInt("antal1"))
-                        .add("antal2", data.getInt("antal2"));
-            
+            JsonArrayBuilder array = Json.createArrayBuilder();
+            while (data.next()) {
+                array.add(Json.createObjectBuilder()
+                        .add("namn", data.getString("namn"))
+                        .add("antal0", data.getInt("intryck0"))
+                        .add("antal1", data.getInt("intryck1"))
+                        .add("antal2", data.getInt("intryck2"))
+                        .build()
+                );
+            }
 
             conn.close();
-            return omdome.build();
+            return array.build();
 
         } catch (Exception e) {
             System.out.println("LarareOmdomeManager");

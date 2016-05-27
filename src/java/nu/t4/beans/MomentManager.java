@@ -169,7 +169,7 @@ public class MomentManager {
      */
     public boolean tilldelaMoment(JsonArray moment, JsonArray elever) {
         try {
-            Connection conn = ConnectionFactory.getConnection("test");
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
 
             String sqlbase = "INSERT INTO tilldela_moment(användar_id, moment_id, godkänd) VALUES (%d,%d,0);";

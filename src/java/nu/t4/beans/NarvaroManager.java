@@ -100,14 +100,15 @@ public class NarvaroManager {
                 int elev_id = obj.getInt("elev_id");
                 String namn = obj.getString("namn");
 
-                sql = String.format("SELECT UNIX_TIMESTAMP(datum) AS datum, trafikljus FROM närvaro "
-                        + "WHERE användar_id = %d AND godkänt != 0 AND godkänt != 2 ORDER BY datum", elev_id);
-                System.out.println(sql);
+                sql = String.format("SELECT UNIX_TIMESTAMP(datum) AS datum, trafikljus, godkänt FROM närvaro "
+                        + "WHERE användar_id = %d AND godkänt != 2 ORDER BY datum", elev_id);
+                
                 ResultSet data2 = stmt.executeQuery(sql);
                 while (data2.next()) {
                     arrayBuilder2.add(Json.createObjectBuilder()
                             .add("datum", data2.getInt("datum"))
                             .add("trafikljus", data2.getInt("trafikljus"))
+                            .add("godkant", data2.getInt("godkänt"))
                             .build());
                 }
                 arrayBuilder.add(Json.createObjectBuilder()

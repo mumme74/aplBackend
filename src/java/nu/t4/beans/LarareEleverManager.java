@@ -24,7 +24,7 @@ public class LarareEleverManager {
 
     public JsonArray getElever(int klass_id) {
         try {
-            Connection conn = ConnectionFactory.getConnection("");
+            Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT namn, ID FROM skolans_användare WHERE behörighet= 0 AND klass = " + klass_id;
             ResultSet data = stmt.executeQuery(sql);
