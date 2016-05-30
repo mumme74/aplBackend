@@ -47,8 +47,14 @@ public class LärareRedigeraAnvService {
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         //Skapa ett json objekt av indatan
@@ -81,8 +87,13 @@ public class LärareRedigeraAnvService {
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         //Skapa ett json objekt av indatan

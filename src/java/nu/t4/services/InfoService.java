@@ -47,6 +47,18 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
         JsonObject data = infoManager.getElevInfo(id);
         if (data != null) {
             return Response.ok(data).build();
@@ -64,6 +76,18 @@ public class InfoService {
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
         if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
@@ -86,9 +110,15 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
@@ -169,12 +199,18 @@ public class InfoService {
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject elev = manager.getGoogleUser(payload.getSubject());
-        if (elev == null) {
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int klass_id = elev.getInt("klass");
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int klass_id = user.getInt("klass");
 
         JsonArray data = lararManager.getKontaktLärare(klass_id);
         if (data != null) {

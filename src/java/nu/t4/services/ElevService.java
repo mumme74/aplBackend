@@ -118,6 +118,12 @@ public class ElevService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         return Response.ok(elevManager.getElevFranKlass(id)).build();
     }
     

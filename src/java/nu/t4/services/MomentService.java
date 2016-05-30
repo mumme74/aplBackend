@@ -210,6 +210,11 @@ public class MomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         int lärar_id = user.getInt("id");
 
         JsonArray moment = momentManager.seMomentLärare(lärar_id);

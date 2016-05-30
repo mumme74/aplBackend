@@ -46,12 +46,19 @@ public class LarareEleverService {
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject elev = manager.getGoogleUser(payload.getSubject());
-        if (elev == null) {
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
+        }        
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int klass_id = elev.getInt("klass");
+        
+        int klass_id = user.getInt("klass");
 
         JsonArray data = lararManager.getElever(klass_id);
         if (data != null) {
@@ -77,6 +84,13 @@ public class LarareEleverService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
         JsonArray data = loggLärareManager.getLoggar(user.getInt("id"), elev_id);
         if (data != null) {
             return Response.ok(data).build();

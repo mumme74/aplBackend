@@ -42,8 +42,19 @@ public class PostService {
     public Response setElevHandledare(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
-        if (manager.googleAuth(idTokenString) == null) {
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
 
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 

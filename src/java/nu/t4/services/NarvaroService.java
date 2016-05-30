@@ -98,6 +98,12 @@ public class NarvaroService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject data = jsonReader.readObject();
