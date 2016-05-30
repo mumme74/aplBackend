@@ -110,7 +110,7 @@ public class APLService {
     }
 
     @POST
-    @Path("/handledare")
+    @Path("/handledare/registrera")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerHandledare(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
