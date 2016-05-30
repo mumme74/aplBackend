@@ -24,51 +24,52 @@ import nu.t4.beans.GetLoggLärareManager;
  *
  * @author luan96001
  */
+@Path("larare")
 public class GetLoggLärareService {
-    @EJB
-    APLManager manager;
-    
-    @EJB
-    GetLoggLärareManager loggManager;
-    
-    @GET
-    @Path("/allaLoggar")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getLoggar(String body){
-        
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject jsonObject = jsonReader.readObject();
-        jsonReader.close();
-
-        String idTokenString = null;
-        int användar_id = 0;
-        try {
-            idTokenString = jsonObject.getString("id");
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        
-        if (idTokenString != null) {
-            GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-            if (payload != null) {
-                JsonObject användare = manager.getGoogleUser(payload.getSubject());
-                if (användare != null) {
-                    användar_id = användare.getInt("id");
-                } else {
-                    return Response.status(Response.Status.PRECONDITION_FAILED).build();
-                }
-            } else {
-                return Response.status(Response.Status.UNAUTHORIZED).build();
-            }
-        }
-        
-        JsonArray data = loggManager.getLoggar(användar_id);
-        if (data != null) {
-            return Response.ok(data).build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
+//    @EJB
+//    APLManager manager;
+//    
+//    @EJB
+//    GetLoggLärareManager loggManager;
+//    
+//    @GET
+//    @Path("/logg")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getLoggar(String body){
+//        
+//        //Skapa ett json objekt av indatan
+//        JsonReader jsonReader = Json.createReader(new StringReader(body));
+//        JsonObject jsonObject = jsonReader.readObject();
+//        jsonReader.close();
+//
+//        String idTokenString = null;
+//        int användar_id = 0;
+//        try {
+//            idTokenString = jsonObject.getString("id");
+//        } catch (Exception e) {
+//            return Response.status(Response.Status.BAD_REQUEST).build();
+//        }
+//        
+//        if (idTokenString != null) {
+//            GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+//            if (payload != null) {
+//                JsonObject användare = manager.getGoogleUser(payload.getSubject());
+//                if (användare != null) {
+//                    användar_id = användare.getInt("id");
+//                } else {
+//                    return Response.status(Response.Status.PRECONDITION_FAILED).build();
+//                }
+//            } else {
+//                return Response.status(Response.Status.UNAUTHORIZED).build();
+//            }
+//        }
+//        
+//        JsonArray data = loggManager.getLoggar(användar_id);
+//        if (data != null) {
+//            return Response.ok(data).build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//    }
     
 }

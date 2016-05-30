@@ -6,10 +6,16 @@
 package nu.t4.services;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import java.io.StringReader;
 import javax.ejb.EJB;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -33,7 +39,7 @@ public class GetLoggElevService {
     GetLoggElevManager loggManager;
     
     @GET
-    @Path("/allaLoggar")
+    @Path("/logg")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLoggar(@Context HttpHeaders headers){
         
@@ -58,5 +64,44 @@ public class GetLoggElevService {
         }
     }
     
+    @POST
+    @Path("/logg")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postLogg(@Context HttpHeaders headers, String body) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject elev = manager.getGoogleUser(payload.getSubject());
+        if (elev == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        //Skapa ett json objekt av indatan
+        JsonReader jsonReader = Json.createReader(new StringReader(body));
+        JsonObject logg = jsonReader.readObject();
+        jsonReader.close();
+        
+        
+        int id = elev.getInt("id");
+        int ljus = logg.getInt("ljus");
+        String datum = logg.getString("datum");
+        String innehall = logg.getString("innehall");
+        JsonValue bildValue = logg.get("imgUrl");
+        String bild = null;
+        if(bildValue != JsonValue.NULL)
+        {
+            bild = bildValue.toString();
+        }
+
+        if (loggManager.postLogg(id, innehall, datum, ljus, bild)) {
+            return Response.status(Response.Status.CREATED).build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
     
 }

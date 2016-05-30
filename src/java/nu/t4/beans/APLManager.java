@@ -213,28 +213,6 @@ public class APLManager {
         }
     }
 
-    public boolean postLogg(int id, String innehall, String datum, int ljus, String bild) {
-        try {
-            Connection conn = ConnectionFactory.getConnection();
-            Statement stmt = (Statement) conn.createStatement();
-            String sql = "";
-            if (bild != null) {
-                sql = String.format("INSERT INTO loggbok VALUES "
-                        + "(null,%d,'%s',%d,'%s','%s',0)", id, innehall, ljus, datum, bild);
-            } else {
-                sql = String.format("INSERT INTO loggbok VALUES "
-                        + "(null,%d,'%s',%d,'%s',null,0)", id, innehall, ljus, datum);
-            }
-            stmt.executeUpdate(sql);
-            conn.close();
-            return true;
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-    }
-
     boolean deleteLogg(int id, String datum) {
         try {
             Connection conn = ConnectionFactory.getConnection();

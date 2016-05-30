@@ -77,29 +77,29 @@ public class KommentarService {
         }
     }
 
-    @GET
-    @Path("/{id}/kommentar")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getKommentar(@Context HttpHeaders headers, @PathParam("id") int logg_id) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-        
-
-        if (payload == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        JsonArray data = kommentarManager.getKommentar(logg_id);
-        if (data != null) {
-            return Response.ok(data).build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
+//    @GET
+//    @Path("/{id}/kommentar")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getKommentar(@Context HttpHeaders headers, @PathParam("id") int logg_id) {
+//        //Kollar att inloggningen är ok
+//        String idTokenString = headers.getHeaderString("Authorization");
+//        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+//        
+//
+//        if (payload == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        JsonObject användare = manager.getGoogleUser(payload.getSubject());
+//        if (användare == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//
+//        JsonArray data = kommentarManager.getKommentar(logg_id);
+//        if (data != null) {
+//            return Response.ok(data).build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//    }
 }

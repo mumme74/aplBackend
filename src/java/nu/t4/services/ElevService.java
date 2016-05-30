@@ -9,7 +9,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import java.io.StringReader;
 import nu.t4.beans.ElevHandledare;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -45,16 +44,16 @@ public class ElevService {
     @EJB
     ElevManager elevManager;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getElev() {
-        JsonArray elever = elevHandledare.getElev();
-        if (elever != null) {
-            return Response.ok(elever).build();
-        } else {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
-        }
-    }
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getElev() {
+//        JsonArray elever = elevHandledare.getElev();
+//        if (elever != null) {
+//            return Response.ok(elever).build();
+//        } else {
+//            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+//        }
+//    }
 
     @POST
     @Path("/aktivitet")
@@ -107,7 +106,7 @@ public class ElevService {
     @GET
     @Path("/klass/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getElevFramKlass(@Context HttpHeaders headers, @PathParam("id") int id){
+    public Response getElevFranKlass(@Context HttpHeaders headers, @PathParam("id") int id){
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);

@@ -26,34 +26,34 @@ import nu.t4.beans.ElevKontaktManager;
 @Path("elev")
 public class ElevKontaktService {
 
-    @EJB
-    APLManager manager;
-
-    @EJB
-    ElevKontaktManager elevManager;
-
-    @GET
-    @Path("/kontakt")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getElevKontakt(@Context HttpHeaders headers) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-        if (payload == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
-
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        int användar_id = användare.getInt("id");
-
-        JsonArray data = elevManager.getElevKontakt(användar_id);
-        if (data != null) {
-            return Response.ok(data).build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
+//    @EJB
+//    APLManager manager;
+//
+//    @EJB
+//    ElevKontaktManager elevManager;
+//
+//    @GET
+//    @Path("/kontakt")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getElevKontakt(@Context HttpHeaders headers) {
+//        //Kollar att inloggningen är ok
+//        String idTokenString = headers.getHeaderString("Authorization");
+//        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+//        if (payload == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        JsonObject användare = manager.getGoogleUser(payload.getSubject());
+//        if (användare == null) {
+//
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        int användar_id = användare.getInt("id");
+//
+//        JsonArray data = elevManager.getElevKontakt(användar_id);
+//        if (data != null) {
+//            return Response.ok(data).build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//    }
 }

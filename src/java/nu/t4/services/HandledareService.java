@@ -38,19 +38,19 @@ public class HandledareService {
     @EJB
     AktivitetManager aktivitetManager;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getHandledare() {
-        JsonArray handledare = elevHandledare.getHandledare();
-        if (handledare != null) {
-            return Response.ok(handledare).build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getHandledare() {
+//        JsonArray handledare = elevHandledare.getHandledare();
+//        if (handledare != null) {
+//            return Response.ok(handledare).build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//    }
 
     @GET
-    @Path("/program")
+    @Path("/natverk")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProgram() {
         JsonArray program = elevHandledare.getProgram();

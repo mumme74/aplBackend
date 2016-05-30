@@ -5,7 +5,6 @@
  */
 package nu.t4.beans;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;

@@ -121,25 +121,25 @@ public class MomentService {
         }
     }
 
-    @POST
-    @Path("/tillElev")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response skickaMomentTillElev(@Context HttpHeaders headers, String body) {
-        //Kollar att inloggningen är ok
-
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject object = jsonReader.readObject();
-        jsonReader.close();
-
-        int id = object.getInt("id");
-
-        if (elevMomentManager.skickaMomentTillElev(id)) {
-            return Response.ok().build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
+//    @POST
+//    @Path("/tillElev")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response skickaMomentTillElev(@Context HttpHeaders headers, String body) {
+//        //Kollar att inloggningen är ok
+//
+//        //Skapa ett json objekt av indatan
+//        JsonReader jsonReader = Json.createReader(new StringReader(body));
+//        JsonObject object = jsonReader.readObject();
+//        jsonReader.close();
+//
+//        int id = object.getInt("id");
+//
+//        if (elevMomentManager.skickaMomentTillElev(id)) {
+//            return Response.ok().build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//    }
 
     @POST
     @Path("/elev")

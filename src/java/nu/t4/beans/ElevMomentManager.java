@@ -118,21 +118,21 @@ public class ElevMomentManager {
         }
     }
 
-    public boolean skickaMomentTillElev(int id) {
-        try {
-            Connection conn = ConnectionFactory.getConnection();
-            Statement stmt = (Statement) conn.createStatement();
-            String sqlbase = String.format("UPDATE moment SET godkänt = 2 WHERE ID = %d", id);
-            String sql = "";
-            stmt.executeBatch();
-            conn.close();
-            return true;
-
-        } catch (Exception e) {
-            System.out.println("MomentManager - skickaMomentTillElev()");
-            System.out.println(e.getMessage());
-            return false;
-        }
-    }
+//    public boolean skickaMomentTillElev(int id) {
+//        try {
+//            Connection conn = ConnectionFactory.getConnection();
+//            Statement stmt = (Statement) conn.createStatement();
+//            String sqlbase = String.format("UPDATE moment SET godkänt = 2 WHERE ID = %d", id);
+//            String sql = "";
+//            stmt.executeBatch();
+//            conn.close();
+//            return true;
+//
+//        } catch (Exception e) {
+//            System.out.println("MomentManager - skickaMomentTillElev()");
+//            System.out.println(e.getMessage());
+//            return false;
+//        }
+//    }
 
 }

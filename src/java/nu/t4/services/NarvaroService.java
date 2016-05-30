@@ -39,16 +39,16 @@ public class NarvaroService {
     @EJB
     NarvaroManager narvaroManager;
     
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getNarvaro(){
-        JsonArray narvaro = narvaroManager.getNarvaro();
-        if(narvaro != null){
-            return Response.ok(narvaro).build();
-        }else{
-            return Response.serverError().build();
-        }
-    }
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getNarvaro(){
+//        JsonArray narvaro = narvaroManager.getNarvaro();
+//        if(narvaro != null){
+//            return Response.ok(narvaro).build();
+//        }else{
+//            return Response.serverError().build();
+//        }
+//    }
     
     @POST
     @Path("/post")

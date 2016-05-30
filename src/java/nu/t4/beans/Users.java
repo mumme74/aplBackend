@@ -49,12 +49,21 @@ public class Users {
     private String email;
     private int klass;
     private int hl_id;
+    private String hl_namn;
     private int behörighet;
     private String företag;
     private int program_id;
     private String anvnamn;
     private String lösenord;
 
+    public String getHl_namn(){
+        return hl_namn;
+    }
+    
+    public String setHl_namn(String hl_namn){
+        return this.hl_namn;
+    }
+    
     public String getNamn() {
         return namn;
     }

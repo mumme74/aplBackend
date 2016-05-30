@@ -25,34 +25,34 @@ import nu.t4.beans.HLKontaktManager;
  */
 @Path("handledare")
 public class HLKontaktService {
-    @EJB
-    APLManager manager;
-    
-    @EJB
-    HLKontaktManager hlManager;
-    
-    @Path("/kontakt")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getHLKontakt(@Context HttpHeaders headers){
-        //Kollar att inloggningen är ok
-        String basic_auth = headers.getHeaderString("Authorization");
-        
-        if (!manager.handledarAuth(basic_auth)) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        int hl_id = manager.getHandledarId(basic_auth);
-        
-        if (hl_id == -1) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        JsonArray data = hlManager.getHLKontakt(hl_id);
-        if (data != null) {
-            return Response.ok(data).build();
-        } else {
-            return Response.serverError().build();
-        }
-        
-    }
+//    @EJB
+//    APLManager manager;
+//    
+//    @EJB
+//    HLKontaktManager hlManager;
+//    
+//    @Path("/kontakt")
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getHLKontakt(@Context HttpHeaders headers){
+//        //Kollar att inloggningen är ok
+//        String basic_auth = headers.getHeaderString("Authorization");
+//        
+//        if (!manager.handledarAuth(basic_auth)) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        int hl_id = manager.getHandledarId(basic_auth);
+//        
+//        if (hl_id == -1) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//
+//        JsonArray data = hlManager.getHLKontakt(hl_id);
+//        if (data != null) {
+//            return Response.ok(data).build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//        
+//    }
 }

@@ -393,6 +393,7 @@ public class AdminManager implements Serializable {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM skolans_användare ORDER BY namn";
+            //admininfoskolansanvä
             ResultSet data = stmt.executeQuery(sql);
             List<Users> skolans_användare = new ArrayList();
             while (data.next()) {
@@ -403,6 +404,7 @@ public class AdminManager implements Serializable {
                 temp.setEmail(data.getString("email"));
                 temp.setKlass(data.getInt("klass"));
                 temp.setHl_id(data.getInt("handledare_ID"));
+                temp.setHl_namn(data.getString("hNamn"));
                 temp.setBehörighet(data.getInt("behörighet"));
                 skolans_användare.add(temp);
             }

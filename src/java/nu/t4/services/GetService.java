@@ -40,43 +40,43 @@ public class GetService {
     @EJB
     AktivitetManager aktivitetManager;
 
-    @GET
-    @Path("/elever")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getElever(@Context HttpHeaders headers) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        if (manager.googleAuth(idTokenString) == null) {
+//    @GET
+//    @Path("/elever")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getElever(@Context HttpHeaders headers) {
+//        //Kollar att inloggningen är ok
+//        String idTokenString = headers.getHeaderString("Authorization");
+//        if (manager.googleAuth(idTokenString) == null) {
+//
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//
+//        JsonArray elever = elevHandledare.getElev();
+//        if (elever != null) {
+//            return Response.ok(elever).build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//    }
 
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        JsonArray elever = elevHandledare.getElev();
-        if (elever != null) {
-            return Response.ok(elever).build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
-
-    @GET
-    @Path("handledare")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getHandledare(@Context HttpHeaders headers) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        if (manager.googleAuth(idTokenString) == null) {
-
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        JsonArray handledare = elevHandledare.getHandledare();
-        if (handledare != null) {
-            return Response.ok(handledare).build();
-        } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+//    @GET
+//    @Path("handledare")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getHandledare(@Context HttpHeaders headers) {
+//        //Kollar att inloggningen är ok
+//        String idTokenString = headers.getHeaderString("Authorization");
+//        if (manager.googleAuth(idTokenString) == null) {
+//
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//
+//        JsonArray handledare = elevHandledare.getHandledare();
+//        if (handledare != null) {
+//            return Response.ok(handledare).build();
+//        } else {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
     @GET
     @Path("aktiviteter")
@@ -158,7 +158,7 @@ public class GetService {
     @Path("/larare/elever")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getNekadeAktiviteter(@Context HttpHeaders headers, String body) {
+    public Response getElever(@Context HttpHeaders headers, String body) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);

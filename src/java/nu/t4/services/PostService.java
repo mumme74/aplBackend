@@ -58,44 +58,4 @@ public class PostService {
             return Response.serverError().build();
         }
     }
-
-    @POST
-    @Path("/logg")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response postLogg(@Context HttpHeaders headers, String body) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-
-        if (payload == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        JsonObject elev = manager.getGoogleUser(payload.getSubject());
-        if (elev == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject logg = jsonReader.readObject();
-        jsonReader.close();
-        
-        
-        int id = elev.getInt("id");
-        int ljus = logg.getInt("ljus");
-        String datum = logg.getString("datum");
-        String innehall = logg.getString("innehall");
-        JsonValue bildValue = logg.get("imgUrl");
-        String bild = null;
-        if(bildValue != JsonValue.NULL)
-        {
-            bild = bildValue.toString();
-        }
-
-        if (manager.postLogg(id, innehall, datum, ljus, bild)) {
-            return Response.status(Response.Status.CREATED).build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
 }

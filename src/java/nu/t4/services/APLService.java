@@ -19,6 +19,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import nu.t4.beans.APLManager;
+import nu.t4.beans.ProgramManager;
 
 
 /*
@@ -35,6 +36,9 @@ public class APLService {
 
     @EJB
     APLManager manager;
+    
+    @EJB
+    ProgramManager programManager;
 
     @GET
     @Path("/google/login")
@@ -48,10 +52,7 @@ public class APLService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         JsonObject user = manager.getGoogleUser(payload.getSubject());
-        if (user == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
+        
         int behörighet = -1;
         if (user != null) {
             behörighet = user.getInt("behörighet");
@@ -74,7 +75,7 @@ public class APLService {
     }
 
     @POST
-    @Path("/user")
+    @Path("/google/registrera")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerGoogleUser(String body) {
 
@@ -155,6 +156,19 @@ public class APLService {
             return Response.ok(data).build();
         } else {
             return Response.serverError().build();
+        }
+    }
+
+    @GET
+    @Path("program")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProgram() {
+        JsonArray data = programManager.getProgram();
+        if (data != null) {
+            return Response.ok(data).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
         }
     }
 }

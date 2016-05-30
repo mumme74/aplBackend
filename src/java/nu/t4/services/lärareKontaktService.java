@@ -28,35 +28,35 @@ public class lärareKontaktService {
     
     
     
-    @EJB
-    APLManager manager;
-
-    @EJB
-    lärareKontaktManager lararManager;
-
-    @GET
-    @Path("/kontakt")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response kontaktLärare(@Context HttpHeaders headers) {
-        //Kollar att inloggningen är ok
-        String idTokenString = headers.getHeaderString("Authorization");
-        System.out.println(idTokenString);
-        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
-        if (payload == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        JsonObject elev = manager.getGoogleUser(payload.getSubject());
-        if (elev == null) {
-
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-        int klass_id = elev.getInt("klass");
-
-        JsonArray data = lararManager.getKontaktLärare(klass_id);
-        if (data != null) {
-            return Response.ok(data).build();
-        } else {
-            return Response.serverError().build();
-        }
-    }
+//    @EJB
+//    APLManager manager;
+//
+//    @EJB
+//    lärareKontaktManager lararManager;
+//
+//    @GET
+//    @Path("/kontakt")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response kontaktLärare(@Context HttpHeaders headers) {
+//        //Kollar att inloggningen är ok
+//        String idTokenString = headers.getHeaderString("Authorization");
+//        System.out.println(idTokenString);
+//        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+//        if (payload == null) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        JsonObject elev = manager.getGoogleUser(payload.getSubject());
+//        if (elev == null) {
+//
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//        int klass_id = elev.getInt("klass");
+//
+//        JsonArray data = lararManager.getKontaktLärare(klass_id);
+//        if (data != null) {
+//            return Response.ok(data).build();
+//        } else {
+//            return Response.serverError().build();
+//        }
+//    }
 }
