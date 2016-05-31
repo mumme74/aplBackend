@@ -81,11 +81,11 @@ public class NarvaroService {
         }
     }
     
-    @POST
-    @Path("/godkand")
+    @GET
+    @Path("/godkand/larare/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getGodkandNarvaro(@Context HttpHeaders headers, String body) {
+    public Response getGodkandNarvaroLarare(@Context HttpHeaders headers, @PathParam("id") int klass_id) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
         GoogleIdToken.Payload payload = aplManager.googleAuth(idTokenString);
@@ -104,15 +104,35 @@ public class NarvaroService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
-        //Skapa ett json objekt av indatan
-        JsonReader jsonReader = Json.createReader(new StringReader(body));
-        JsonObject data = jsonReader.readObject();
-        jsonReader.close();
-        
         int larare_id = user.getInt("id");
-        int klass_id = data.getInt("klass_id");
         
         JsonArray narvaro = narvaroManager.getGodkandNarvaro(larare_id, klass_id);
+        if(narvaro != null){
+            return Response.ok(narvaro).build();
+        }else{
+            return Response.serverError().build();
+        }
+    }
+    
+    @GET
+    @Path("/godkand/elev")
+    @Produces(MediaType.APPLICATION_JSON)
+    //@Produces(MediaType.TEXT_PLAIN)
+    public Response getGodkandNarvaroElev(@Context HttpHeaders headers) {
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = aplManager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = aplManager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int elev_id = user.getInt("id");
+        
+        JsonArray narvaro = narvaroManager.getGodkandNarvaroElev(elev_id);
         if(narvaro != null){
             return Response.ok(narvaro).build();
         }else{

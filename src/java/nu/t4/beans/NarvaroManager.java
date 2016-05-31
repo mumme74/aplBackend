@@ -12,6 +12,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 /**
@@ -102,7 +103,7 @@ public class NarvaroManager {
 
                 sql = String.format("SELECT UNIX_TIMESTAMP(datum) AS datum, trafikljus, godkänt FROM närvaro "
                         + "WHERE användar_id = %d AND godkänt != 2 ORDER BY datum", elev_id);
-                
+
                 ResultSet data2 = stmt.executeQuery(sql);
                 while (data2.next()) {
                     arrayBuilder2.add(Json.createObjectBuilder()
@@ -115,6 +116,33 @@ public class NarvaroManager {
                         .add("elev_id", elev_id)
                         .add("namn", namn)
                         .add("narvaro", arrayBuilder2.build())
+                        .build());
+            }
+
+            conn.close();
+            return arrayBuilder.build();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public JsonArray getGodkandNarvaroElev(int elev_id) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = (Statement) conn.createStatement();
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+            String sql = String.format("SELECT UNIX_TIMESTAMP(datum) AS datum, trafikljus, godkänt FROM närvaro "
+                    + "WHERE användar_id = %d AND godkänt != 2 ORDER BY datum", elev_id);
+
+            ResultSet data = stmt.executeQuery(sql);
+            while (data.next()) {
+                arrayBuilder.add(Json.createObjectBuilder()
+                        .add("datum", data.getInt("datum"))
+                        .add("trafikljus", data.getInt("trafikljus"))
+                        .add("godkant", data.getInt("godkänt"))
                         .build());
             }
 
