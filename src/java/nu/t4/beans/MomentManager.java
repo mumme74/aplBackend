@@ -143,9 +143,10 @@ public class MomentManager {
      * Funktion som raderar det valda momentet som är tilldelat till eleven</p>
      *
      * @param moment_id
+     * @param användar_id 
      * @return true om raderingen lyckas annars false
      */
-    public boolean raderaMomentElev(int moment_id) {
+    public boolean raderaMomentElev(int moment_id, int användar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();

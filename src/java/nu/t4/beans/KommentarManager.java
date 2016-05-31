@@ -62,4 +62,17 @@ public class KommentarManager {
             return null;
         }
     }
+    
+    public boolean raderaKommentar(int kommentar_id, int användar_id) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            java.sql.Statement stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM kommentar WHERE kommentar_id = %d AND användar_id = %d", kommentar_id, användar_id);
+            stmt.executeUpdate(sql);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }

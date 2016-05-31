@@ -14,9 +14,11 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -101,6 +103,29 @@ public class GetLoggElevService {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
+        }
+    }
+    
+    @DELETE
+    @Path("/logg/radera/{id}")
+    public Response raderaNarvaro(@Context HttpHeaders headers, @PathParam("id") int loggbok_id) {
+
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int elev_id = user.getInt("id");
+
+        if (loggManager.raderaLoggbok(loggbok_id, elev_id)) {
+            return Response.status(Response.Status.ACCEPTED).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
     

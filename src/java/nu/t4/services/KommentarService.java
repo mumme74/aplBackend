@@ -16,6 +16,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -74,6 +75,29 @@ public class KommentarService {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
+        }
+    }
+    
+    @DELETE
+    @Path("/kommentar/radera/{id}")
+    public Response raderaNarvaro(@Context HttpHeaders headers, @PathParam("id") int kommentar_id) {
+
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int användar_id = user.getInt("id");
+
+        if (kommentarManager.raderaKommentar(kommentar_id, användar_id)) {
+            return Response.status(Response.Status.ACCEPTED).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 

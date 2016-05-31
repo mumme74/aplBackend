@@ -154,4 +154,19 @@ public class NarvaroManager {
             return null;
         }
     }
+    
+    
+    public boolean raderaNarvaro(int narvaro_id, int elevId) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            java.sql.Statement stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM närvaro WHERE närvaro_id = %d AND användar_id = %d", narvaro_id, elevId);
+            stmt.executeUpdate(sql);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    
 };

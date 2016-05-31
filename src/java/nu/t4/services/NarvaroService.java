@@ -17,6 +17,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -117,7 +118,6 @@ public class NarvaroService {
     @GET
     @Path("/godkand/elev")
     @Produces(MediaType.APPLICATION_JSON)
-    //@Produces(MediaType.TEXT_PLAIN)
     public Response getGodkandNarvaroElev(@Context HttpHeaders headers) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
@@ -137,6 +137,29 @@ public class NarvaroService {
             return Response.ok(narvaro).build();
         }else{
             return Response.serverError().build();
+        }
+    }
+    
+    @DELETE
+    @Path("/radera/{id}")
+    public Response raderaNarvaro(@Context HttpHeaders headers, @PathParam("id") int narvaro_id) {
+
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = aplManager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        JsonObject user = aplManager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        int elevId = user.getInt("id");
+
+        if (narvaroManager.raderaNarvaro(narvaro_id, elevId)) {
+            return Response.status(Response.Status.ACCEPTED).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
     

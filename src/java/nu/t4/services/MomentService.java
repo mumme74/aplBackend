@@ -239,6 +239,13 @@ public class MomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
         int lärar_id = user.getInt("id");
 
         if (momentManager.raderaMomentLärare(moment_id, lärar_id)) {
@@ -249,8 +256,9 @@ public class MomentService {
     }
 
     @DELETE
-    @Path("/{id}/elev")
-    public Response raderaMomentElev(@Context HttpHeaders headers, @PathParam("id") int moment_id) {
+    @Path("/{moment_id}/elev/{elev_id}")
+    public Response raderaMomentElev(@Context HttpHeaders headers, 
+            @PathParam("moment_id") int moment_id, @PathParam("elev_id") int elev_id) {
 
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
@@ -262,8 +270,14 @@ public class MomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+        
+        int behörighet = user.getInt("behörighet");
 
-        if (momentManager.raderaMomentElev(moment_id)) {
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        if (momentManager.raderaMomentElev(moment_id, elev_id)) {
             return Response.status(Response.Status.ACCEPTED).build();
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

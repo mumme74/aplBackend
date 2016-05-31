@@ -118,4 +118,17 @@ public class GetLoggElevManager {
             return false;
         }
     }
+    
+    public boolean raderaLoggbok(int loggbok_id, int elev_id) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            java.sql.Statement stmt = conn.createStatement();
+            String sql = String.format("DELETE FROM loggbok WHERE ID = %d AND elev_id = %d", loggbok_id, elev_id);
+            stmt.executeUpdate(sql);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }
