@@ -76,13 +76,14 @@ public class AnvInfoManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT ID, email FROM handledare ORDER BY email");
+            String sql = String.format("SELECT ID, namn, företag FROM handledare ORDER BY namn");
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
             while (data.next()) {
+                String namn_företag = data.getString("namn")+ " " + data.getString("företag");
                 jBuilder.add(Json.createObjectBuilder()
                         .add("ID", data.getInt("ID"))
-                        .add("email", data.getString("email"))
+                        .add("namn_foretag", namn_företag)
                         .build()
                 );
             }
