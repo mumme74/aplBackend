@@ -71,12 +71,17 @@ public class AnvInfoManager {
         }
     }
     
-    public JsonArray getHandledare() {
+    public JsonArray getHandledare(int klass_id) {
         
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT ID, namn, företag FROM handledare ORDER BY namn");
+            String sql = String.format("SELECT ID, namn, företag FROM handledare "
+                    + "where handledare.ID NOT IN " +
+                        "(SELECT handledare_ID FROM skolans_användare " +
+                        "WHERE handledare.ID = aplapp.skolans_användare.handledare_ID) "
+                    + "AND handledare.program_id = (SELECT klass.program_id FROM klass WHERE klass.ID = %d )"
+                    + "ORDER BY namn", klass_id);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
             while (data.next()) {

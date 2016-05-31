@@ -122,7 +122,9 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         
-        JsonArray data = infoManager.getHandledare();
+        int klass_id = user.getInt("klass");
+        
+        JsonArray data = infoManager.getHandledare(klass_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {
