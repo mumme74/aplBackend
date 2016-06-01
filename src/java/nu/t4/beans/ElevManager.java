@@ -25,7 +25,8 @@ public class ElevManager {
     public JsonArray getElevFranKlass(int klass_id){
         try {
             Connection conn = ConnectionFactory.getConnection();
-            String sql = String.format("SELECT * FROM aplapp.skolans_användare WHERE klass = %d AND behörighet = 0;", klass_id);
+            String sql = String.format("SELECT ID, namn, handledare_ID "
+                    + " FROM aplapp.skolans_användare WHERE klass = %d AND behörighet = 0", klass_id);
             Statement stmt = conn.createStatement();
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();

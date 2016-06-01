@@ -145,7 +145,6 @@ public class MomentService {
     @Path("/elev")
     @Produces(MediaType.APPLICATION_JSON)
     public Response visaElevsMoment(@Context HttpHeaders headers, String body) {
-        System.out.println(body);
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject object = jsonReader.readObject();
         jsonReader.close();

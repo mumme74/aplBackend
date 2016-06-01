@@ -128,7 +128,6 @@ public class AdminManager implements Serializable {
     //Lägger till klassen i databasen
     public void addClass() {
         try {
-            System.out.println(programIdNamn);
             int programId = 0;
             programId = getProgramId(programIdNamn);
             if (!klassnamn.equals("") && programId != 0) {
@@ -175,7 +174,6 @@ public class AdminManager implements Serializable {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("DELETE FROM klass WHERE namn ='%s'", tempArray[1]);
-            System.out.println(sql);
             stmt.executeUpdate(sql);
             conn.close();
         } catch (Exception e) {
@@ -246,13 +244,15 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT id, email FROM handledare";
+            String sql = "SELECT id, namn, företag FROM handledare";
             ResultSet data = stmt.executeQuery(sql);
             List<Users> handledare = new ArrayList();
             while (data.next()) {
                 Users user = new Users();
                 user.setId(data.getInt("id"));
-                user.setEmail(data.getString("email"));
+                
+                String namn_företag = data.getString("namn") + " - " + data.getString("företag");
+                user.setNamn_företag(namn_företag);
                 handledare.add(user);
             }
             conn.close();
@@ -323,7 +323,6 @@ public class AdminManager implements Serializable {
     public void addProgram() {
         try {
             if (!programnamn.equals("")) {
-                System.out.println(programnamn);
                 programnamn = programnamn.trim();
                 Connection conn = ConnectionFactory.getConnection();
                 Statement stmt = conn.createStatement();
@@ -375,11 +374,9 @@ public class AdminManager implements Serializable {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT id FROM program WHERE namn = '%s'", namn);
-            System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
             data.next();
             int programId = data.getInt("id");
-            System.out.println(programId);
             conn.close();
             return programId;
         } catch (Exception e) {
@@ -392,8 +389,7 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM skolans_användare ORDER BY namn";
-            //admininfoskolansanvä
+            String sql = "SELECT * FROM skolans_anvandare_handledare ORDER BY namn";
             ResultSet data = stmt.executeQuery(sql);
             List<Users> skolans_användare = new ArrayList();
             while (data.next()) {
@@ -460,7 +456,6 @@ public class AdminManager implements Serializable {
                     + "handledare_ID = %d, "
                     + "klass = %d "
                     + "WHERE ID = %d", namn, tfnr, email, hl_id, klass, id);
-            System.out.println(sql);
             stmt.executeUpdate(sql);
             conn.close();
             return "redigeraSkStart";
@@ -495,7 +490,6 @@ public class AdminManager implements Serializable {
                 sql += String.format(", lösenord = '%s' ", encrypted_lösenord);
             }
             sql += String.format("WHERE ID = %d", id);
-            System.out.println(sql);
             stmt.executeUpdate(sql);
             conn.close();
             return "redigeraHLStart";

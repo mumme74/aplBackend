@@ -99,7 +99,7 @@ public class GetLoggElevManager {
     
     public boolean postLogg(int id, String innehall, String datum, int ljus, String bild) {
         try {
-            java.sql.Connection conn = ConnectionFactory.getConnection("local");
+            java.sql.Connection conn = ConnectionFactory.getConnection();
             Statement stmt = (Statement) conn.createStatement();
             String sql = "";
             if (bild != null) {

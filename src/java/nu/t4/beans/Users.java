@@ -55,13 +55,22 @@ public class Users {
     private int program_id;
     private String anvnamn;
     private String lösenord;
+    private String namn_företag;
+
+    public String getNamn_företag() {
+        return namn_företag;
+    }
+
+    public void setNamn_företag(String namn_företag) {
+        this.namn_företag = namn_företag;
+    }
 
     public String getHl_namn(){
         return hl_namn;
     }
     
-    public String setHl_namn(String hl_namn){
-        return this.hl_namn;
+    public void setHl_namn(String hl_namn){
+        this.hl_namn = hl_namn;
     }
     
     public String getNamn() {

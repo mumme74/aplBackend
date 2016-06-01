@@ -63,7 +63,6 @@ public class NarvaroManager {
             int trafikljus = item.getInt("trafikljus");
             String datum = item.getString("datum");
             sql = String.format(sqlbase, id, trafikljus, datum);
-            System.out.println(sql);
             stmt.executeUpdate(sql);
             conn.close();
             return true;

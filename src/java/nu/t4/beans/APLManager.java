@@ -105,7 +105,6 @@ public class APLManager {
             String sql = String.format(
                     "SELECT * FROM handledare WHERE användarnamn = '%s'",
                     anvandarnamn);
-            System.out.println(sql);
             ResultSet result = stmt.executeQuery(sql);
             result.next();
             if (BCrypt.checkpw(losenord, result.getString("lösenord"))) {

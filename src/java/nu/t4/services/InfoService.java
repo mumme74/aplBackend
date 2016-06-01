@@ -132,6 +132,39 @@ public class InfoService {
         }
     }
     
+    @GET
+    @Path("/handledare/lista/alla")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getHandledareAlla(@Context HttpHeaders headers){
+        //Kollar att inloggningen är ok
+        String idTokenString = headers.getHeaderString("Authorization");
+        GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
+        if (payload == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        JsonObject user = manager.getGoogleUser(payload.getSubject());
+        if (user == null) {
+
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int behörighet = user.getInt("behörighet");
+
+        if (behörighet != 1) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        int klass_id = user.getInt("klass");
+        
+        JsonArray data = infoManager.getHandledareAlla(klass_id);
+        if (data != null) {
+            return Response.ok(data).build();
+        } else {
+            return Response.serverError().build();
+        }
+    }
+    
     @EJB
     ElevKontaktManager elevManager;
 
@@ -196,7 +229,6 @@ public class InfoService {
     public Response kontaktLärare(@Context HttpHeaders headers) {
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
-        System.out.println(idTokenString);
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();

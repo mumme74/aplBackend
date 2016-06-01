@@ -57,7 +57,6 @@ public class KommentarService {
         if (användare == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        System.out.println(body);
         //Skapa ett json objekt av indatan
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject kommentarObjekt = jsonReader.readObject();

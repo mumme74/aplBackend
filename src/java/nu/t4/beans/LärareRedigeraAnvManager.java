@@ -56,7 +56,6 @@ public class LärareRedigeraAnvManager {
                 sql += String.format(", lösenord = '%s' ", encrypted_lösenord);
             }
             sql += String.format("WHERE ID = %d", ID);
-            System.out.println(sql);
             stmt.executeUpdate(sql);
 
             conn.close();

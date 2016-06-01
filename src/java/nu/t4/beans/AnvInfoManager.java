@@ -52,7 +52,6 @@ public class AnvInfoManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM hlinfo WHERE ID = " + hl_id;
-            System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
             data.next();
             JsonObjectBuilder obj = Json.createObjectBuilder();
@@ -71,7 +70,8 @@ public class AnvInfoManager {
         }
     }
     
-    public JsonArray getHandledare(int klass_id) {
+    //Hämtar alla lediga handledare
+    public JsonArray getHandledare(int klass_id) { //Använder klassid för att hämta program
         
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -85,7 +85,35 @@ public class AnvInfoManager {
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
             while (data.next()) {
-                String namn_företag = data.getString("namn")+ " " + data.getString("företag");
+                String namn_företag = data.getString("namn")+ " - " + data.getString("företag");
+                jBuilder.add(Json.createObjectBuilder()
+                        .add("ID", data.getInt("ID"))
+                        .add("namn_foretag", namn_företag)
+                        .build()
+                );
+            }
+            
+            conn.close();
+            return jBuilder.build();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    //Hämtar alla handledare i ditt program
+    public JsonArray getHandledareAlla(int klass_id) { //Använder klassid för att hämta program
+        
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = String.format("SELECT ID, namn, företag FROM handledare "
+                    + "WHERE handledare.program_id = (SELECT klass.program_id FROM klass WHERE klass.ID = %d ) "
+                    + "ORDER BY namn", klass_id);
+            ResultSet data = stmt.executeQuery(sql);
+            JsonArrayBuilder jBuilder = Json.createArrayBuilder();
+            while (data.next()) {
+                String namn_företag = data.getString("namn")+ " - " + data.getString("företag");
                 jBuilder.add(Json.createObjectBuilder()
                         .add("ID", data.getInt("ID"))
                         .add("namn_foretag", namn_företag)
@@ -101,3 +129,5 @@ public class AnvInfoManager {
         }
     }
 }
+
+

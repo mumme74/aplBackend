@@ -41,7 +41,6 @@ public class LarareEleverService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getElever(@Context HttpHeaders headers){
         String idTokenString = headers.getHeaderString("Authorization");
-        System.out.println(idTokenString);
         GoogleIdToken.Payload payload = manager.googleAuth(idTokenString);
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();

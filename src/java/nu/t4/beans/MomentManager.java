@@ -63,7 +63,6 @@ public class MomentManager {
             Connection conn = ConnectionFactory.getConnection();
             String sql = String.format("SELECT * FROM aplapp.tilldela_moment, moment WHERE tilldela_moment.användar_id = %d AND moment_id = moment.ID;;", elev_id);
             Statement stmt = conn.createStatement();
-            System.out.println(sql);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             while (data.next()) {
@@ -150,7 +149,8 @@ public class MomentManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("DELETE FROM tilldela_moment WHERE moment_id = %d ", moment_id);
+            String sql = String.format("DELETE FROM tilldela_moment WHERE "
+                    + "moment_id = %d AND användar_ID = %d", moment_id, användar_id);
             stmt.executeUpdate(sql);
             return true;
         } catch (Exception e) {

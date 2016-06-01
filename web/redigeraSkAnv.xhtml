@@ -49,13 +49,13 @@
                                                itemValue="#{klass.id}"
                                                itemLabel="#{klass.email}" />
                             </p:selectOneMenu>
-                            <p:outputLabel value="Handledar id"/>
+                            <p:outputLabel value="Handledare"/>
                             <p:selectOneMenu value="#{adminManager.selectedUser.hl_id}">
                                 <f:selectItem itemLabel="Välj Handledare" itemValue="" noSelectionOption="true" />
                                 <f:selectItems value="#{adminManager.handledare}"
                                                var="handledaren"
                                                itemValue="#{handledaren.id}"
-                                               itemLabel="#{handledaren.email}" />
+                                               itemLabel="#{handledaren.namn_företag}" />
                             </p:selectOneMenu>
                         </h:panelGrid>
                         <h:panelGrid columns="2">

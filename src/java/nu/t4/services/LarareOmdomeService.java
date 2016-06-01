@@ -65,7 +65,6 @@ public class LarareOmdomeService {
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonObject omdomeObjekt = jsonReader.readObject();
         jsonReader.close();
-        System.out.println(omdomeObjekt);
 
         int klass_id = omdomeObjekt.getInt("id");
 

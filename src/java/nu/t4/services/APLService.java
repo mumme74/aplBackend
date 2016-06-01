@@ -167,7 +167,7 @@ public class APLService {
         if (data != null) {
             return Response.ok(data).build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.serverError().build();
 
         }
     }
