@@ -5,6 +5,7 @@
  */
 package org.netbeans.rest.application.config;
 
+import nu.t4.services.global.APLService;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
@@ -30,18 +31,23 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(nu.t4.filters.CORSFilter.class);
-        resources.add(nu.t4.services.APLService.class);
-        resources.add(nu.t4.services.ElevService.class);
-        resources.add(nu.t4.services.GetLoggElevService.class);
-        resources.add(nu.t4.services.GetLoggLärareService.class);
-        resources.add(nu.t4.services.GetService.class);
-        resources.add(nu.t4.services.HandledareService.class);
-        resources.add(nu.t4.services.KommentarService.class);
-        resources.add(nu.t4.services.MomentService.class);
-        resources.add(nu.t4.services.NarvaroService.class);
-        resources.add(nu.t4.services.PostService.class);
-        resources.add(nu.t4.services.ProgramService.class);
-        resources.add(nu.t4.services.lärareKontaktService.class);
+        resources.add(nu.t4.services.elev.ElevAktivitetService.class);
+        resources.add(nu.t4.services.elev.ElevLoggService.class);
+        resources.add(nu.t4.services.elev.ElevMomentService.class);
+        resources.add(nu.t4.services.elev.ElevNarvaroService.class);
+        resources.add(nu.t4.services.global.APLService.class);
+        resources.add(nu.t4.services.global.InfoService.class);
+        resources.add(nu.t4.services.global.KommentarService.class);
+        resources.add(nu.t4.services.handledare.HandledareAktivitetService.class);
+        resources.add(nu.t4.services.handledare.HandledareMomentService.class);
+        resources.add(nu.t4.services.handledare.HandledareService.class);
+        resources.add(nu.t4.services.larare.LarareEleverService.class);
+        resources.add(nu.t4.services.larare.LarareHandledareService.class);
+        resources.add(nu.t4.services.larare.LarareKlassService.class);
+        resources.add(nu.t4.services.larare.LarareMomentService.class);
+        resources.add(nu.t4.services.larare.LarareNarvaroService.class);
+        resources.add(nu.t4.services.larare.LarareOmdomeService.class);
+        resources.add(nu.t4.services.larare.LarareRedigeraAnvService.class);
     }
     
 }
