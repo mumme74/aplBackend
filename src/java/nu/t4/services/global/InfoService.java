@@ -13,11 +13,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.AnvInfoManager;
-import nu.t4.beans.ElevKontaktManager;
-import nu.t4.beans.HLKontaktManager;
-import nu.t4.beans.lärareKontaktManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.global.AnvInfoManager;
+import nu.t4.beans.global.KontaktManager;
 
 /**
  *
@@ -28,9 +26,10 @@ public class InfoService {
 
     @EJB
     APLManager manager;
-
     @EJB
     AnvInfoManager infoManager;
+    @EJB
+    KontaktManager kontaktManager;
 
     @GET
     @Path("/elev/{id}")
@@ -161,9 +160,6 @@ public class InfoService {
         }
     }
 
-    @EJB
-    ElevKontaktManager elevManager;
-
     @GET
     @Path("/elev/kontakt")
     @Produces(MediaType.APPLICATION_JSON)
@@ -181,16 +177,13 @@ public class InfoService {
         }
         int användar_id = användare.getInt("id");
 
-        JsonArray data = elevManager.getElevKontakt(användar_id);
+        JsonArray data = kontaktManager.getElevKontakt(användar_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {
             return Response.serverError().build();
         }
     }
-
-    @EJB
-    HLKontaktManager hlManager;
 
     @Path("/handledare/kontakt")
     @GET
@@ -208,16 +201,13 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        JsonArray data = hlManager.getHLKontakt(hl_id);
+        JsonArray data = kontaktManager.getHLKontakt(hl_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {
             return Response.serverError().build();
         }
     }
-
-    @EJB
-    lärareKontaktManager lararManager;
 
     @GET
     @Path("/larare/kontakt")
@@ -242,7 +232,7 @@ public class InfoService {
 
         int klass_id = user.getInt("klass");
 
-        JsonArray data = lararManager.getKontaktLärare(klass_id);
+        JsonArray data = kontaktManager.getKontaktLärare(klass_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {

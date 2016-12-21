@@ -2,7 +2,7 @@ package nu.t4.services.elev;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import java.io.StringReader;
-import nu.t4.beans.ElevHandledare;
+import nu.t4.beans.larare.LarareHandledareManager;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -17,9 +17,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.AktivitetManager;
-import nu.t4.beans.ElevManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.global.AktivitetManager;
 
 /**
  *
@@ -30,13 +29,9 @@ import nu.t4.beans.ElevManager;
 public class ElevAktivitetService {
 
     @EJB
-    ElevHandledare elevHandledare;
-    @EJB
     APLManager manager;
     @EJB
     AktivitetManager aktivitetManager;
-    @EJB
-    ElevManager elevManager;
 
     @POST
     @Path("/aktivitet")

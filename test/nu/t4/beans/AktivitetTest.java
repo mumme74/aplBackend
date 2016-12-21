@@ -5,6 +5,9 @@
  */
 package nu.t4.beans;
 
+import nu.t4.beans.global.AktivitetManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.larare.LarareHandledareManager;
 import javax.ejb.embeddable.EJBContainer;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -53,7 +56,7 @@ public class AktivitetTest {
         EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
         AktivitetManager aktivitetManager = (AktivitetManager) container.getContext().lookup("java:global/classes/AktivitetManager");
         APLManager aplManager = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
-        ElevHandledare elevHandledare = (ElevHandledare) container.getContext().lookup("java:global/classes/ElevHandledare");
+        LarareHandledareManager elevHandledare = (LarareHandledareManager) container.getContext().lookup("java:global/classes/ElevHandledare");
 
         //Skapa en elev samt aktivitet att testa på
         boolean expResult = true;

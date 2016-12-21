@@ -1,9 +1,9 @@
 package nu.t4.services.elev;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import nu.t4.beans.APLManager;
+import nu.t4.beans.global.APLManager;
 import java.io.StringReader;
-import nu.t4.beans.NarvaroManager;
+import nu.t4.beans.global.NarvaroManager;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonArray;

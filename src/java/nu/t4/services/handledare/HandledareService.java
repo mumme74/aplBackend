@@ -1,7 +1,7 @@
 package nu.t4.services.handledare;
 
 import java.io.StringReader;
-import nu.t4.beans.ElevHandledare;
+import nu.t4.beans.larare.LarareHandledareManager;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -13,8 +13,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.AktivitetManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.global.AktivitetManager;
 
 /**
  *
@@ -23,8 +23,6 @@ import nu.t4.beans.AktivitetManager;
 @Path("handledare")
 public class HandledareService {
 
-    @EJB
-    ElevHandledare elevHandledare;
     @EJB
     APLManager manager;
     @EJB

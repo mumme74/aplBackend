@@ -1,7 +1,7 @@
 package nu.t4.services.larare;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import nu.t4.beans.ElevHandledare;
+import nu.t4.beans.larare.LarareHandledareManager;
 import javax.ejb.EJB;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -12,8 +12,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.AktivitetManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.global.AktivitetManager;
 
 /**
  *
@@ -23,11 +23,9 @@ import nu.t4.beans.AktivitetManager;
 public class LarareHandledareService {
 
     @EJB
-    ElevHandledare elevHandledare;
+    LarareHandledareManager elevHandledare;
     @EJB
     APLManager manager;
-    @EJB
-    AktivitetManager aktivitetManager;
 
     @GET
     @Path("/handledare/natverk")
@@ -50,7 +48,7 @@ public class LarareHandledareService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        JsonArray program = elevHandledare.getProgram();
+        JsonArray program = elevHandledare.getHLNatverk();
         if (program != null) {
             return Response.ok(program).build();
         } else {

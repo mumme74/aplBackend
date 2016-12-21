@@ -13,8 +13,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.LarareManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.larare.LarareKlassManager;
 
 @Path("larare")
 public class LarareKlassService {
@@ -22,7 +22,7 @@ public class LarareKlassService {
     @EJB
     APLManager manager;
     @EJB
-    LarareManager larareManager;
+    LarareKlassManager larareManager;
 
     @GET
     @Path("/klasser")

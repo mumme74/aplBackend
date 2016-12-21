@@ -1,8 +1,8 @@
 package nu.t4.services.larare;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.NarvaroManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.global.NarvaroManager;
 import javax.ejb.EJB;
 import javax.json.JsonArray;
 import javax.json.JsonObject;

@@ -5,6 +5,8 @@
  */
 package nu.t4.beans;
 
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.larare.LarareHandledareManager;
 import java.util.Base64;
 import javax.ejb.embeddable.EJBContainer;
 import javax.json.Json;
@@ -12,6 +14,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import nu.t4.beans.larare.LarareHandledareManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,10 +55,10 @@ public class ElevHandledareTest {
         System.out.println("setElevHandledare");
 
         EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        ElevHandledare elevHandledare = (ElevHandledare) container.getContext().lookup("java:global/classes/ElevHandledare");
+        LarareHandledareManager elevHandledare = (LarareHandledareManager) container.getContext().lookup("java:global/classes/ElevHandledare");
         APLManager aplManager = (APLManager) container.getContext().lookup("java:global/classes/APLManager");
         //Hämta en elev att testa på
-        JsonArray elever = elevHandledare.getElev();
+        JsonArray elever = elevHandledare.getElev(); //Funktion flyttad
         JsonObject elev = (JsonObject) elever.get(0);
         int originellaHandledaren = elev.getInt("handledare_ID");
         int targetElev = elev.getInt("ID");

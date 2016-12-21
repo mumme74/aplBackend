@@ -15,9 +15,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.ElevHandledare;
-import nu.t4.beans.LärareRedigeraAnvManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.larare.LarareRedigeraAnvManager;
 
 /**
  *
@@ -28,12 +27,8 @@ public class LarareRedigeraAnvService {
 
     @EJB
     APLManager manager;
-
     @EJB
-    LärareRedigeraAnvManager anvManager;
-
-    @EJB
-    ElevHandledare elevHandledare;
+    LarareRedigeraAnvManager anvManager;
 
     @POST
     @Path("/elev/redigera")
@@ -144,7 +139,7 @@ public class LarareRedigeraAnvService {
         JsonArray array = jsonReader.readArray();
         jsonReader.close();
 
-        if (elevHandledare.setElevHandledare(array)) {
+        if (anvManager.setElevHandledare(array)) {
             return Response.ok().build();
         } else {
             return Response.serverError().build();

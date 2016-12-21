@@ -18,9 +18,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.ElevMomentManager;
-import nu.t4.beans.MomentManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.global.MomentManager;
 
 /**
  *
@@ -31,11 +30,7 @@ import nu.t4.beans.MomentManager;
 public class LarareMomentService {
 
     @EJB
-    ElevMomentManager elevMomentManager;
-
-    @EJB
     MomentManager momentManager;
-
     @EJB
     APLManager manager;
 

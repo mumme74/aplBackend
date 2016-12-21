@@ -12,8 +12,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.LarareOmdomeManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.larare.LarareOmdomeManager;
 
 /**
  *
@@ -23,7 +23,7 @@ import nu.t4.beans.LarareOmdomeManager;
 public class LarareOmdomeService {
 
     @EJB
-    LarareOmdomeManager LarareOmdomeManager;
+    LarareOmdomeManager larareOmdomeManager;
 
     @EJB
     APLManager manager;
@@ -51,7 +51,7 @@ public class LarareOmdomeService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        JsonArray data = LarareOmdomeManager.getOmdome(id);
+        JsonArray data = larareOmdomeManager.getOmdome(id);
         if (data != null) {
             return Response.ok(data).build();
         } else {

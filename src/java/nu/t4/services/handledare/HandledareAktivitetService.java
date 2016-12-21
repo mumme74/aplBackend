@@ -1,6 +1,6 @@
 package nu.t4.services.handledare;
 
-import nu.t4.beans.ElevHandledare;
+import nu.t4.beans.larare.LarareHandledareManager;
 import javax.ejb.EJB;
 import javax.json.JsonArray;
 import javax.ws.rs.GET;
@@ -10,8 +10,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import nu.t4.beans.APLManager;
-import nu.t4.beans.AktivitetManager;
+import nu.t4.beans.global.APLManager;
+import nu.t4.beans.global.AktivitetManager;
 
 /**
  *
@@ -20,8 +20,6 @@ import nu.t4.beans.AktivitetManager;
 @Path("handledare")
 public class HandledareAktivitetService {
 
-    @EJB
-    ElevHandledare elevHandledare;
     @EJB
     APLManager manager;
     @EJB

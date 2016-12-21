@@ -5,10 +5,12 @@
  */
 package nu.t4.beans;
 
+import nu.t4.beans.global.APLManager;
 import java.util.Base64;
 import javax.ejb.embeddable.EJBContainer;
 import javax.json.JsonArray;
 import javax.xml.crypto.dsig.Transform;
+import nu.t4.beans.global.APLManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -115,12 +117,12 @@ public class APLManagerTest {
 
         //Testa att lägga in en ny loggbok
         boolean expResult = true;
-        boolean result = instance.postLogg(id, innehall, datum, ljus, bild);
+        boolean result = instance.postLogg(id, innehall, datum, ljus, bild); //Funktion flyttad
         assertEquals(expResult, result);
 
         //Testa att lägga in en identisk
         expResult = false;
-        result = instance.postLogg(id, innehall, datum, ljus, bild);
+        result = instance.postLogg(id, innehall, datum, ljus, bild); //Funktion flyttad
         assertEquals(expResult, result);
 
         //Ta bort den nya loggboken.
