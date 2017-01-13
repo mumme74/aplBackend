@@ -50,9 +50,9 @@ public class ElevLoggService {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int användar_id = elev.getInt("id");
+        int anvandar_id = elev.getInt("id");
 
-        JsonArray data = loggManager.getLoggar(användar_id);
+        JsonArray data = loggManager.getLoggar(anvandar_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {
@@ -81,6 +81,7 @@ public class ElevLoggService {
         JsonObject logg = jsonReader.readObject();
         jsonReader.close();
 
+        System.out.println();
         int id = elev.getInt("id");
         int ljus = logg.getInt("ljus");
         String datum = logg.getString("datum");

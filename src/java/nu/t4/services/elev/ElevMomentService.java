@@ -50,9 +50,9 @@ public class ElevMomentService {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int användar_id = elev.getInt("id");
+        int anvandar_id = elev.getInt("id");
 
-        JsonArray moment = momentManager.getMomentElev(användar_id);
+        JsonArray moment = momentManager.getMomentElev(anvandar_id);
         if (moment != null) {
             return Response.ok(moment).build();
         } else {
@@ -82,9 +82,9 @@ public class ElevMomentService {
         jsonReader.close();
 
         int moment_id = object.getInt("id");
-        int användar_id = elev.getInt("id");
+        int anvandar_id = elev.getInt("id");
 
-        if (momentManager.skickaMomentTillHandledare(moment_id, användar_id)) {
+        if (momentManager.skickaMomentTillHandledare(moment_id, anvandar_id)) {
             return Response.ok().build();
         } else {
             return Response.serverError().build();

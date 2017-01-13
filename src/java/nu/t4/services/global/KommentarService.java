@@ -46,8 +46,8 @@ public class KommentarService {
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
+        JsonObject anvandare = manager.getGoogleUser(payload.getSubject());
+        if (anvandare == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         //Skapa ett json objekt av indatan
@@ -56,14 +56,14 @@ public class KommentarService {
         jsonReader.close();
 
         //Hämtar användarens id mha den medskickade id_token
-        int användar_id = användare.getInt("id");
+        int anvandar_id = anvandare.getInt("id");
 
         //Hämtar loggbok_id, innehållet och datum från objektet av indatan
         int loggbok_id = kommentarObjekt.getInt("loggbok_id");
-        String innehåll = kommentarObjekt.getString("innehall");
+        String innehall = kommentarObjekt.getString("innehall");
         String datum = kommentarObjekt.getString("datum");
 
-        if (kommentarManager.postKommentar(användar_id, loggbok_id, innehåll, datum)) {
+        if (kommentarManager.postKommentar(anvandar_id, loggbok_id, innehall, datum)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
@@ -84,9 +84,9 @@ public class KommentarService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int användar_id = user.getInt("id");
+        int anvandar_id = user.getInt("id");
 
-        if (kommentarManager.raderaKommentar(kommentar_id, användar_id)) {
+        if (kommentarManager.raderaKommentar(kommentar_id, anvandar_id)) {
             return Response.status(Response.Status.ACCEPTED).build();
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

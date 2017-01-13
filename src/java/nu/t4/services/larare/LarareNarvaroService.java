@@ -41,9 +41,9 @@ public class LarareNarvaroService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 

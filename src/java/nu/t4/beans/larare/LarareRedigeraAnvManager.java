@@ -21,18 +21,18 @@ import org.mindrot.jbcrypt.BCrypt;
 @Stateless
 public class LarareRedigeraAnvManager {
 
-    public boolean redigeraElev(int ID, String namn, String tfnr, String email,
+    public boolean redigeraElev(int id, String namn, String tfnr, String email,
             int klass, int handledar_id) {
 
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("UPDATE skolans_användare SET namn = '%s', "
-                    + "Telefonnummer = '%s', "
+            String sql = String.format("UPDATE google_anvandare SET namn = '%s', "
+                    + "telefonnummer = '%s', "
                     + "email = '%s', "
-                    + "handledare_ID = %d, "
+                    + "handledare_id = %d, "
                     + "klass = %d "
-                    + "WHERE ID = %d", namn, tfnr, email, handledar_id, klass, ID);
+                    + "WHERE id = %d", namn, tfnr, email, handledar_id, klass, id);
             stmt.executeUpdate(sql);
 
             conn.close();
@@ -43,22 +43,22 @@ public class LarareRedigeraAnvManager {
         }
     }
 
-    public boolean redigeraHandledare(int ID, String namn, String tfnr,
-            String email, String företag, String användarnamn, String lösenord) {
+    public boolean redigeraHandledare(int id, String namn, String tfnr,
+            String email, String foretag, String anvandarnamn, String losenord) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("UPDATE handledare SET namn = '%s', "
                     + "telefonnummer = '%s', "
                     + "email = '%s', "
-                    + "företag = '%s', "
-                    + "användarnamn = '%s' ",
-                    namn, tfnr, email, företag, användarnamn);
-            if (!lösenord.equals("")) {
-                String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
-                sql += String.format(", lösenord = '%s' ", encrypted_lösenord);
+                    + "foretag = '%s', "
+                    + "anvandarnamn = '%s' ",
+                    namn, tfnr, email, foretag, anvandarnamn);
+            if (!losenord.equals("")) {
+                String encrypted_losenord = BCrypt.hashpw(losenord, BCrypt.gensalt());
+                sql += String.format(", losenord = '%s' ", encrypted_losenord);
             }
-            sql += String.format("WHERE ID = %d", ID);
+            sql += String.format("WHERE id = %d", id);
             stmt.executeUpdate(sql);
 
             conn.close();
@@ -73,7 +73,7 @@ public class LarareRedigeraAnvManager {
         try {
             com.mysql.jdbc.Connection conn = ConnectionFactory.getConnection();
             com.mysql.jdbc.Statement stmt = (com.mysql.jdbc.Statement) conn.createStatement();
-            String sqlbase = "UPDATE skolans_användare SET handledare_ID = %d WHERE ID = %d;";
+            String sqlbase = "UPDATE google_anvandare SET handledare_id = %d WHERE id = %d;";
             String sql = "";
             Iterator iterator = array.iterator();
             while (iterator.hasNext()) {

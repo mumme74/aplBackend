@@ -48,9 +48,9 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -80,9 +80,9 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -111,9 +111,9 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -144,9 +144,9 @@ public class InfoService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -170,14 +170,14 @@ public class InfoService {
         if (payload == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        JsonObject användare = manager.getGoogleUser(payload.getSubject());
-        if (användare == null) {
+        JsonObject anvandare = manager.getGoogleUser(payload.getSubject());
+        if (anvandare == null) {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int användar_id = användare.getInt("id");
+        int anvandar_id = anvandare.getInt("id");
 
-        JsonArray data = kontaktManager.getElevKontakt(användar_id);
+        JsonArray data = kontaktManager.getElevKontakt(anvandar_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {
@@ -224,15 +224,15 @@ public class InfoService {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         int klass_id = user.getInt("klass");
 
-        JsonArray data = kontaktManager.getKontaktLärare(klass_id);
+        JsonArray data = kontaktManager.getKontaktLarare(klass_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {

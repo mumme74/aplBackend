@@ -41,7 +41,7 @@
                                 <p:column filterBy="#{usersList}" headerText="Sök" filterMatchMode="contains">
                                     <h:panelGrid columns="2">
                                         <h:outputText value="#{usersList}" />
-                                        <h:commandLink id="info" action="#{adminManager.setBehörighet(usersList)}" value="#"/>
+                                        <h:commandLink id="info" action="#{adminManager.setBehorighet(usersList)}" value="#"/>
                                     </h:panelGrid>
                                 </p:column>
                             </p:dataTable>
@@ -54,11 +54,11 @@
                         <h:panelGrid columns="2">
                             <h:outputLabel value="Användare med behörighet"/>
                             <br/>
-                            <p:dataTable var="lärareList" value='#{adminManager.lärare}' filteredValue="#{adminManager.filteredLärare}">
-                                <p:column filterBy="#{lärareList}" headerText="Sök" filterMatchMode="contains">
+                            <p:dataTable var="larareList" value='#{adminManager.larare}' filteredValue="#{adminManager.filteredLarare}">
+                                <p:column filterBy="#{larareList}" headerText="Sök" filterMatchMode="contains">
                                     <h:panelGrid columns="2">
-                                        <h:outputText value="#{lärareList}" />
-                                        <h:commandLink id="info" action="#{adminManager.removeBehörighet(lärareList)}" value="X"/>
+                                        <h:outputText value="#{larareList}" />
+                                        <h:commandLink id="info" action="#{adminManager.removeBehorighet(larareList)}" value="X"/>
                                     </h:panelGrid>
                                 </p:column>
                             </p:dataTable>

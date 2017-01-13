@@ -27,7 +27,7 @@ public class LarareKlassManager {
             Statement stmt = conn.createStatement();
             String sql = String.format("SELECT id, namn FROM aplapp.klass "
                     + "WHERE program_id = (SELECT program_id FROM klass "
-                    + "WHERE id = (SELECT klass FROM skolans_användare "
+                    + "WHERE id = (SELECT klass FROM google_anvandare "
                     + "WHERE id = %d));", larare_id);
             ResultSet data = stmt.executeQuery(sql);
 
@@ -54,10 +54,10 @@ public class LarareKlassManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             //Select info from elever where klass = klass_id if lärare has access to it
-            String sql = String.format("SELECT namn, id FROM skolans_användare "
-                    + "WHERE behörighet = 0 AND klass = %d AND %d IN (SELECT id FROM klass "
+            String sql = String.format("SELECT namn, id FROM google_anvandare "
+                    + "WHERE behorighet = 0 AND klass = %d AND %d IN (SELECT id FROM klass "
                     + "WHERE program_id = (SELECT program_id FROM klass "
-                    + "WHERE id = (SELECT klass FROM skolans_användare "
+                    + "WHERE id = (SELECT klass FROM google_anvandare "
                     + "WHERE id = %d)))", klass_id, klass_id, anv_id);
             ResultSet data = stmt.executeQuery(sql);
 

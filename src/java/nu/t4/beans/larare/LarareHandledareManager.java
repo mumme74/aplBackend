@@ -34,12 +34,12 @@ public class LarareHandledareManager {
 
             while (data.next()) {
                 program.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("ID"))
+                        .add("id", data.getInt("id"))
                         .add("handledare", data.getString("handledare"))
                         .add("telefonnummer", data.getString("telefonnummer"))
                         .add("email", data.getString("email"))
                         .add("namn", data.getString("namn"))//programnamn
-                        .add("foretag", data.getString("företag"))
+                        .add("foretag", data.getString("foretag"))
                         .build());
             }
 

@@ -25,16 +25,16 @@ public class LarareEleverManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT namn, ID, handledare_ID FROM skolans_användare WHERE behörighet= 0 AND klass = " + klass_id;
+            String sql = "SELECT namn, id, handledare_id FROM google_anvandare WHERE behorighet= 0 AND klass = " + klass_id;
             ResultSet data = stmt.executeQuery(sql);
 
             JsonArrayBuilder klass = Json.createArrayBuilder();
 
             while (data.next()) {
                 klass.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("ID"))
+                        .add("id", data.getInt("id"))
                         .add("namn", data.getString("namn"))
-                        .add("hl_id", data.getInt("handledare_ID"))
+                        .add("hl_id", data.getInt("handledare_id"))
                         .build()
                 );
             }

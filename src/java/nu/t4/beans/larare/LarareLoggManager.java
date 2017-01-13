@@ -31,9 +31,9 @@ public class LarareLoggManager {
 
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT loggbok.*, skolans_användare.namn"
-                    + " FROM loggbok, skolans_användare WHERE loggbok.elev_id = "
-                    + "skolans_användare.id AND loggbok.elev_id = %d ORDER BY loggbok.datum DESC", elev_id);
+            String sql = String.format("SELECT loggbok.*, google_anvandare.namn"
+                    + " FROM loggbok, google_anvandare WHERE loggbok.elev_id = "
+                    + "google_anvandare.id AND loggbok.elev_id = %d ORDER BY loggbok.datum DESC", elev_id);
             ResultSet data = stmt.executeQuery(sql);
 
             JsonArrayBuilder jsonArray = Json.createArrayBuilder();
@@ -52,9 +52,9 @@ public class LarareLoggManager {
                 }
 
                 jsonArray.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("ID"))
+                        .add("id", data.getInt("id"))
                         .add("elev_id", data.getInt("elev_id"))
-                        .add("innehall", data.getString("innehåll"))
+                        .add("innehall", data.getString("innehall"))
                         .add("intryck", data.getInt("intryck"))
                         .add("datum", data.getInt("datum"))
                         .add("bild_id", data.getInt("bild_id"))
@@ -76,7 +76,6 @@ public class LarareLoggManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            //String sql = String.format("SELECT * FROM aplapp.loggbok WHERE elev_id = %d and elev_id in (SELECT ID FROM aplapp.skolans_användare WHERE behörighet=0 AND klass in (select klass from aplapp.skolans_användare WHERE ID=%d and behörighet = 1));", elev_id, techer_id);
             String sql = String.format("SELECT * FROM loggbokvy WHERE "
                     + "loggbokvy.elev_id = %d ORDER BY loggbokvy.datum DESC", elev_id);
             ResultSet data = stmt.executeQuery(sql);
@@ -95,9 +94,9 @@ public class LarareLoggManager {
                     stringIntryck = "ERROR";
                 }
                 JsonObjectBuilder obuilder = Json.createObjectBuilder();
-                obuilder.add("ID", data.getInt("ID"))
+                obuilder.add("id", data.getInt("id"))
                         .add("elev_id", data.getInt("elev_id"))
-                        .add("innehall", data.getString("innehåll"))
+                        .add("innehall", data.getString("innehall"))
                         .add("intryck", stringIntryck)
                         .add("datum", data.getString("datum"))
                         .add("namn", data.getString("namn"));
@@ -115,20 +114,20 @@ public class LarareLoggManager {
             while (iterator.hasNext()) {
                 JsonObject obj = (JsonObject) iterator.next();
                 JsonArrayBuilder arrayBuilder2 = Json.createArrayBuilder();
-                int logg_id = obj.getInt("ID");
+                int logg_id = obj.getInt("id");
                 sql = "SELECT * FROM kommentarvy WHERE loggbok_id =" + logg_id;
                 ResultSet data2 = stmt.executeQuery(sql);
                 JsonArrayBuilder jsonArray = Json.createArrayBuilder();
                 while (data2.next()) {
                     String datum = data2.getString("datum").substring(0, 16);
                     JsonObjectBuilder obuilder = Json.createObjectBuilder();
-                    obuilder.add("innehall", data2.getString("innehåll"))
+                    obuilder.add("innehall", data2.getString("innehall"))
                             .add("datum", datum)
                             .add("namn", data2.getString("namn"));
                     arrayBuilder2.add(obuilder.build());
                 }
                 arrayBuilder.add(Json.createObjectBuilder()
-                        .add("ID", logg_id)
+                        .add("id", logg_id)
                         .add("elev_id", obj.getInt("elev_id"))
                         .add("innehall", obj.getString("innehall"))
                         .add("intryck", obj.getString("intryck"))
@@ -141,7 +140,7 @@ public class LarareLoggManager {
             conn.close();
             return arrayBuilder.build();
         } catch (Exception e) {
-            System.out.println("--Error from: GetLoggLärareManager: getLoggarFromTeacher--");
+            System.out.println("--Error from: GetLoggLarareManager: getLoggarFromTeacher--");
             System.out.println(e.getMessage());
             System.out.println("--End ErrorMessage--");
             return null;

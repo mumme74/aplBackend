@@ -45,11 +45,11 @@ public class APLService {
         }
         JsonObject user = manager.getGoogleUser(payload.getSubject());
 
-        int behörighet = -1;
+        int behorighet = -1;
         if (user != null) {
-            behörighet = user.getInt("behörighet");
+            behorighet = user.getInt("behorighet");
         }
-        JsonObject data = Json.createObjectBuilder().add("behorighet", behörighet).build();
+        JsonObject data = Json.createObjectBuilder().add("behorighet", behorighet).build();
         return Response.ok(data).build();
     }
 
@@ -116,7 +116,7 @@ public class APLService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        if (user.getInt("behörighet") != 1) {
+        if (user.getInt("behorighet") != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         //Skapa ett json objekt av indatan
@@ -124,15 +124,15 @@ public class APLService {
         JsonObject jsonObject = jsonReader.readObject();
         jsonReader.close();
 
-        String användarnamn = jsonObject.getString("anvandarnamn");
-        String lösenord = jsonObject.getString("losenord");
+        String anvandarnamn = jsonObject.getString("anvandarnamn");
+        String losenord = jsonObject.getString("losenord");
         String email = jsonObject.getString("email");
         String namn = jsonObject.getString("namn");
         String tfnr = jsonObject.getString("tfnr");
         int program_id = jsonObject.getInt("program_id");
         String foretag = jsonObject.getString("foretag");
 
-        if (manager.registerHandledare(användarnamn, namn, lösenord, tfnr, email, program_id, foretag)) {
+        if (manager.registerHandledare(anvandarnamn, namn, losenord, tfnr, email, program_id, foretag)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();

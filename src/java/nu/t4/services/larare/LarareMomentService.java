@@ -65,7 +65,7 @@ public class LarareMomentService {
     @GET
     @Path("/moment")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response seMomentLärare(@Context HttpHeaders headers) {
+    public Response seMomentLarare(@Context HttpHeaders headers) {
 
         //Kollar att inloggningen är ok
         String idTokenString = headers.getHeaderString("Authorization");
@@ -77,14 +77,14 @@ public class LarareMomentService {
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         int larar_id = user.getInt("id");
 
-        JsonArray moment = momentManager.seMomentLärare(larar_id);
+        JsonArray moment = momentManager.seMomentLarare(larar_id);
         if (moment != null) {
             return Response.ok(moment).build();
         } else {
@@ -107,15 +107,15 @@ public class LarareMomentService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int lärar_id = user.getInt("id");
+        int larar_id = user.getInt("id");
 
-        if (momentManager.raderaMomentLärare(moment_id, lärar_id)) {
+        if (momentManager.raderaMomentLarare(moment_id, larar_id)) {
             return Response.status(Response.Status.ACCEPTED).build();
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -189,9 +189,9 @@ public class LarareMomentService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 

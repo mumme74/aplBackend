@@ -46,9 +46,9 @@ public class ElevLoggManager {
                     stringIntryck = "ERROR";
                 }
                 JsonObjectBuilder obuilder = Json.createObjectBuilder();
-                obuilder.add("ID", data.getInt("ID"))
+                obuilder.add("id", data.getInt("id"))
                         .add("elev_id", data.getInt("elev_id"))
-                        .add("innehall", data.getString("innehåll"))
+                        .add("innehall", data.getString("innehall"))
                         .add("intryck", stringIntryck)
                         .add("datum", data.getString("datum"))
                         .add("namn", data.getString("namn"));
@@ -66,20 +66,20 @@ public class ElevLoggManager {
             while (iterator.hasNext()) {
                 JsonObject obj = (JsonObject) iterator.next();
                 JsonArrayBuilder arrayBuilder2 = Json.createArrayBuilder();
-                int logg_id = obj.getInt("ID");
+                int logg_id = obj.getInt("id");
                 sql = "SELECT * FROM kommentarvy WHERE loggbok_id =" + logg_id;
                 ResultSet data2 = stmt.executeQuery(sql);
                 JsonArrayBuilder jsonArray = Json.createArrayBuilder();
                 while (data2.next()) {
                     String datum = data2.getString("datum").substring(0, 16);
                     JsonObjectBuilder obuilder = Json.createObjectBuilder();
-                    obuilder.add("innehall", data2.getString("innehåll"))
+                    obuilder.add("innehall", data2.getString("innehall"))
                             .add("datum", datum)
                             .add("namn", data2.getString("namn"));
                     arrayBuilder2.add(obuilder.build());
                 }
                 arrayBuilder.add(Json.createObjectBuilder()
-                        .add("ID", logg_id)
+                        .add("id", logg_id)
                         .add("elev_id", obj.getInt("elev_id"))
                         .add("innehall", obj.getString("innehall"))
                         .add("intryck", obj.getString("intryck"))
@@ -123,7 +123,7 @@ public class ElevLoggManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             java.sql.Statement stmt = conn.createStatement();
-            String sql = String.format("DELETE FROM loggbok WHERE ID = %d AND elev_id = %d", loggbok_id, elev_id);
+            String sql = String.format("DELETE FROM loggbok WHERE id = %d AND elev_id = %d", loggbok_id, elev_id);
             stmt.executeUpdate(sql);
             return true;
         } catch (Exception e) {

@@ -12,13 +12,25 @@ package nu.t4.beans.admin;
 public class Users {
 
     private int id;
+    private String namn;
+    private String tfnr;
+    private String email;
+    private int klass;
+    private int hl_id;
+    private String hl_namn;
+    private int behorighet;
+    private String foretag;
+    private int program_id;
+    private String anvnamn;
+    private String losenord;
+    private String namn_foretag;
 
-    public String getFöretag() {
-        return företag;
+    public String getForetag() {
+        return foretag;
     }
 
-    public void setFöretag(String företag) {
-        this.företag = företag;
+    public void setForetag(String foretag) {
+        this.foretag = foretag;
     }
 
     public int getProgram_id() {
@@ -37,32 +49,20 @@ public class Users {
         this.anvnamn = anvnamn;
     }
 
-    public String getLösenord() {
-        return lösenord;
+    public String getLosenord() {
+        return losenord;
     }
 
-    public void setLösenord(String lösenord) {
-        this.lösenord = lösenord;
-    }
-    private String namn;
-    private String tfnr;
-    private String email;
-    private int klass;
-    private int hl_id;
-    private String hl_namn;
-    private int behörighet;
-    private String företag;
-    private int program_id;
-    private String anvnamn;
-    private String lösenord;
-    private String namn_företag;
-
-    public String getNamn_företag() {
-        return namn_företag;
+    public void setLosenord(String losenord) {
+        this.losenord = losenord;
     }
 
-    public void setNamn_företag(String namn_företag) {
-        this.namn_företag = namn_företag;
+    public String getNamn_foretag() {
+        return namn_foretag;
+    }
+
+    public void setNamn_foretag(String namn_foretag) {
+        this.namn_foretag = namn_foretag;
     }
 
     public String getHl_namn() {
@@ -89,8 +89,8 @@ public class Users {
         this.email = email;
     }
 
-    public int getBehörighet() {
-        return behörighet;
+    public int getBehorighet() {
+        return behorighet;
     }
 
     public int getId() {
@@ -125,7 +125,7 @@ public class Users {
         this.hl_id = hl_id;
     }
 
-    public void setBehörighet(int behörighet) {
-        this.behörighet = behörighet;
+    public void setBehorighet(int behorighet) {
+        this.behorighet = behorighet;
     }
 }

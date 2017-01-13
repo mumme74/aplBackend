@@ -28,7 +28,7 @@ public class AnvInfoManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM elevinfo WHERE ID = " + elev_id;
+            String sql = "SELECT * FROM elevinfo WHERE id = " + elev_id;
             ResultSet data = stmt.executeQuery(sql);
             data.next();
             JsonObjectBuilder obj = Json.createObjectBuilder();
@@ -51,7 +51,7 @@ public class AnvInfoManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM hlinfo WHERE ID = " + hl_id;
+            String sql = "SELECT * FROM hlinfo WHERE id = " + hl_id;
             ResultSet data = stmt.executeQuery(sql);
             data.next();
             JsonObjectBuilder obj = Json.createObjectBuilder();
@@ -59,8 +59,8 @@ public class AnvInfoManager {
                     .add("tfnr", data.getString("tfnr"))
                     .add("email", data.getString("email"))
                     .add("program_id", data.getInt("program_id"))
-                    .add("foretag", data.getString("företag"))
-                    .add("anvnamn", data.getString("användarnamn"));
+                    .add("foretag", data.getString("foretag"))
+                    .add("anvnamn", data.getString("anvandarnamn"));
 
             conn.close();
             return obj.build();
@@ -76,19 +76,19 @@ public class AnvInfoManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT ID, namn, företag FROM handledare "
-                    + "where handledare.ID NOT IN "
-                    + "(SELECT handledare_ID FROM skolans_användare "
-                    + "WHERE handledare.ID = aplapp.skolans_användare.handledare_ID) "
-                    + "AND handledare.program_id = (SELECT klass.program_id FROM klass WHERE klass.ID = %d )"
+            String sql = String.format("SELECT id, namn, foretag FROM handledare "
+                    + "where handledare.id NOT IN "
+                    + "(SELECT handledare_id FROM google_anvandare "
+                    + "WHERE handledare.id = aplapp.google_anvandare.handledare_id) "
+                    + "AND handledare.program_id = (SELECT klass.program_id FROM klass WHERE klass.id = %d )"
                     + "ORDER BY namn", klass_id);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
             while (data.next()) {
-                String namn_företag = data.getString("namn") + " - " + data.getString("företag");
+                String namn_foretag = data.getString("namn") + " - " + data.getString("foretag");
                 jBuilder.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("ID"))
-                        .add("namn_foretag", namn_företag)
+                        .add("id", data.getInt("id"))
+                        .add("namn_foretag", namn_foretag)
                         .build()
                 );
             }
@@ -107,16 +107,16 @@ public class AnvInfoManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT ID, namn, företag FROM handledare "
-                    + "WHERE handledare.program_id = (SELECT klass.program_id FROM klass WHERE klass.ID = %d ) "
+            String sql = String.format("SELECT id, namn, foretag FROM handledare "
+                    + "WHERE handledare.program_id = (SELECT klass.program_id FROM klass WHERE klass.id = %d ) "
                     + "ORDER BY namn", klass_id);
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder jBuilder = Json.createArrayBuilder();
             while (data.next()) {
-                String namn_företag = data.getString("namn") + " - " + data.getString("företag");
+                String namn_foretag = data.getString("namn") + " - " + data.getString("foretag");
                 jBuilder.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("ID"))
-                        .add("namn_foretag", namn_företag)
+                        .add("id", data.getInt("id"))
+                        .add("namn_foretag", namn_foretag)
                         .build()
                 );
             }

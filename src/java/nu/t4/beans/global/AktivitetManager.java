@@ -37,12 +37,12 @@ public class AktivitetManager {
             switch (tabell) {
                 case HANDLEDARE:
                     sql = String.format("SELECT * FROM aktiviteter "
-                            + "WHERE användar_id = (SELECT id FROM skolans_användare "
+                            + "WHERE anvandar_id = (SELECT id FROM google_anvandare "
                             + "WHERE handledare_id = %d)", anv_id);
                     break;
                 case NEKADE:
                     sql = String.format("SELECT * FROM nekade_aktiviteter "
-                            + "WHERE användar_id = %d", anv_id);
+                            + "WHERE anvandar_id = %d", anv_id);
                     break;
                 default:
                     break;
@@ -58,9 +58,9 @@ public class AktivitetManager {
                 obuilder.add("typ", typ);
                 int id = data.getInt("id");
                 obuilder.add("id", id);
-                int elev_id = data.getInt("användar_id");
+                int elev_id = data.getInt("anvandar_id");
                 obuilder.add("elev_id", elev_id);
-                String innehall = data.getString("innehåll");
+                String innehall = data.getString("innehall");
                 if (data.wasNull()) {
                     obuilder.add("innehall", JsonObject.NULL);
                 } else {
@@ -95,27 +95,27 @@ public class AktivitetManager {
         }
     }
 
-    public boolean uppdateraAktivitet(int typ, int godkant, int aktivitets_id, int handledare_id) {
+    public boolean uppdateraAktivitet(int typ, int godkand, int aktivitets_id, int handledare_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = "";
             switch (typ) {
                 case NARVARO:
-                    sql = String.format("UPDATE närvaro SET godkänt = %d "
-                            + "WHERE närvaro_id = %d AND användar_id = (SELECT id FROM skolans_användare "
-                            + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
+                    sql = String.format("UPDATE narvaro SET godkand = %d "
+                            + "WHERE narvaro_id = %d AND anvandar_id = (SELECT id FROM google_anvandare "
+                            + "WHERE handledare_id = %d)", godkand, aktivitets_id, handledare_id);
                     break;
                 case LOGGBOK:
-                    sql = String.format("UPDATE loggbok SET godkänt = %d "
-                            + "WHERE ID = %d AND elev_id = (SELECT id FROM skolans_användare "
-                            + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
+                    sql = String.format("UPDATE loggbok SET godkand = %d "
+                            + "WHERE id = %d AND elev_id = (SELECT id FROM google_anvandare "
+                            + "WHERE handledare_id = %d)", godkand, aktivitets_id, handledare_id);
                     break;
                 case MOMENT:
-                    godkant++;
-                    sql = String.format("UPDATE tilldela_moment SET godkänd = %d "
-                            + "WHERE moment_id = %d AND användar_id = (SELECT id FROM skolans_användare "
-                            + "WHERE handledare_id = %d)", godkant, aktivitets_id, handledare_id);
+                    godkand++;
+                    sql = String.format("UPDATE koppla_moment_elev SET godkand = %d "
+                            + "WHERE moment_id = %d AND anvandar_id = (SELECT id FROM google_anvandare "
+                            + "WHERE handledare_id = %d)", godkand, aktivitets_id, handledare_id);
                     break;
                 default:
                     break;
@@ -136,16 +136,16 @@ public class AktivitetManager {
             String sql = "";
             switch (typ) {
                 case NARVARO:
-                    sql = String.format("UPDATE närvaro SET godkänt = 0, trafikljus = %d "
-                            + "WHERE närvaro_id = %d AND användar_id = %d", trafikljus, aktivitets_id, elev_id);
+                    sql = String.format("UPDATE narvaro SET godkand = 0, trafikljus = %d "
+                            + "WHERE narvaro_id = %d AND anvandar_id = %d", trafikljus, aktivitets_id, elev_id);
                     break;
                 case LOGGBOK:
-                    sql = String.format("UPDATE loggbok SET godkänt = 0, innehåll = '%s'"
-                            + "WHERE ID = %d AND elev_id = %d", innehall, aktivitets_id, elev_id);
+                    sql = String.format("UPDATE loggbok SET godkand = 0, innehall = '%s'"
+                            + "WHERE id = %d AND elev_id = %d", innehall, aktivitets_id, elev_id);
                     break;
                 case MOMENT:
-                    sql = String.format("UPDATE tilldela_moment SET godkänd = 0 "
-                            + "WHERE moment_id = %d AND användar_id = %d", aktivitets_id, elev_id);
+                    sql = String.format("UPDATE koppla_moment_elev SET godkand = 0 "
+                            + "WHERE moment_id = %d AND anvandar_id = %d", aktivitets_id, elev_id);
                     break;
                 default:
                     break;

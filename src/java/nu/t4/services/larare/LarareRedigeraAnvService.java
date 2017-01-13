@@ -47,9 +47,9 @@ public class LarareRedigeraAnvService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         //Skapa ett json objekt av indatan
@@ -57,7 +57,7 @@ public class LarareRedigeraAnvService {
         JsonObject obj = jsonReader.readObject();
         jsonReader.close();
 
-        int id = obj.getInt("ID");
+        int id = obj.getInt("id");
         String namn = obj.getString("namn");
         String tfnr = obj.getString("tfnr");
         String email = obj.getString("email");
@@ -87,9 +87,9 @@ public class LarareRedigeraAnvService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         //Skapa ett json objekt av indatan
@@ -97,15 +97,15 @@ public class LarareRedigeraAnvService {
         JsonObject obj = jsonReader.readObject();
         jsonReader.close();
 
-        int id = obj.getInt("ID");
+        int id = obj.getInt("id");
         String namn = obj.getString("namn");
         String tfnr = obj.getString("tfnr");
         String email = obj.getString("email");
-        String företag = obj.getString("foretag");
-        String användarnamn = obj.getString("anvnamn");
-        String lösenord = obj.getString("losenord");
+        String foretag = obj.getString("foretag");
+        String anvandarnamn = obj.getString("anvnamn");
+        String losenord = obj.getString("losenord");
 
-        if (anvManager.redigeraHandledare(id, namn, tfnr, email, företag, användarnamn, lösenord)) {
+        if (anvManager.redigeraHandledare(id, namn, tfnr, email, foretag, anvandarnamn, losenord)) {
             return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.serverError().build();
@@ -128,9 +128,9 @@ public class LarareRedigeraAnvService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 

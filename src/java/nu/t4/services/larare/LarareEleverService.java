@@ -24,7 +24,7 @@ public class LarareEleverService {
     @EJB
     LarareEleverManager lararManager;
     @EJB
-    LarareLoggManager loggLärareManager;
+    LarareLoggManager loggLarareManager;
 
     @GET
     @Path("/elever")
@@ -41,9 +41,9 @@ public class LarareEleverService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -74,13 +74,13 @@ public class LarareEleverService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        int behörighet = user.getInt("behörighet");
+        int behorighet = user.getInt("behorighet");
 
-        if (behörighet != 1) {
+        if (behorighet != 1) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        JsonArray data = loggLärareManager.getLoggar(user.getInt("id"), elev_id);
+        JsonArray data = loggLarareManager.getLoggar(user.getInt("id"), elev_id);
         if (data != null) {
             return Response.ok(data).build();
         } else {

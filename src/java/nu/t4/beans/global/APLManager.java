@@ -32,17 +32,17 @@ import org.mindrot.jbcrypt.BCrypt;
 @Stateless
 public class APLManager {
 
-    //ID för vår app
-    private final String CLIENT_ID = "550162747744-m4r2h8egnvqicsbhoefdlo54lk8q399n.apps.googleusercontent.com";
+    //id för vår app
+    private final String CLIENT_id = "550162747744-m4r2h8egnvqicsbhoefdlo54lk8q399n.apps.googleusercontent.com";
 
-    public boolean registerGoogleUser(String googleID, String namn, int klass, String tfnr, String email) {
+    public boolean registerGoogleUser(String googleid, String namn, int klass, String tfnr, String email) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
-                    "INSERT INTO skolans_användare VALUES"
+                    "INSERT INTO google_anvandare VALUES"
                     + "('%s',null,'%s','%s','%s',%d,null,1,0)",
-                    googleID, namn, tfnr, email, klass
+                    googleid, namn, tfnr, email, klass
             );
             stmt.execute(sql);
 
@@ -63,7 +63,7 @@ public class APLManager {
             jsonFactory = JacksonFactory.getDefaultInstance();
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
             verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory)
-                    .setAudience(Arrays.asList(CLIENT_ID))
+                    .setAudience(Arrays.asList(CLIENT_id))
                     .build();
         } catch (Exception e) {
             return null;
@@ -82,7 +82,7 @@ public class APLManager {
             //if (payload.getHostedDomain().equals(APPS_DOMAIN_NAME)) {
             /*
             } else {
-                return Response.status(Response.Status.FORBIDDEN).build();
+                return Response.status(Response.Status.FORBidDEN).build();
             }*/
         } else {
             return null;
@@ -103,11 +103,11 @@ public class APLManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
-                    "SELECT * FROM handledare WHERE användarnamn = '%s'",
+                    "SELECT * FROM handledare WHERE anvandarnamn = '%s'",
                     anvandarnamn);
             ResultSet result = stmt.executeQuery(sql);
             result.next();
-            if (BCrypt.checkpw(losenord, result.getString("lösenord"))) {
+            if (BCrypt.checkpw(losenord, result.getString("losenord"))) {
                 conn.close();
                 return true;
             } else {
@@ -125,19 +125,19 @@ public class APLManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
-                    "SELECT * FROM skolans_användare WHERE google_id = '%s'",
+                    "SELECT * FROM google_anvandare WHERE google_id = '%s'",
                     google_id);
             ResultSet result = stmt.executeQuery(sql);
             result.next();
             JsonObjectBuilder obuilder = Json.createObjectBuilder();
             obuilder.add("id", result.getInt("id"))
                     .add("namn", result.getString("namn"))
-                    .add("tfnr", result.getString("Telefonnummer"))
+                    .add("tfnr", result.getString("telefonnummer"))
                     .add("email", result.getString("email"))
                     .add("klass", result.getInt("klass"))
-                    .add("handledare_ID", result.getInt("handledare_ID"))
+                    .add("handledare_id", result.getInt("handledare_id"))
                     .add("senast_inloggad", result.getInt("senast_inloggad"))
-                    .add("behörighet", result.getInt("behörighet"));
+                    .add("behorighet", result.getInt("behorighet"));
             conn.close();
             return obuilder.build();
         } catch (Exception e) {
@@ -153,11 +153,11 @@ public class APLManager {
             String sql;
             if (googleUser) {
                 sql = String.format(
-                        "DELETE FROM skolans_användare WHERE google_id = '%s'",
+                        "DELETE FROM google_anvandare WHERE google_id = '%s'",
                         key);
             } else {
                 sql = String.format(
-                        "DELETE FROM handledare WHERE användarnamn = '%s'",
+                        "DELETE FROM handledare WHERE anvandarnamn = '%s'",
                         key);
             }
             stmt.executeUpdate(sql);
@@ -169,15 +169,15 @@ public class APLManager {
         }
     }
 
-    public boolean registerHandledare(String användarnamn, String namn, String lösenord, String tfnr, String email, int program_id, String foretag) {
+    public boolean registerHandledare(String anvandarnamn, String namn, String losenord, String tfnr, String email, int program_id, String foretag) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
+            String encrypted_losenord = BCrypt.hashpw(losenord, BCrypt.gensalt());
             String sql = String.format(
                     "INSERT INTO handledare VALUES"
                     + "(null, '%s','%s','%s','%s','%s', %d, '%s')",
-                    namn, användarnamn, email, encrypted_lösenord, tfnr, program_id, foretag
+                    namn, anvandarnamn, email, encrypted_losenord, tfnr, program_id, foretag
             );
             stmt.executeUpdate(sql);
 
@@ -241,7 +241,7 @@ public class APLManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format(
-                    "SELECT id FROM handledare WHERE användarnamn = '%s'",
+                    "SELECT id FROM handledare WHERE anvandarnamn = '%s'",
                     anvandarnamn);
             ResultSet result = stmt.executeQuery(sql);
             result.next();

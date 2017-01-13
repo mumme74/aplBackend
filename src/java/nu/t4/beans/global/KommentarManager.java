@@ -22,14 +22,14 @@ import nu.t4.beans.ConnectionFactory;
 @Stateless
 public class KommentarManager {
 
-    public boolean postKommentar(int användar_id, int loggbok_id,
-            String innehåll, String datum) {
+    public boolean postKommentar(int anvandar_id, int loggbok_id,
+            String innehall, String datum) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("INSERT INTO kommentar VALUES"
                     + "(NULL,%d,%d,'%s','%s')",
-                    användar_id, loggbok_id, innehåll, datum);
+                    anvandar_id, loggbok_id, innehall, datum);
             stmt.executeUpdate(sql);
             return true;
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public class KommentarManager {
             while (data.next()) {
 
                 JsonObjectBuilder obuilder = Json.createObjectBuilder();
-                obuilder.add("innehall", data.getString("innehåll"))
+                obuilder.add("innehall", data.getString("innehall"))
                         .add("datum", data.getString("datum"))
                         .add("namn", data.getString("namn"));
                 jsonArray.add(obuilder.build());
@@ -63,11 +63,11 @@ public class KommentarManager {
         }
     }
 
-    public boolean raderaKommentar(int kommentar_id, int användar_id) {
+    public boolean raderaKommentar(int kommentar_id, int anvandar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             java.sql.Statement stmt = conn.createStatement();
-            String sql = String.format("DELETE FROM kommentar WHERE kommentar_id = %d AND användar_id = %d", kommentar_id, användar_id);
+            String sql = String.format("DELETE FROM kommentar WHERE kommentar_id = %d AND anvandar_id = %d", kommentar_id, anvandar_id);
             stmt.executeUpdate(sql);
             return true;
         } catch (Exception e) {

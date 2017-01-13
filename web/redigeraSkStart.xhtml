@@ -36,7 +36,7 @@
                         <h:form>
 
                             <p:dataTable var="usersList" 
-                                         value='#{adminManager.skolansAnvändare}' 
+                                         value='#{adminManager.skolansAnvandare}' 
                                          resizableColumns="true"
                                          widgetVar="anvTable"
                                          filteredValue="#{adminManager.filteredAnv}"
@@ -62,8 +62,8 @@
                                 <p:column headerText="Handledare" filterBy="#{usersList.hl_namn}" filterMatchMode="contains" filterStyle="display:none">
                                     <h:outputText value="#{usersList.hl_namn}" />
                                 </p:column>
-                                <p:column headerText="Behörighet" filterBy="#{usersList.behörighet}" filterMatchMode="contains" filterStyle="display:none">
-                                    <h:outputText value="#{usersList.behörighet}" />
+                                <p:column headerText="Behörighet" filterBy="#{usersList.behorighet}" filterMatchMode="contains" filterStyle="display:none">
+                                    <h:outputText value="#{usersList.behorighet}" />
                                 </p:column>
                                 <p:column headerText="Välj">
                                     <p:commandButton value="Redigera" 

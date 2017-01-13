@@ -33,10 +33,10 @@ public class MomentManager {
      * @param Innehåll beskrivning av momentet
      * @return true om det skapats någonting annars false
      */
-    public boolean skapaMoment(int user_id, String Innehåll) {
+    public boolean skapaMoment(int user_id, String Innehall) {
         try {
             Connection conn = ConnectionFactory.getConnection();
-            String sql = String.format("INSERT into aplapp.moment VALUES(null, %d,'%s');", user_id, Innehåll);
+            String sql = String.format("INSERT into aplapp.moment VALUES(null, %d,'%s');", user_id, Innehall);
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
             conn.close();
@@ -58,15 +58,15 @@ public class MomentManager {
     public JsonArray seMoment(int elev_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
-            String sql = String.format("SELECT * FROM aplapp.tilldela_moment, moment WHERE tilldela_moment.användar_id = %d AND moment_id = moment.ID;;", elev_id);
+            String sql = String.format("SELECT * FROM aplapp.koppla_moment_elev, moment WHERE koppla_moment_elev.anvandar_id = %d AND moment_id = moment.id;;", elev_id);
             Statement stmt = conn.createStatement();
             ResultSet data = stmt.executeQuery(sql);
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             while (data.next()) {
                 arrayBuilder.add(Json.createObjectBuilder()
                         .add("moment", data.getInt("moment_id"))
-                        .add("innehall", data.getString("innehåll"))
-                        .add("godkand", data.getInt("godkänd"))
+                        .add("innehall", data.getString("innehall"))
+                        .add("godkand", data.getInt("godkand"))
                         .build()
                 );
             }
@@ -86,21 +86,21 @@ public class MomentManager {
      * skapat</p>
      *
      * @param lärar_id
-     * @return jsonarray med [{ID:number, innehall:varchar},..]
+     * @return jsonarray med [{id:number, innehall:varchar},..]
      */
-    public JsonArray seMomentLärare(int lärar_id) {
+    public JsonArray seMomentLarare(int larar_id) {
 
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT ID, innehåll from moment WHERE användar_ID =" + lärar_id;
+            String sql = "SELECT id, innehall from moment WHERE anvandar_id =" + larar_id;
             ResultSet data = stmt.executeQuery(sql);
 
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             while (data.next()) {
                 arrayBuilder.add(Json.createObjectBuilder()
-                        .add("id", data.getInt("ID"))
-                        .add("innehall", data.getString("innehåll"))
+                        .add("id", data.getInt("id"))
+                        .add("innehall", data.getString("innehall"))
                         .build()
                 );
             }
@@ -121,11 +121,11 @@ public class MomentManager {
      * @param lärar_id
      * @return true om raderingen lyckas annars false
      */
-    public boolean raderaMomentLärare(int moment_id, int lärar_id) {
+    public boolean raderaMomentLarare(int moment_id, int larar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("DELETE FROM moment WHERE ID = %d AND användar_ID = %d", moment_id, lärar_id);
+            String sql = String.format("DELETE FROM moment WHERE id = %d AND anvandar_id = %d", moment_id, larar_id);
             stmt.executeUpdate(sql);
             return true;
         } catch (Exception e) {
@@ -143,12 +143,12 @@ public class MomentManager {
      * @param användar_id
      * @return true om raderingen lyckas annars false
      */
-    public boolean raderaMomentElev(int moment_id, int användar_id) {
+    public boolean raderaMomentElev(int moment_id, int anvandar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("DELETE FROM tilldela_moment WHERE "
-                    + "moment_id = %d AND användar_ID = %d", moment_id, användar_id);
+            String sql = String.format("DELETE FROM koppla_moment_elev WHERE "
+                    + "moment_id = %d AND anvandar_id = %d", moment_id, anvandar_id);
             stmt.executeUpdate(sql);
             return true;
         } catch (Exception e) {
@@ -171,7 +171,7 @@ public class MomentManager {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
 
-            String sqlbase = "INSERT INTO tilldela_moment(användar_id, moment_id, godkänd) VALUES (%d,%d,0);";
+            String sqlbase = "INSERT INTO koppla_moment_elev(anvandar_id, moment_id, godkand) VALUES (%d,%d,0);";
             Iterator<JsonValue> mIterator = moment.iterator();
             while (mIterator.hasNext()) {
                 JsonObject momentet = (JsonObject) mIterator.next();
@@ -198,9 +198,9 @@ public class MomentManager {
             Connection conn = ConnectionFactory.getConnection();
             com.mysql.jdbc.Statement stmt = (com.mysql.jdbc.Statement) conn.createStatement();
             String sql = String.format(
-                    "SELECT moment.innehåll, tilldela_moment.godkänd, tilldela_moment.moment_id "
-                    + "FROM moment, tilldela_moment "
-                    + "WHERE moment.id = tilldela_moment.moment_id AND tilldela_moment.användar_id =%d", id
+                    "SELECT moment.innehall, koppla_moment_elev.godkand, koppla_moment_elev.moment_id "
+                    + "FROM moment, koppla_moment_elev "
+                    + "WHERE moment.id = koppla_moment_elev.moment_id AND koppla_moment_elev.anvandar_id =%d", id
             );
 
             ResultSet data = stmt.executeQuery(sql);
@@ -209,8 +209,8 @@ public class MomentManager {
 
             while (data.next()) {
                 elever.add(Json.createObjectBuilder()
-                        .add("innehall", data.getString("innehåll"))
-                        .add("godkand", data.getInt("godkänd"))
+                        .add("innehall", data.getString("innehall"))
+                        .add("godkand", data.getInt("godkand"))
                         .add("moment_id", data.getInt("moment_id"))
                         .build());
             }
@@ -230,12 +230,12 @@ public class MomentManager {
         try {
             Connection conn = ConnectionFactory.getConnection();
             com.mysql.jdbc.Statement stmt = (com.mysql.jdbc.Statement) conn.createStatement();
-            String sql = String.format("SELECT moment.innehåll, "
-                    + "tilldela_moment.godkänd, tilldela_moment.moment_id "
-                    + "FROM moment, tilldela_moment "
-                    + "WHERE moment.id = tilldela_moment.moment_id "
-                    + "AND tilldela_moment.användar_id = "
-                    + "(select ID from skolans_användare where handledare_ID = %d)",
+            String sql = String.format("SELECT moment.innehall, "
+                    + "koppla_moment_elev.godkand, koppla_moment_elev.moment_id "
+                    + "FROM moment, koppla_moment_elev "
+                    + "WHERE moment.id = koppla_moment_elev.moment_id "
+                    + "AND koppla_moment_elev.anvandar_id = "
+                    + "(select id from google_anvandare where handledare_id = %d)",
                     handledar_id);
             ResultSet data = stmt.executeQuery(sql);
 
@@ -243,20 +243,20 @@ public class MomentManager {
 
             while (data.next()) {
                 String status = "";
-                if (data.getInt("godkänd") == 0) {
+                if (data.getInt("godkand") == 0) {
                     status = "Ej avklarad";
-                } else if (data.getInt("godkänd") == 1) {
+                } else if (data.getInt("godkand") == 1) {
                     status = "Väntande svar";
-                } else if (data.getInt("godkänd") == 2) {
+                } else if (data.getInt("godkand") == 2) {
                     status = "Godkänd";
-                } else if (data.getInt("godkänd") == 3) {
+                } else if (data.getInt("godkand") == 3) {
                     status = "Nekad";
                 } else {
                     status = "error";
                 }
                 moment.add(Json.createObjectBuilder()
-                        .add("ID", data.getInt("moment_id"))
-                        .add("innehall", data.getString("innehåll"))
+                        .add("id", data.getInt("moment_id"))
+                        .add("innehall", data.getString("innehall"))
                         .add("status", status)
                         .build());
             }
@@ -272,12 +272,12 @@ public class MomentManager {
 
     }
 
-    public boolean skickaMomentTillHandledare(int moment_id, int användar_id) {
+    public boolean skickaMomentTillHandledare(int moment_id, int anvandar_id) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             com.mysql.jdbc.Statement stmt = (com.mysql.jdbc.Statement) conn.createStatement();
-            String sql = String.format("UPDATE tilldela_moment SET godkänd = 1 "
-                    + "WHERE moment_id = %d AND användar_id = %d", moment_id, användar_id);
+            String sql = String.format("UPDATE koppla_moment_elev SET godkand = 1 "
+                    + "WHERE moment_id = %d AND anvandar_id = %d", moment_id, anvandar_id);
             stmt.executeUpdate(sql);
             conn.close();
             return true;

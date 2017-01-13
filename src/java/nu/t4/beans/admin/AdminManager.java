@@ -30,7 +30,7 @@ public class AdminManager implements Serializable {
     private List filteredUsers;
     private List filteredHL;
     private List filteredAnv;
-    private List filteredLärare;
+    private List filteredLarare;
     private Users selectedUser;
     private Users selectedHL;
 
@@ -67,12 +67,12 @@ public class AdminManager implements Serializable {
         this.selectedHL = selectedHL;
     }
 
-    public List getFilteredLärare() {
-        return filteredLärare;
+    public List getFilteredLarare() {
+        return filteredLarare;
     }
 
-    public void setFilteredLärare(List filteredLärare) {
-        this.filteredLärare = filteredLärare;
+    public void setFilteredLarare(List filteredLarare) {
+        this.filteredLarare = filteredLarare;
     }
 
     public void setFilteredUsers(List filteredUsers) {
@@ -123,12 +123,12 @@ public class AdminManager implements Serializable {
     //Lägger till klassen i databasen
     public void addClass() {
         try {
-            int programId = 0;
-            programId = getProgramId(programIdNamn);
-            if (!klassnamn.equals("") && programId != 0) {
+            int programid = 0;
+            programid = getProgramId(programIdNamn);
+            if (!klassnamn.equals("") && programid != 0) {
                 Connection conn = ConnectionFactory.getConnection();
                 Statement stmt = conn.createStatement();
-                String sql = String.format("INSERT INTO klass VALUES(NULL, '%s', %d)", klassnamn, programId);
+                String sql = String.format("INSERT INTO klass VALUES(NULL, '%s', %d)", klassnamn, programid);
                 stmt.executeUpdate(sql);
                 conn.close();
             }
@@ -140,7 +140,7 @@ public class AdminManager implements Serializable {
         }
     }
 
-    //Hämtar alla klasser
+    //Hamtar alla klasser
     public List getClasses() {
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -181,17 +181,17 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT namn, email, behörighet FROM skolans_användare WHERE behörighet = 0";
+            String sql = "SELECT namn, email, behorighet FROM google_anvandare WHERE behorighet = 0";
             ResultSet data = stmt.executeQuery(sql);
             //List<Users> users = new ArrayList();
             //Users user = new Users();
             List users = new ArrayList();
             while (data.next()) {
                 users.add(data.getObject("email"));
-//                user.setNamn(data.getString("namn"));
-//                user.setEmail(data.getString("email"));
-//                user.setBehörighet("behörighet");
-//                users.add(user);
+//              user.setNamn(data.getString("namn"));
+//              user.setEmail(data.getString("email"));
+//              user.setBehorighet("behorighet");
+//              users.add(user);
             }
             conn.close();
             return users;
@@ -202,12 +202,12 @@ public class AdminManager implements Serializable {
     }
 
     //Sätter behörigheten som lärare mha deras email
-    public void setBehörighet(String email) {
+    public void setBehorighet(String email) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("UPDATE skolans_användare SET "
-                    + "behörighet = 1, handledare_ID = NULL WHERE email ='%s'",
+            String sql = String.format("UPDATE google_anvandare SET "
+                    + "behorighet = 1, handledare_id = NULL WHERE email ='%s'",
                     email);
             stmt.executeUpdate(sql);
             conn.close();
@@ -217,18 +217,18 @@ public class AdminManager implements Serializable {
     }
 
     //Hämtar alla som har lärarbehörighet
-    public List getLärare() {
+    public List getLarare() {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT namn, email FROM skolans_användare WHERE behörighet = 1";
+            String sql = "SELECT namn, email FROM google_anvandare WHERE behorighet = 1";
             ResultSet data = stmt.executeQuery(sql);
-            List lärare = new ArrayList();
+            List larare = new ArrayList();
             while (data.next()) {
-                lärare.add(data.getObject("email"));
+                larare.add(data.getObject("email"));
             }
             conn.close();
-            return lärare;
+            return larare;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -239,15 +239,15 @@ public class AdminManager implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT id, namn, företag FROM handledare";
+            String sql = "SELECT id, namn, foretag FROM handledare";
             ResultSet data = stmt.executeQuery(sql);
             List<Users> handledare = new ArrayList();
             while (data.next()) {
                 Users user = new Users();
                 user.setId(data.getInt("id"));
 
-                String namn_företag = data.getString("namn") + " - " + data.getString("företag");
-                user.setNamn_företag(namn_företag);
+                String namn_foretag = data.getString("namn") + " - " + data.getString("foretag");
+                user.setNamn_foretag(namn_foretag);
                 handledare.add(user);
             }
             conn.close();
@@ -301,12 +301,12 @@ public class AdminManager implements Serializable {
     }
 
     //Tar bort behörigheten som lärare mha deras email
-    public void removeBehörighet(String email) {
+    public void removeBehorighet(String email) {
         System.out.println("removing" + email);
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("UPDATE skolans_användare SET behörighet = 0 WHERE email ='%s'", email);
+            String sql = String.format("UPDATE google_anvandare SET behorighet = 0 WHERE email ='%s'", email);
             stmt.executeUpdate(sql);
             conn.close();
         } catch (Exception e) {
@@ -380,27 +380,27 @@ public class AdminManager implements Serializable {
         }
     }
 
-    public List getSkolansAnvändare() {
+    public List getSkolansAnvandare() {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM skolans_anvandare_handledare ORDER BY namn";
+            String sql = "SELECT * FROM google_anvandare_handledare ORDER BY namn";
             ResultSet data = stmt.executeQuery(sql);
-            List<Users> skolans_användare = new ArrayList();
+            List<Users> google_anvandare = new ArrayList();
             while (data.next()) {
                 Users temp = new Users();
-                temp.setId(data.getInt("ID"));
+                temp.setId(data.getInt("id"));
                 temp.setNamn(data.getString("namn"));
-                temp.setTfnr(data.getString("Telefonnummer"));
+                temp.setTfnr(data.getString("telefonnummer"));
                 temp.setEmail(data.getString("email"));
                 temp.setKlass(data.getInt("klass"));
-                temp.setHl_id(data.getInt("handledare_ID"));
-                temp.setHl_namn(data.getString("hNamn"));
-                temp.setBehörighet(data.getInt("behörighet"));
-                skolans_användare.add(temp);
+                temp.setHl_id(data.getInt("handledare_id"));
+                temp.setHl_namn(data.getString("hl_namn"));
+                temp.setBehorighet(data.getInt("behorighet"));
+                google_anvandare.add(temp);
             }
             conn.close();
-            return skolans_användare;
+            return google_anvandare;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -416,13 +416,13 @@ public class AdminManager implements Serializable {
             List<Users> handledareList = new ArrayList();
             while (data.next()) {
                 Users temp = new Users();
-                temp.setId(data.getInt("ID"));
+                temp.setId(data.getInt("id"));
                 temp.setNamn(data.getString("namn"));
-                temp.setTfnr(data.getString("Telefonnummer"));
+                temp.setTfnr(data.getString("telefonnummer"));
                 temp.setEmail(data.getString("email"));
                 temp.setProgram_id(data.getInt("program_id"));
-                temp.setAnvnamn(data.getString("användarnamn"));
-                temp.setFöretag(data.getString("företag"));
+                temp.setAnvnamn(data.getString("anvandarnamn"));
+                temp.setForetag(data.getString("foretag"));
 
                 handledareList.add(temp);
             }
@@ -445,12 +445,12 @@ public class AdminManager implements Serializable {
 
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("UPDATE skolans_användare SET namn = '%s', "
-                    + "Telefonnummer = '%s', "
+            String sql = String.format("UPDATE google_anvandare SET namn = '%s', "
+                    + "telefonnummer = '%s', "
                     + "email = '%s', "
-                    + "handledare_ID = %d, "
+                    + "handledare_id = %d, "
                     + "klass = %d "
-                    + "WHERE ID = %d", namn, tfnr, email, hl_id, klass, id);
+                    + "WHERE id = %d", namn, tfnr, email, hl_id, klass, id);
             stmt.executeUpdate(sql);
             conn.close();
             return "redigeraSkStart";
@@ -467,24 +467,24 @@ public class AdminManager implements Serializable {
             String tfnr = selectedHL.getTfnr();
             String email = selectedHL.getEmail();
             int p_id = selectedHL.getProgram_id();
-            String företag = selectedHL.getFöretag();
+            String foretag = selectedHL.getForetag();
             String anvnamn = selectedHL.getAnvnamn();
-            String lösenord = selectedHL.getLösenord().trim();
+            String losenord = selectedHL.getLosenord().trim();
 
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
             String sql = String.format("UPDATE handledare SET namn = '%s', "
                     + "telefonnummer = '%s', "
                     + "email = '%s', "
-                    + "företag = '%s', "
+                    + "foretag = '%s', "
                     + "program_id = %d, "
-                    + "användarnamn = '%s' ",
-                    namn, tfnr, email, företag, p_id, anvnamn);
-            if (!lösenord.equals("")) {
-                String encrypted_lösenord = BCrypt.hashpw(lösenord, BCrypt.gensalt());
-                sql += String.format(", lösenord = '%s' ", encrypted_lösenord);
+                    + "anvandarnamn = '%s' ",
+                    namn, tfnr, email, foretag, p_id, anvnamn);
+            if (!losenord.equals("")) {
+                String encrypted_losenord = BCrypt.hashpw(losenord, BCrypt.gensalt());
+                sql += String.format(", losenord = '%s' ", encrypted_losenord);
             }
-            sql += String.format("WHERE ID = %d", id);
+            sql += String.format("WHERE id = %d", id);
             stmt.executeUpdate(sql);
             conn.close();
             return "redigeraHLStart";

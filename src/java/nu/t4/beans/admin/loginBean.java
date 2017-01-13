@@ -54,11 +54,11 @@ public class loginBean implements Serializable {
         try {
             Connection conn = ConnectionFactory.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = String.format("SELECT * FROM admin WHERE användarnamn = '%s'", username);
+            String sql = String.format("SELECT * FROM admin WHERE anvandarnamn = '%s'", username);
             ResultSet data = stmt.executeQuery(sql);
 
             data.next();//ta ut första raden
-            String hashedpwd = data.getString("lösenord");
+            String hashedpwd = data.getString("losenord");
             if (BCrypt.checkpw(password, hashedpwd)) {
                 conn.close();
                 loggedIn = true;
